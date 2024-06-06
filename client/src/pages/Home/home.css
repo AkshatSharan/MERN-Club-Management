@@ -1,0 +1,404 @@
+.hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+
+    position: relative;
+}
+
+.hero-text {
+    margin-bottom: 10px;
+    margin-top: 30px;
+}
+
+.hero-buttons-container {
+    display: flex;
+    gap: 130px;
+    position: relative;
+}
+
+.hero-button {
+    padding: 10px 15px;
+
+    width: 245px;
+
+    color: white;
+    font-weight: 700;
+    font-size: 25px;
+
+    border-radius: 5px;
+
+    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, 0.1); */
+
+    background-color: var(--siteGreen);
+}
+
+.hero-button.middle-button {
+    background-color: var(--siteLightGreen);
+}
+
+#followed-clubs {
+    margin-top: 40px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    position: relative;
+}
+
+#followed-clubs::after {
+    content: '';
+
+    width: 90%;
+    height: 1px;
+
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+
+    background-color: lightgray;
+}
+
+.section-title {
+    font-size: 2.3em;
+}
+
+.clubs-list {
+    width: 100%;
+    display: grid;
+    gap: 20px;
+}
+
+.club-card {
+    padding: 30px 0px;
+    /* height: 180px; */
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    border-radius: 5px;
+    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.1);
+
+    background-color: white;
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+.recruitment-tag {
+    padding: 5px;
+
+    position: absolute;
+    z-index: 10;
+    top: 0;
+    left: 0;
+
+    color: white;
+
+    border-bottom-right-radius: 5px;
+
+    background-color: var(--siteBlue);
+}
+
+.followed-club-logo {
+    height: 100px;
+    position: relative;
+}
+
+.followed-club-name {
+    margin: 0;
+}
+
+.event-tag {
+    padding: 5px 10px;
+
+    color: white;
+
+    border-radius: 5px;
+
+    background-color: var(--siteGreen);
+}
+
+#currently-recruiting,
+#explore-clubs {
+    margin-top: 60px;
+}
+
+.recruiting-clubs-list {
+    width: 100%;
+    display: grid;
+    gap: 20px;
+}
+
+.card-divider {
+    height: 1px;
+    width: 70%;
+
+    margin: 2px 0px;
+
+    border: none;
+
+    background-color: lightgray;
+}
+
+.application-deadline-display {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.more-information-button {
+    padding: 10px 20px;
+
+    width: fit-content;
+
+    color: white;
+    font-weight: 700;
+    font-size: 15px;
+
+    border-radius: 5px;
+
+    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.1);
+
+    background-color: var(--siteBlue);
+}
+
+.sort-clubs {
+    margin-bottom: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.sorting-component {
+    position: relative;
+
+    display: flex;
+}
+
+.search-component {
+
+
+    border-bottom: 2px solid black;
+}
+
+.searchbar {
+    font-size: 15px;
+
+    border: none;
+
+    background: none;
+}
+
+.search-icon {
+    height: 20px;
+
+    margin: 0px 5px;
+}
+
+.sort-by {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sort-button {
+    padding: 7px 15px;
+
+    font-weight: 700;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    border-radius: 5px;
+
+    background-color: var(--siteLightBlue);
+}
+
+.dropdown-arrow {
+    height: 10px;
+
+    transition: 100ms;
+}
+
+.invert-arrow {
+    transform: rotate(180deg);
+}
+
+.sorting-options {
+    width: 100%;
+
+    margin-top: 1px;
+
+    display: flex;
+    flex-direction: column;
+
+    position: absolute;
+    top: 100%;
+    transform: translateX(-50%);
+    z-index: 10;
+
+    transform-origin: top;
+    transform: scaleY(0);
+
+    overflow: hidden;
+
+    animation: openSorting 100ms ease-out forwards;
+}
+
+.card-display-text {
+    margin: 0px 40px;
+    margin-bottom: 10px;
+}
+
+@keyframes openSorting {
+    to {
+        transform: scaleY(1);
+    }
+}
+
+.sorting-option {
+    height: 40px;
+
+    padding: 10px 20px;
+
+    font-weight: 700;
+    color: white;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    border: 1px solid white;
+
+    background-color: var(--siteLightBlue);
+}
+
+.selected-option {
+    background-color: var(--siteLightGreen);
+}
+
+.read-more {
+    font-size: inherit;
+    color: var(--siteBlue);
+
+    cursor: pointer;
+}
+
+@media (min-width: 1200px) {
+    .clubs-list {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 1200px) {
+    .hero-buttons-container {
+        gap: 40px;
+    }
+
+    .hero-button.middle-button {
+        position: absolute;
+        left: 50%;
+        top: 70px;
+        transform: translateX(-50%);
+    }
+
+    #followed-clubs {
+        margin-top: 110px;
+    }
+}
+
+@media (min-width: 890px) and (max-width: 1199px) {
+    .clubs-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .club-card {
+        width: 100%;
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+}
+
+@media (max-width: 890px) {
+    .hero-text {
+        text-align: center;
+    }
+
+    .club-card {
+        width: 100%;
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+}
+
+@media (max-width: 630px) {
+    .hero {
+        gap: 5.4vw;
+    }
+
+    .hero-text {
+        font-size: clamp(44px, 7.94vw, 7.94vw);
+    }
+
+    .hero-button.middle-button {
+        top: 150%;
+    }
+
+    .hero-button {
+        width: 38.9vw;
+        font-size: 3.4vw;
+    }
+
+    .section-title {
+        font-size: clamp(31px, 5.76vw, 5.76vw);
+    }
+}
+
+@media (max-width: 550px) {
+    .sort-clubs {
+        margin-bottom: 20px;
+
+        flex-direction: column-reverse;
+        gap: 20px;
+    }
+}
+
+@media (max-width: 425px) {
+    .hero-text {
+        font-size: 10.37vw;
+    }
+
+    .section-title {
+        font-size: clamp(23px, 7.29vw, 7.29vw);
+    }
+
+    #followed-clubs {
+        margin-top: 30%;
+    }
+
+    .recruitment-tag {
+        font-size: 3.76vw;
+    }
+
+    .card-display-text {
+        margin-left: 6%;
+        margin-right: 6%;
+
+        font-size: 3.76vw;
+    }
+}
