@@ -1,20 +1,31 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose from "mongoose";
+
+const twoWeeksFromNow = () => {
+    const date = new Date();
+    date.setDate(date.getDate() + 14);
+    return date;
+};
 
 const recruitmentSchema = new mongoose.Schema({
     club: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Club',
         required: true
     },
+    accepting: {
+        type: Boolean,
+        default: false
+    },
     applicationDeadline: {
         type: Date,
-        required: true
+        default: twoWeeksFromNow,
+        required: false,
     },
     applicationDetail: String,
     applications: [{
-        type: Schema.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "Application"
-    }],
-})
+    }]
+});
 
 export default mongoose.model('Recruitment', recruitmentSchema);

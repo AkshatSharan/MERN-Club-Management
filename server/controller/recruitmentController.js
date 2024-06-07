@@ -1,26 +1,33 @@
-import club from "../model/club.js";
-import recruitment from "../model/recruitment.js";
+import Recruitment from "../model/recruitment.js";
+import Club from "../model/club.js";
 
 export const createRecruitment = async (req, res) => {
     try {
-        const recruitmentData = new recruitment(req.body);
+        const { clubId, applicationDeadline, applicationDetail } = req.body;
 
-        if (!recruitmentData) {
-            return res.status(404).json({ msg: "Recruitment data not found" });
+        if (!clubId) {
+            return res.status(400).json({ msg: "Missing required fields" });
         }
 
-        const savedRecruitment = await recruitmentData.save();
+        const club = await Club.findById(clubId);
+        if (!club) {
+            return res.status(404).json({ msg: "Club not found" });
+        }
 
-        const clubId = req.body.clubId;
+        const recruitment = new Recruitment({
+            club: clubId,
+            applicationDeadline,
+            applicationDetail,
+        });
 
-        await club.findByIdAndUpdate(
-            clubId,
-            { $push: { recruitment: savedRecruitment._id } },
-            { new: true }
-        );
+        const savedRecruitment = await recruitment.save();
 
-        res.status(200).json(savedRecruitment);
+        club.recruitment.push(savedRecruitment._id);
+        await club.save();
+
+        res.status(201).json(savedRecruitment);
     } catch (error) {
+        console.error("Error creating recruitment:", error);
         res.status(500).json({ error: "Internal server error" });
     }
 };

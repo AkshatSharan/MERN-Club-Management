@@ -1,8 +1,8 @@
-import user from "../model/user.js"
+import User from "../model/user.js"
 
 export const createUser = async (req, res) => {
     try {
-        const userData = new user(req.body)
+        const userData = new User(req.body)
 
         if (!userData) {
             return res.status(404).json({ msg: "user data not found" })
@@ -18,7 +18,7 @@ export const createUser = async (req, res) => {
 
 export const getAllUser = async (req, res) => {
     try {
-        const userData = await user.find()
+        const userData = await User.find()
 
         if (!userData) {
             return res.status(404).json({ msg: "user data not found" })
@@ -34,7 +34,7 @@ export const getSpecificUser = async (req, res) => {
     try {
 
         const id = req.params.email
-        const userExist = await user.findOne({ email: id })
+        const userExist = await User.findOne({ email: id })
 
         if (!userExist) {
             return res.status(404).json({ msg: "user data not found" })
@@ -48,22 +48,22 @@ export const getSpecificUser = async (req, res) => {
 
 export const updateUser = async (req, res) => {
     const id = req.params.email
-    const userExist = await user.findOne({ email: id })
+    const userExist = await User.findOne({ email: id })
 
     if (!userExist) {
         return res.status(401).json({ msg: "User data not found" })
     }
-    const updatedData = await user.findOneAndUpdate({ email: id }, req.body, { new: true })
+    const updatedData = await User.findOneAndUpdate({ email: id }, req.body, { new: true })
     res.status(200).json(updatedData)
 }
 
 export const deleteUser = async (req, res) => {
     const id = req.params.email
-    const userExist = await user.findOne({ email: id })
+    const userExist = await User.findOne({ email: id })
 
     if (!userExist) {
         return res.status(404).json({ msg: "User data not found" })
     }
-    await user.findOneAndDelete({ email: id })
+    await User.findOneAndDelete({ email: id })
     res.status(200).json({msg: "user deleted"})
 }

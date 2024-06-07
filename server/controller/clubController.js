@@ -1,8 +1,8 @@
-import club from "../model/club.js";
+import Club from "../model/club.js";
 
 export const createClub = async (req, res) => {
     try {
-        const clubData = new club(req.body)
+        const clubData = new Club(req.body)
 
         if (!clubData) {
             return res.status(404).json({ msg: "data not found" })
@@ -18,7 +18,7 @@ export const createClub = async (req, res) => {
 
 export const getAllClubs = async (req, res) => {
     try {
-        const clubData = await club.find()
+        const clubData = await Club.find()
 
         if (!clubData) {
             return res.status(404).json({ msg: "user data not found" })

@@ -27,8 +27,8 @@ const userSchema = new mongoose.Schema({
     },
     applications: [{
         type: Schema.ObjectId,
-        ref: "application"
+        ref: "Application"
     }]
 })
 
-export default mongoose.model("user", userSchema);
+export default mongoose.model("User", userSchema);

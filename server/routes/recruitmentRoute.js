@@ -1,8 +1,8 @@
 import express from "express";
 import { createRecruitment } from "../controller/recruitmentController.js";
 
-const recruitmentRoute = express.Router()
+const recruitmentRoute = express.Router();
 
-recruitmentRoute.post("/create", createRecruitment);
+recruitmentRoute.post("/createrecruitment", createRecruitment);
 
-export default recruitmentRoute
+export default recruitmentRoute;
