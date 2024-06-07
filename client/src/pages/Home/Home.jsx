@@ -2,15 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './home.css';
-import sampleData from '../../sampledata'; // Assuming this is used for other sections
+import sampleData from '../../sampledata';
 import DownArrow from '../../assets/DownArrow.svg';
 import SearchIcon from '../../assets/SearchIcon.svg';
 
 function Home({ scrollToSection }) {
   const [allClubs, setAllClubs] = useState([]);
+  const [recruiting, setRecruiting] = useState([]);
+
+  const [sortedData, setSortedData] = useState([]);
   const [sortingExpanded, setSortingExpanded] = useState(false);
   const [selectedOption, setSelectedOption] = useState(1);
-  const [sortedData, setSortedData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedClubs, setExpandedClubs] = useState({});
 
@@ -28,6 +30,19 @@ function Home({ scrollToSection }) {
 
     fetchClubs();
   }, []);
+
+  useEffect(() => {
+    const fetchRecruitingClubs = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/api/recruitment/getcurrentlyrecruiting');
+        const recruitingClubsData = response.data;
+        setRecruiting(recruitingClubsData);
+      } catch (error) {
+        console.error('Error fetching recruiting clubs:', error);
+      }
+    };
+    fetchRecruitingClubs()
+  })
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -50,14 +65,6 @@ function Home({ scrollToSection }) {
 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
-  };
-
-  const handleReadMore = (index) => {
-    setExpandedClubs((prevExpandedClubs) => {
-      const updatedExpandedClubs = { ...prevExpandedClubs };
-      updatedExpandedClubs[index] = !prevExpandedClubs[index];
-      return updatedExpandedClubs;
-    });
   };
 
   useEffect(() => {
@@ -87,9 +94,15 @@ function Home({ scrollToSection }) {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+  const handleReadMore = (index) => {
+    setExpandedClubs((prevExpandedClubs) => {
+      const updatedExpandedClubs = { ...prevExpandedClubs };
+      updatedExpandedClubs[index] = !prevExpandedClubs[index];
+      return updatedExpandedClubs;
+    });
+  };
 
   useEffect(() => {
-    // Set initial sorted data
     const initialSortedData = [...allClubs].sort((a, b) => a.clubName.localeCompare(b.clubName));
     setSortedData(initialSortedData);
   }, [allClubs]);
@@ -99,7 +112,6 @@ function Home({ scrollToSection }) {
   );
 
   const followedClubs = sampleData.filter(club => club.followed)
-  const recruitingClubs = sampleData.filter(club => club.recruiting)
 
   return (
     <>
@@ -137,14 +149,18 @@ function Home({ scrollToSection }) {
       <section id='currently-recruiting'>
         <h1 className='section-title'>Currently recruiting</h1>
         <div className='clubs-list'>
-          {recruitingClubs.length > 0 ? (
-            recruitingClubs.map((club, index) => (
+          {recruiting.length > 0 ? (
+            recruiting.map((recruitment, index) => (
               <div className='club-card' key={index}>
-                <img className='followed-club-logo' src={club.clubLogo} alt={`${club.clubName} logo`} />
-                <h2 className='followed-club-name'>{club.clubName}</h2>
+                <img className='followed-club-logo' src={recruitment.club.clubLogo} alt={`${recruitment.club.clubName} logo`} />
+                <h2 className='followed-club-name'>{recruitment.club.clubName}</h2>
                 <hr className='card-divider' />
                 <h3 style={{ margin: 0, fontWeight: 400 }}>DEADLINE</h3>
-                <p className='application-deadline-display'>{club.applicationDeadline}</p>
+                <p className='application-deadline-display'>{new Date(recruitment.applicationDeadline).toLocaleDateString('en-US', {
+                  day: 'numeric',
+                  month: 'short',
+                  year: 'numeric'
+                }).toUpperCase()}</p>
                 <button className='more-information-button'>Know more</button>
               </div>
             ))

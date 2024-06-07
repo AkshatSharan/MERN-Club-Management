@@ -37,7 +37,6 @@ function UpcomingEvents() {
                                     </p>
                                 </div>
                                 <div className='upcoming-event-details'>
-                                    <p className='upcoming-event-time'>{club.eventTime}</p>
                                     <h1 className='upcoming-event-title'>{club.eventTitle}</h1>
                                     <p className='upcoming-event-description'>{club.eventDescription}</p>
                                 </div>

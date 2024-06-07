@@ -6,6 +6,7 @@ import cors from "cors"
 import userRoute from "./routes/userRoute.js"
 import clubRoute from "./routes/clubRoute.js";
 import recruitmentRoute from "./routes/recruitmentRoute.js"
+import upcomingEventRoute from "./routes/upcomingEventRoute.js"
 
 const app = express()
 
@@ -29,3 +30,4 @@ mongoose.connect(URL).then(() => {
 app.use('/api/user', userRoute)
 app.use('/api/club', clubRoute);
 app.use('/api/recruitment', recruitmentRoute);
+app.use('/api/upcomingevent', upcomingEventRoute);

@@ -31,3 +31,37 @@ export const createRecruitment = async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 };
+
+export const getCurrentlyRecruiting = async (req, res) => {
+    try {
+        const recruitments = await Recruitment.find({ accepting: true })
+            .populate('club', 'clubName clubLogo applicationDeadline')
+            .exec();
+
+        res.status(200).json(recruitments);
+    } catch (error) {
+        console.error("Error fetching recruitments:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+export const toggleRecruiting = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const recruitment = await Recruitment.findById(id);
+
+        if (!recruitment) {
+            return res.status(404).json({ error: 'Recruitment not found' });
+        }
+
+        recruitment.accepting = !recruitment.accepting;
+
+        const updatedRecruitment = await recruitment.save();
+
+        res.json(updatedRecruitment);
+    } catch (error) {
+        console.error('Error toggling recruitment:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};

@@ -18,6 +18,10 @@ const clubSchema = new mongoose.Schema({
     recruitment: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Recruitment',
+    }],
+    upcomingEvents: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'UpcomingEvent'
     }]
 });
 
