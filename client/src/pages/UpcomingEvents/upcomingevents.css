@@ -25,7 +25,7 @@
     gap: 20px;
 }
 
-.month-title{
+.month-title {
     margin: 0;
 
     font-size: 30px;
@@ -37,14 +37,16 @@
 
     padding: 40px 60px;
 
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
     border-radius: 10px;
     box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.05);
 
     background-color: white;
+}
+
+.upcoming-event-card-properties {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .upcoming-event-schedule-detail {
@@ -84,12 +86,12 @@
     justify-content: center;
 }
 
-.upcoming-event-time{
+.upcoming-event-time {
     margin: 0;
     margin-bottom: 10px;
 }
 
-.upcoming-event-title{
+.upcoming-event-title {
     margin: 0;
 
     font-size: 40px;
@@ -103,7 +105,7 @@
     align-items: center;
 }
 
-.organizer-logo{
+.organizer-logo {
     height: 100%;
 }
 
@@ -114,5 +116,87 @@
 @media (max-width: 1501px) {
     .event-organizer {
         width: 265px;
+    }
+}
+
+@media (max-width: 965px) {
+
+    .event-organizer {
+        margin-left: 3.8%;
+        width: fit-content;
+    }
+
+    .organizer-logo {
+        height: clamp(66px, 10.37vw, 10.37vw);
+    }
+
+    .event-organizer>h2 {
+        font-size: clamp(15px, 2.48vw, 2.48vw);
+    }
+
+    .upcoming-event-day,
+    .upcoming-event-date {
+        font-size: clamp(15px, 3.1vw, 3.1vw);
+    }
+
+    .upcoming-event-details {
+        margin-left: 3.8%;
+    }
+
+    .upcoming-events-title {
+        font-size: clamp(25px, 5.18vw, 5.18vw);
+    }
+
+    .upcoming-events-subtitle {
+        font-size: clamp(12px, 1.55vw, 1.55vw);
+    }
+
+    .month-title {
+        font-size: clamp(20px, 3.11 vw, 3.11 vw);
+    }
+
+    .upcoming-event-title {
+        font-size: clamp(18px, 4.14vw, 4.14vw);
+    }
+
+    .upcoming-event-description {
+        margin: 3.5% 0px;
+        font-size: clamp(13px, 1.65vw, 1.65vw);
+    }
+
+    .upcoming-event-card {
+        padding: 4.4%;
+    }
+}
+
+@media (max-width: 629px) {
+    .upcoming-event-card-properties {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .upcoming-event-schedule-detail,
+    .event-organizer,
+    .upcoming-event-details {
+        margin: 0;
+    }
+
+    .event-organizer,
+    .upcoming-event-title,
+    .upcoming-event-details {
+        width: 100%;
+    }
+
+    .event-organizer>h2 {
+        margin-bottom: 0px;
+    }
+
+    .upcoming-event-title {
+        text-align: center;
+    }
+
+    .upcoming-event-details {
+        margin-top: -30px;
+        margin-bottom: 20px;
     }
 }

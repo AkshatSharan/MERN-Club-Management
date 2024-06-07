@@ -5,7 +5,7 @@ import NotificationBell from '../../assets/NotificationBell.svg'
 import Hamburger from '../../assets/Hamburger.svg'
 import CloseMenu from '../../assets/CloseMenu.svg'
 
-function Navbar({ scrollToSection }) {
+function Navbar() {
     const [menuOpen, setMenuOpen] = useState(false);
 
     const toggleMenu = () => {

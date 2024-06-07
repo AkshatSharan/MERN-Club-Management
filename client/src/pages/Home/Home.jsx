@@ -67,14 +67,16 @@ function Home({ scrollToSection }) {
     setSearchQuery(e.target.value);
   };
 
-  useEffect(() => {
+ useEffect(() => {
     if (location.state?.scrollTo) {
       const section = document.getElementById(location.state.scrollTo);
       if (section) {
-        window.scrollTo({
-          top: section.offsetTop - 30,
-          behavior: 'smooth',
-        });
+        setTimeout(() => {
+          window.scrollTo({
+            top: section.offsetTop - 30,
+            behavior: 'smooth',
+          });
+        }, 300);
         navigate(location.pathname, { replace: true, state: {} });
       }
     }
