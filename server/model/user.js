@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const userSchema = new mongoose.Schema({
     fname: {
@@ -24,7 +24,11 @@ const userSchema = new mongoose.Schema({
     phone: {
         type: String,
         required: true
-    }
+    },
+    applications: [{
+        type: Schema.ObjectId,
+        ref: "application"
+    }]
 })
 
-export default mongoose.model("user", userSchema)
+export default mongoose.model("user", userSchema);

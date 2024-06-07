@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const clubSchema = new mongoose.Schema({
     clubName: {
@@ -15,6 +15,11 @@ const clubSchema = new mongoose.Schema({
     },
     displayDescription: String,
     clubDescription: String,
+
+    recruitment: [{
+        type: Schema.ObjectId,
+        ref: 'recruitment',
+    }]
 })
 
 export default mongoose.model("club", clubSchema); 
