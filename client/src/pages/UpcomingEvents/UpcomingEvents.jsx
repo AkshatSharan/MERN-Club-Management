@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import './upcomingevents.css';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import Loader from '../../components/Loader/Loader';
 
 function UpcomingEvents() {
     const [upcomingEventClubs, setUpcomingEventClubs] = useState([]);
     const [viewportWidth, setViewportWidth] = useState(window.innerWidth);
     const [expandedEventDescription, setExpandedEventDescription] = useState({});
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         const handleResize = () => {
@@ -30,6 +33,8 @@ function UpcomingEvents() {
                 setUpcomingEventClubs(response.data);
             } catch (error) {
                 console.error('Error fetching clubs:', error);
+            } finally {
+                setIsLoading(false)
             }
         };
 
@@ -68,13 +73,26 @@ function UpcomingEvents() {
         return monthOrder.indexOf(monthA) - monthOrder.indexOf(monthB);
     });
 
-    const handleReadMore = (index) => {
+    const handleReadMore = (event, index) => {
+        event.stopPropagation();
         setExpandedEventDescription((prevExpandedDescription) => {
             return {
                 ...prevExpandedDescription,
                 [index]: !prevExpandedDescription[index]
             };
         });
+    }
+
+    const navigate = useNavigate()
+
+    const handleDivClick = (eventId) => {
+        navigate(`/event/${eventId}`)
+    }
+
+    if (isLoading) {
+        return (
+            <Loader />
+        )
     }
 
     return (
@@ -91,7 +109,7 @@ function UpcomingEvents() {
                             const smallEventDescription = eventData.event.eventDescription.substring(0, 250)
                             const bigEventDescription = eventData.event.eventDescription
                             return (
-                                <div className='upcoming-event-card' key={eventIndex}>
+                                <div className='upcoming-event-card' key={eventIndex} onClick={() => handleDivClick(eventData.event._id)}>
                                     <div className='upcoming-event-card-properties'>
                                         <div className='upcoming-event-schedule-detail'>
                                             <p className='upcoming-event-day'>
@@ -110,8 +128,8 @@ function UpcomingEvents() {
                                             <h2>{eventData.club.clubName}</h2>
                                         </div>
                                     </div>
-                                    {(viewportWidth < 629 && !expandedEventDescription[eventIndex]) && <p className='upcoming-event-description'>{smallEventDescription}<button className='read-more' onClick={() => handleReadMore(eventIndex)}>...read more</button></p>}
-                                    {(viewportWidth < 629 && expandedEventDescription[eventIndex]) && <p className='upcoming-event-description'>{bigEventDescription}<button className='read-more' onClick={() => handleReadMore(eventIndex)}>read less</button></p>}
+                                    {(viewportWidth < 629 && !expandedEventDescription[eventIndex]) && <p className='upcoming-event-description'>{smallEventDescription}<button className='read-more' onClick={(event) => handleReadMore(event, eventIndex)}>...read more</button></p>}
+                                    {(viewportWidth < 629 && expandedEventDescription[eventIndex]) && <p className='upcoming-event-description'>{bigEventDescription}<button className='read-more' onClick={(event) => handleReadMore(event, eventIndex)}>read less</button></p>}
                                 </div>
                             )
                         })}

@@ -5,6 +5,7 @@ import './home.css';
 import sampleData from '../../sampledata';
 import DownArrow from '../../assets/DownArrow.svg';
 import SearchIcon from '../../assets/SearchIcon.svg';
+import Loader from '../../components/Loader/Loader';
 
 function Home({ scrollToSection }) {
   const [allClubs, setAllClubs] = useState([]);
@@ -15,6 +16,7 @@ function Home({ scrollToSection }) {
   const [selectedOption, setSelectedOption] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedClubs, setExpandedClubs] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchClubs = async () => {
@@ -25,6 +27,8 @@ function Home({ scrollToSection }) {
         setSortedData(initialSortedData);
       } catch (error) {
         console.error('Error fetching clubs:', error);
+      } finally {
+        setIsLoading(false)
       }
     };
 
@@ -67,8 +71,8 @@ function Home({ scrollToSection }) {
     setSearchQuery(e.target.value);
   };
 
- useEffect(() => {
-    if (location.state?.scrollTo) {
+  useEffect(() => {
+    if ((!isLoading && location.state)?.scrollTo) {
       const section = document.getElementById(location.state.scrollTo);
       if (section) {
         setTimeout(() => {
@@ -80,7 +84,7 @@ function Home({ scrollToSection }) {
         navigate(location.pathname, { replace: true, state: {} });
       }
     }
-  }, [location.state, navigate]);
+  }, [isLoading, location.state, navigate]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -114,6 +118,10 @@ function Home({ scrollToSection }) {
   );
 
   const followedClubs = sampleData.filter(club => club.followed)
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <>

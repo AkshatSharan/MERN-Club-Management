@@ -29,11 +29,18 @@ export const createUpcomingEvent = async (req, res) => {
     }
 };
 
-export const getUpcomingEvents = async (req, res) => {
+export const getUpcomingEventDetails = async (req, res) => {
     try {
+        const eventId = req.params.eventId
+        const event = await UpcomingEvent.findById(eventId).populate('club')
 
+        if (!event) {
+            return res.status(404).json({ error: 'Event not found' })
+        }
+
+        res.status(200).json(event);
     } catch (error) {
-        console.error('Error creating upcoming event:', error);
+        console.log("Error fetching details", error)
         res.status(500).json({ error: 'Internal server error' });
     }
-};
+}

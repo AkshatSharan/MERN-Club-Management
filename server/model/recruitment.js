@@ -21,6 +21,7 @@ const recruitmentSchema = new mongoose.Schema({
         default: twoWeeksFromNow,
         required: false,
     },
+    recruitmentTitle: String,
     applicationDetail: String,
     applications: [{
         type: mongoose.Schema.Types.ObjectId,
