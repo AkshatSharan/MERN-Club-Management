@@ -9,10 +9,8 @@ const clubSchema = new mongoose.Schema({
         type: String,
         required: false,
     },
-    password: {
-        type: String,
-        required: true,
-    },
+    clubEmail: String,
+    password: String,
     displayDescription: String,
     clubDescription: String,
     recruitment: [{

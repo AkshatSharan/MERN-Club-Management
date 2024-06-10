@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import Loader from '../../components/Loader/Loader';
+import ParticipationIcon from '../../assets/ParticipationIcon.svg'
 
 function EventDetails() {
     const { eventId } = useParams();
@@ -31,13 +32,11 @@ function EventDetails() {
 
     return (
         <div>
-            <>
-                <h1>{eventDetails.eventTitle}</h1>
-                <p>{eventDetails.eventDescription}</p>
-                <p>Registrations Open: {eventDetails.registrationsOpen ? 'Yes' : 'No'}</p>
-                <p>Registration Deadline: {eventDetails.registrationDeadline}</p>
-                <p>Event Start Date: {eventDetails.eventStartDate}</p>
-            </>
+            <h1>{eventDetails.eventTitle}</h1>
+            <p>{eventDetails.eventDescription}</p>
+            <p>Registrations Open: {eventDetails.registrationsOpen ? 'Yes' : 'No'}</p>
+            <p>Registration Deadline: {eventDetails.registrationDeadline}</p>
+            <p>Event Start Date: {eventDetails.eventStartDate}</p>
         </div>
     );
 }

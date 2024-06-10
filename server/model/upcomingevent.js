@@ -39,6 +39,24 @@ const upcomingEventSchema = new mongoose.Schema({
         default: threeWeeksFromNow,
         required: false,
     },
+    teamSize: {
+        type: String,
+        default: 'individual',
+    },
+    eventLocation: String,
+    registrationFees: String,
+    rounds: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'EventRound'
+    }],
+    prizes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'EventPrizes'
+    }],
+    organizers: [{
+        name: String,
+        phoneNumber: String
+    }]
 });
 
 export default mongoose.model('UpcomingEvent', upcomingEventSchema);

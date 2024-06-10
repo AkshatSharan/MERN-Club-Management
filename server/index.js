@@ -7,6 +7,8 @@ import userRoute from "./routes/userRoute.js"
 import clubRoute from "./routes/clubRoute.js";
 import recruitmentRoute from "./routes/recruitmentRoute.js"
 import upcomingEventRoute from "./routes/upcomingEventRoute.js"
+import eventPrizeRoute from "./routes/eventPrizeRoute.js"
+import eventRoundRoute from "./routes/eventRoundRoute.js"
 
 const app = express()
 
@@ -31,3 +33,5 @@ app.use('/api/user', userRoute)
 app.use('/api/club', clubRoute);
 app.use('/api/recruitment', recruitmentRoute);
 app.use('/api/upcomingevent', upcomingEventRoute);
+app.use('/api/upcomingevent/prize', eventPrizeRoute);
+app.use('/api/upcomingevent/round', eventRoundRoute);
