@@ -39,12 +39,15 @@ const upcomingEventSchema = new mongoose.Schema({
         default: threeWeeksFromNow,
         required: false,
     },
-    teamSize: {
+    participation: {
         type: String,
         default: 'individual',
     },
     eventLocation: String,
-    registrationFees: String,
+    registrationFees: {
+        type: String,
+        default: 'Free',
+    },
     rounds: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'EventRound'

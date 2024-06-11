@@ -1,0 +1,254 @@
+.event-title-container {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 5px
+}
+
+.event-title {
+    width: fit-content;
+
+    margin-top: 20px;
+
+    font-size: 40px;
+
+    position: relative;
+}
+
+.back-arrow {
+    height: 20px;
+
+    cursor: pointer;
+}
+
+/* .event-title::after {
+    content: '';
+    width: 15%;
+    height: 1px;
+
+    position: absolute;
+    bottom: -10px;
+    left: 0px;
+
+    background-color: black;
+} */
+
+.header-information {
+    height: 30px;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.primary-detail-icon {
+    height: 20px;
+}
+
+.section-header {
+    margin-top: 20px;
+
+    font-size: 32px;
+}
+
+.section-subheader {
+    font-size: 26px;
+}
+
+.event-cards-contianer {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+.round-card {
+    height: fit-content;
+
+    padding: 20px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 10px;
+    flex: 1;
+
+    border-radius: 5px;
+    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.1);
+
+    background-color: white;
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+.round-name {
+    margin: 0;
+}
+
+.round-details {
+    margin-top: 10px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.card-detail {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.card-detail-icon {
+    height: 40px;
+}
+
+.date-time {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.date-time>p {
+    margin: 0;
+}
+
+.prize-money-icon {
+    height: 20px;
+}
+
+.registration {
+    display: flex;
+    gap: 15px;
+}
+
+.registration>h2 {
+    margin-bottom: 10px;
+}
+
+.register-now {
+    padding: 10px;
+    width: 50%;
+
+    color: white;
+    font-weight: 700;
+    font-size: 20px;
+
+    border-radius: 5px;
+
+    background-color: var(--siteLightBlue);
+}
+
+@media (max-width: 1024px) {
+    .card-detail p {
+        font-size: 12px;
+    }
+
+    .card-detail-icon {
+        height: 35px;
+    }
+}
+
+@media (max-width: 845px) {
+    .event-cards-contianer {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 630px) {
+    .event-title {
+        font-size: 30px;
+    }
+
+    .header-information p {
+        font-size: 14px;
+    }
+
+    .section-header {
+        font-size: 26px;
+    }
+
+    .section-subheader {
+        font-size: 20px;
+    }
+
+    .event-detail {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 580px) {
+    .event-cards-contianer {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+@media (max-width: 425px) {
+    .event-title {
+        font-size: 26px;
+    }
+
+    .back-arrow {
+        height: 15px;
+    }
+
+    .header-information p {
+        font-size: 12px;
+    }
+
+    .primary-detail-icon  {
+        height: 15px;
+    }
+
+    .section-header {
+        font-size: 22px;
+    }
+
+    .section-subheader {
+        font-size: 18px;
+    }
+
+    .registration h2 {
+        font-size: 20px;
+    }
+
+    .register-now {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 375px) {
+    .event-detail {
+        font-size: 12px;
+    }
+
+    .card-detail-icon {
+        height: 28px;
+    }
+}
+
+@media (max-width: 321px) {
+    .event-title-container{
+        gap: 10px;
+    }
+
+    .event-title {
+        margin: 15px 0px;
+
+        font-size: 22px;
+    }
+
+    .event-detail {
+        font-size: 11px;
+    }
+
+    .card-detail-icon {
+        height: 28px;
+    }
+
+    .header-information p {
+        font-size: 11px;
+    }
+}

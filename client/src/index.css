@@ -18,7 +18,7 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-*:focus-visible{
+*:focus-visible {
   outline: none;
 }
 
@@ -50,6 +50,7 @@ button {
   border: none;
   background: none;
   cursor: pointer;
+  transition: 100ms;
 }
 
 .bgRed {
