@@ -43,21 +43,22 @@ export const signup = async (req, res) => {
 }
 
 export const signin = async (req, res) => {
-    const { email, password } = req.body
+    const { email, password } = req.body;
     try {
-        const validUser = await User.findOne({email})
+        const validUser = await User.findOne({ email });
         if (!validUser) {
             return res.status(401).json({ error: "Invalid email or password" });
         }
-        const validPassword = bcryptjs.compareSync(password, validUser.password)
+        const validPassword = bcryptjs.compareSync(password, validUser.password);
         if (!validPassword) {
             return res.status(401).json({ error: "Invalid email or password" });
         }
-        const { password: hashedPassword, ...rest} = validUser._doc
-        const token = jwt.sign({id: validUser._id}, process.env.JWT_SECRET)
+        const { password: hashedPassword, ...rest } = validUser._doc;
+        const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
         const expiryDate = new Date(Date.now() + (30 * 24 * 60 * 60 * 1000));
-        res.cookie('access_token', token, { httpOnly: true, expires: expiryDate }).status(200).json(rest)
+        res.cookie('access_token', token, { httpOnly: true, expires: expiryDate }).status(200).json(rest);
     } catch (error) {
-
+        console.error('Error during signin: ', error);
+        res.status(500).json({ error: "An error occurred during signin" });
     }
 }

@@ -3,14 +3,16 @@ import './auth.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Loader from '../../components/Loader/Loader';
-import WhiteArrow from '../../assets/WhiteArrow.svg'
+import { signinStart, signinSuccess, signinFailure } from '../../redux/userSlice'
+import { useDispatch, useSelector } from 'react-redux';
 
 function Signin() {
     const [signinData, setSigninData] = useState({})
-    const [isLoading, setIsLoading] = useState(false)
-    const [errorMessage, setErrorMessage] = useState('')
+    const { loading, errorMessage } = useSelector((state) => state.user)
     const [signinType, setSigninType] = useState('student')
+
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const handleChange = (e) => {
         setSigninData({ ...signinData, [e.target.id]: e.target.value })
@@ -23,33 +25,30 @@ function Signin() {
     const handleSubmit = async (e) => {
         e.preventDefault()
         if (!signinData.email || !signinData.password) {
-            setErrorMessage('Please fill up all fields');
+            const errorMessage = 'Please fill up all fields'
+            dispatch(signinFailure(errorMessage))
             return;
         }
         try {
-            setIsLoading(true);
+            dispatch(signinStart())
             let response;
             if (signinType === 'student') {
                 response = await axios.post('http://localhost:3000/api/auth/user/signin', signinData);
             } else if (signinType === 'club') {
                 response = await axios.post('http://localhost:3000/api/auth/club/signin', signinData);
             }
-            setErrorMessage('')
-            setIsLoading(false);
-            navigate('/signin');
+            dispatch(signinSuccess(response))
+            navigate('/');
         } catch (error) {
-            setIsLoading(false);
-            console.error('Error during signin:', error);
-            if (error.response && error.response.data && error.response.data.error) {
-                setErrorMessage(error.response.data.error);
-            } else {
-                setErrorMessage('An error occurred during signin');
-            }
+            const errorMessage = error.response && error.response.data && error.response.data.error
+                ? error.response.data.error
+                : 'An error occurred during sign in';
+            dispatch(signinFailure(errorMessage));
         }
     }
 
-    if (isLoading) {
-        return <Loader message={"Signing you up"} />
+    if (loading) {
+        return <Loader message={"Signing you in"} />
     }
 
     return (
