@@ -9,6 +9,8 @@ import recruitmentRoute from "./routes/recruitmentRoute.js"
 import upcomingEventRoute from "./routes/upcomingEventRoute.js"
 import eventPrizeRoute from "./routes/eventPrizeRoute.js"
 import eventRoundRoute from "./routes/eventRoundRoute.js"
+import clubAuthRoute from "./routes/clubAuthRoute.js"
+import userAuthRoute from "./routes/userAuthRoute.js"
 
 const app = express()
 
@@ -35,3 +37,5 @@ app.use('/api/recruitment', recruitmentRoute);
 app.use('/api/upcomingevent', upcomingEventRoute);
 app.use('/api/upcomingevent/prize', eventPrizeRoute);
 app.use('/api/upcomingevent/round', eventRoundRoute);
+app.use('/api/auth/club', clubAuthRoute);
+app.use('/api/auth/user', userAuthRoute);

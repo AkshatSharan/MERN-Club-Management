@@ -1,10 +1,11 @@
 import React from 'react'
 import './loader.css'
 
-function Loader() {
+function Loader({ message }) {
   return (
-    <div style={{ position: 'absolute', top: '50%', left: '50%', translate: '-50%' }}>
+    <div className='loader-container'>
       <div className="loader"></div>
+      <h2 style={{marginTop: 0, fontSize: '100%'}}>{message}</h2>
     </div>
   )
 }

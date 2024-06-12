@@ -82,7 +82,7 @@ function EventDetails(props) {
 
     if (isLoading) {
         return (
-            <Loader />
+            <Loader message={'Fetching details'} />
         )
     }
 

@@ -120,7 +120,7 @@ function Home({ scrollToSection }) {
   const followedClubs = sampleData.filter(club => club.followed)
 
   if (isLoading) {
-    return <Loader />;
+    return <Loader message={'Loading home'} />;
   }
 
   return (

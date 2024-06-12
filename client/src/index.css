@@ -64,3 +64,9 @@ button {
 .bgLightGreen {
   background-color: var(--siteLightGreen);
 }
+
+input{
+  border: none;
+
+  background: none;
+}

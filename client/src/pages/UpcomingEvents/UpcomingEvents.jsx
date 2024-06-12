@@ -91,7 +91,7 @@ function UpcomingEvents() {
 
     if (isLoading) {
         return (
-            <Loader />
+            <Loader message={"Listing events"} />
         )
     }
 
