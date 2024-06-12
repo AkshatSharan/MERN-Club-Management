@@ -53,7 +53,10 @@ export const signin = async (req, res) => {
         if (!validPassword) {
             return res.status(401).json({ error: "Invalid email or password" });
         }
+        const { password: hashedPassword, ...rest} = validUser._doc
         const token = jwt.sign({id: validUser._id}, process.env.JWT_SECRET)
+        const expiryDate = new Date(Date.now() + (30 * 24 * 60 * 60 * 1000));
+        res.cookie('access_token', token, { httpOnly: true, expires: expiryDate }).status(200).json(rest)
     } catch (error) {
 
     }

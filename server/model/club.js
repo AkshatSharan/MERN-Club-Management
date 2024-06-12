@@ -28,7 +28,11 @@ const clubSchema = new mongoose.Schema({
     upcomingEvents: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'UpcomingEvent'
-    }]
+    }],
+    clubSecret: {
+        type: String,
+        unique: true,
+    },
 });
 clubSchema.pre('save', function (next) {
     if (!this.clubSecret) {
