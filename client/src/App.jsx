@@ -7,6 +7,7 @@ import UpcomingEvents from './pages/UpcomingEvents/UpcomingEvents';
 import EventDetails from './pages/EventDetails/EventDetails';
 import Signup from './pages/AuthPage/Signup';
 import Signin from './pages/AuthPage/Signin';
+import StudentPrivateRoute from './components/StudentPrivateRoute';
 
 function AppContent() {
   const location = useLocation();
@@ -29,11 +30,13 @@ function AppContent() {
       {!isAuthPage && <Navbar scrollToSection={scrollToSection} />}
       <main className={`main-content ${isAuthPage ? 'no-margin' : ''}`}>
         <Routes>
-          <Route path="/" element={<Home scrollToSection={scrollToSection} />} />
-          <Route path="/upcomingevents" element={<UpcomingEvents />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/signin" element={<Signin />} />
-          <Route path="/event/:eventId" element={<EventDetails />} />
+          <Route element={<StudentPrivateRoute />}>
+            <Route path="/" element={<Home scrollToSection={scrollToSection} />} />
+            <Route path="/upcomingevents" element={<UpcomingEvents />} />
+            <Route path="/event/:eventId" element={<EventDetails />} />
+          </Route>
         </Routes>
       </main>
     </>
@@ -48,4 +51,4 @@ function App() {
   );
 }
 
-export default App;
+export default App; // Ensure you have this line to export the App component as the default export

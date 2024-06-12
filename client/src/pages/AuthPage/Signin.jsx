@@ -1,3 +1,4 @@
+// Signin.jsx
 import React, { useEffect, useState } from 'react';
 import './auth.css';
 import axios from 'axios';
@@ -10,9 +11,15 @@ function Signin() {
     const [signinData, setSigninData] = useState({})
     const { loading, errorMessage } = useSelector((state) => state.user)
     const [signinType, setSigninType] = useState('student')
-
-    const navigate = useNavigate()
+    const { currentUser, userType } = useSelector((state) => state.user);
+    
     const dispatch = useDispatch()
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        if (currentUser && userType === 'student')
+            navigate('/')
+    }, [currentUser, userType, navigate])
 
     const handleChange = (e) => {
         setSigninData({ ...signinData, [e.target.id]: e.target.value })
@@ -23,21 +30,21 @@ function Signin() {
     }
 
     const handleSubmit = async (e) => {
-        e.preventDefault()
+        e.preventDefault();
         if (!signinData.email || !signinData.password) {
-            const errorMessage = 'Please fill up all fields'
-            dispatch(signinFailure(errorMessage))
+            const errorMessage = 'Please fill up all fields';
+            dispatch(signinFailure(errorMessage));
             return;
         }
         try {
-            dispatch(signinStart())
+            dispatch(signinStart());
             let response;
             if (signinType === 'student') {
                 response = await axios.post('http://localhost:3000/api/auth/user/signin', signinData);
             } else if (signinType === 'club') {
                 response = await axios.post('http://localhost:3000/api/auth/club/signin', signinData);
             }
-            dispatch(signinSuccess(response))
+            dispatch(signinSuccess({ user: response.data, userType: signinType }));
             navigate('/');
         } catch (error) {
             const errorMessage = error.response && error.response.data && error.response.data.error
@@ -45,7 +52,7 @@ function Signin() {
                 : 'An error occurred during sign in';
             dispatch(signinFailure(errorMessage));
         }
-    }
+    };
 
     if (loading) {
         return <Loader message={"Signing you in"} />
@@ -96,4 +103,4 @@ function Signin() {
     )
 }
 
-export default Signin
+export default Signin;
