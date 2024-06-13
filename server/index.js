@@ -1,4 +1,5 @@
 import express from "express"
+import cookieParser from 'cookie-parser'
 import mongoose from "mongoose"
 import bodyParser from "body-parser"
 import dotenv from "dotenv"
@@ -15,6 +16,7 @@ import userAuthRoute from "./routes/userAuthRoute.js"
 const app = express()
 
 app.use(bodyParser.json())
+app.use(cookieParser())
 app.use(cors())
 dotenv.config()
 
