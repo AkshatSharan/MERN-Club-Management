@@ -8,6 +8,7 @@ import EventDetails from './pages/EventDetails/EventDetails';
 import Signup from './pages/AuthPage/Signup';
 import Signin from './pages/AuthPage/Signin';
 import StudentPrivateRoute from './components/StudentPrivateRoute';
+import Profile from './pages/Profile/Profile';
 
 function AppContent() {
   const location = useLocation();
@@ -35,8 +36,9 @@ function AppContent() {
           <Route element={<StudentPrivateRoute />}>
             <Route path="/" element={<Home scrollToSection={scrollToSection} />} />
             <Route path="/upcomingevents" element={<UpcomingEvents />} />
-            <Route path="/event/:eventId" element={<EventDetails />} />
+            <Route path='/profile' element={<Profile />} />
           </Route>
+          <Route path="/event/:eventId" element={<EventDetails />} />
         </Routes>
       </main>
     </>

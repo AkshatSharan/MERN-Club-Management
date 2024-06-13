@@ -124,7 +124,7 @@ function UpcomingEvents() {
                                             {viewportWidth > 629 && <p className='upcoming-event-description'>{eventData.event.eventDescription}</p>}
                                         </div>
                                         <div className='event-organizer'>
-                                            <img src={eventData.club.clubLogo} alt='Organizer Logo' className='organizer-logo' />
+                                            <div className='organizer-logo'><img src={eventData.club.clubLogo} alt='Organizer Logo' /></div>
                                             <h2>{eventData.club.clubName}</h2>
                                         </div>
                                     </div>

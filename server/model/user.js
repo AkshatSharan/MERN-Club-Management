@@ -31,7 +31,15 @@ const userSchema = new mongoose.Schema({
     applications: [{
         type: Schema.ObjectId,
         ref: "Application"
-    }]
+    }],
+    followedClubs: [{
+        type: Schema.ObjectId,
+        ref: "Club"
+    }],
+    registrations: {
+        type: Schema.ObjectId,
+        ref: "Registration"
+    },
 }, { timestamps: true })
 
 export default mongoose.model("User", userSchema);

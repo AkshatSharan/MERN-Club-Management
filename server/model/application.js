@@ -4,12 +4,12 @@ const { Schema } = mongoose;
 const applicationSchema = new mongoose.Schema({
     user: {
         type: Schema.Types.ObjectId,
-        ref: 'user',
+        ref: 'User',
         required: true
     },
     recruitment: {
         type: Schema.Types.ObjectId,
-        ref: 'recruitment',
+        ref: 'Recruitment',
         required: true
     },
     status: {
@@ -19,4 +19,4 @@ const applicationSchema = new mongoose.Schema({
     },
 });
 
-export default mongoose.model('application', applicationSchema);
+export default mongoose.model('Application', applicationSchema);

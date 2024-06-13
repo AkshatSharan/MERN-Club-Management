@@ -59,7 +59,11 @@ const upcomingEventSchema = new mongoose.Schema({
     organizers: [{
         name: String,
         phoneNumber: String
-    }]
+    }],
+    registrations: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Registration'
+    }],
 });
 
 export default mongoose.model('UpcomingEvent', upcomingEventSchema);

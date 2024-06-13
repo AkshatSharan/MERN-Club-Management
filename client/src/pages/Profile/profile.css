@@ -1,0 +1,53 @@
+.user-name {
+    /* margin-bottom: 10px; */
+}
+
+.user-details {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.user-detail {
+    width: fit-content;
+    margin: 0;
+
+}
+
+.user-detail-divider {
+    width: 1px;
+    height: 20px;
+
+    background-color: lightgray;
+}
+
+.edit-details {
+    padding: 5px 10px;
+
+    color: white;
+
+    border-radius: 5px;
+
+    background-color: var(--siteLightBlue);
+}
+
+.club-applications {
+    margin-top: 40px;
+}
+
+@media (max-width: 961px) {
+    .user-details{
+        gap: 20px;
+    }
+
+    .edit-details {
+        text-wrap: nowrap;
+    }
+}
+
+@media (max-width: 768px) {
+    .user-details {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

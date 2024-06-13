@@ -43,9 +43,9 @@ export const signup = async (req, res) => {
 }
 
 export const signin = async (req, res) => {
-    const { email, password } = req.body;
+    const { collegeRegistration, password } = req.body;
     try {
-        const validUser = await User.findOne({ email });
+        const validUser = await User.findOne({ collegeRegistration });
         if (!validUser) {
             return res.status(401).json({ error: "Invalid email or password" });
         }

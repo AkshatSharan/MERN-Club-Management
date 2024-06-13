@@ -33,7 +33,7 @@ function Navbar() {
                         <li className='nav-item-desktop desktop-item'>
                             <NavLink to='/' className='NavLink' state={{ scrollTo: 'explore-clubs' }} >Clubs</NavLink>
                         </li>
-                        <li className='nav-item-desktop desktop-item'><NavLink to='/' className='NavLink'>Profile</NavLink></li>
+                        <li className='nav-item-desktop desktop-item'><NavLink to='/profile' className='NavLink'>Profile</NavLink></li>
                     </ul>
                     <img src={NotificationBell} id='notification-icon' height={30} />
                     {menuOpen ?
@@ -48,7 +48,7 @@ function Navbar() {
                     <li className='nav-item-mobile'><NavLink to='/' className='NavLink' onClick={toggleMenu}>Home</NavLink></li>
                     <li className='nav-item-mobile'><NavLink to='/upcomingevents' className='NavLink' onClick={toggleMenu}>Events</NavLink></li>
                     <li className='nav-item-mobile'><NavLink to='/' className='NavLink' onClick={toggleMenu} state={{ scrollTo: 'explore-clubs' }}>Clubs</NavLink></li>
-                    <li className='nav-item-mobile'><NavLink to='/' className='NavLink' onClick={toggleMenu}>Profile</NavLink></li>
+                    <li className='nav-item-mobile'><NavLink to='/profile' className='NavLink' onClick={toggleMenu}>Profile</NavLink></li>
                 </ul>
             }
         </>

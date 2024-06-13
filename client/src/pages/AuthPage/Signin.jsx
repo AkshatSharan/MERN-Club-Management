@@ -31,7 +31,7 @@ function Signin() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!signinData.email || !signinData.password) {
+        if (!signinData.collegeRegistration || !signinData.password) {
             const errorMessage = 'Please fill up all fields';
             dispatch(signinFailure(errorMessage));
             return;
@@ -83,11 +83,11 @@ function Signin() {
                 <form className='auth-form' onSubmit={handleSubmit}>
                     {errorMessage && <p className='error-message'>{`*${errorMessage}`}</p>}
                     <input type='text'
-                        placeholder='Enter email'
-                        value={signinData.email || ''}
+                        placeholder={signinType === 'student'? 'College registration': 'Club email'}
+                        value={signinData.collegeRegistration || ''}
                         className='auth-form-input'
                         onChange={handleChange}
-                        id='email'
+                        id='collegeRegistration'
                     />
                     <input type='password'
                         placeholder='Enter password'

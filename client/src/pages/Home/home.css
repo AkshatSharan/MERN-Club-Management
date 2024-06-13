@@ -1,5 +1,5 @@
 .hero {
-    
+
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -114,22 +114,24 @@
 }
 
 .followed-club-logo {
-    height: 100px;
     width: 100px;
-    overflow: hidden;
-    position: relative;
+    height: 100px;
     border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.followed-club-logo img {
-    height: 100%; 
-    width: 100%; 
-    object-fit: cover; 
-    object-position: center;
+.followed-club-logo>img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .followed-club-name {
     margin: 0;
+    text-align: center;
 }
 
 .event-tag {
