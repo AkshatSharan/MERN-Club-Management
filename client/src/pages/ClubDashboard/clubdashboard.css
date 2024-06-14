@@ -1,0 +1,35 @@
+.clubSignout {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.club-primary {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    position: relative;
+}
+
+.club-logo {
+    height: 100px;
+    aspect-ratio: 1/1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    overflow: hidden;
+}
+
+.club-logo img {
+    height: 100%;
+    object-fit: cover;
+}
+
+.club-name {
+    margin-right: 15px;
+}

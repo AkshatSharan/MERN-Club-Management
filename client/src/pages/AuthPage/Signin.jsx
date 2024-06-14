@@ -1,10 +1,8 @@
-// Signin.jsx
 import React, { useEffect, useState } from 'react';
 import './auth.css';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Loader from '../../components/Loader/Loader';
-import { signinStart, signinSuccess, signinFailure } from '../../redux/userSlice'
+import { signinStart, signinSuccess, signinFailure, resetErrorMessage } from '../../redux/userSlice'
 import { useDispatch, useSelector } from 'react-redux';
 import axiosInstance from '../../axiosinstance';
 
@@ -22,6 +20,7 @@ function Signin() {
         if (currentUser && userType === 'student') {
             navigate('/');
         }
+        dispatch(resetErrorMessage())
     }, [currentUser, userType, navigate]);
 
     const handleStudentDataChange = (e) => {
@@ -33,7 +32,7 @@ function Signin() {
     }
 
     const handleAccountTypeSwitch = (type) => {
-        setSigninType(type);
+        setSigninType(type)
     }
 
     const handleSubmit = async (e) => {

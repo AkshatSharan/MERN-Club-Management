@@ -2,6 +2,36 @@ import User from "../model/user.js";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken'
 
+export const refreshToken = async (req, res) => {
+    const { refreshToken } = req.cookies;
+
+    if (!refreshToken) {
+        return res.status(401).json({ message: "No refresh token provided" });
+    }
+
+    try {
+        const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+        const club = await Club.findById(decoded._id);
+
+        if (!club || club.refreshToken !== refreshToken) {
+            return res.status(403).json({ message: "Invalid refresh token" });
+        }
+
+        const newAccessToken = jwt.sign({ _id: club._id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+        const newRefreshToken = jwt.sign({ _id: club._id }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
+
+        club.refreshToken = newRefreshToken;
+        await club.save({ validateBeforeSave: false });
+
+        res.cookie("accessToken", newAccessToken, { httpOnly: true, secure: true, sameSite: 'Strict', maxAge: 15 * 60 * 1000 });
+        res.cookie("refreshToken", newRefreshToken, { httpOnly: true, secure: true, sameSite: 'Strict', maxAge: 7 * 24 * 60 * 60 * 1000 });
+
+        res.status(200).json({ accessToken: newAccessToken, refreshToken: newRefreshToken });
+    } catch (error) {
+        res.status(403).json({ message: "Invalid refresh token" });
+    }
+};
+
 const generateAccessAndRefreshToken = async function (userId) {
     try {
         const user = await User.findById(userId);
@@ -123,26 +153,26 @@ export const refreshAccessToken = async (req, res) => {
 
     try {
         const decodedToken = jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET)
-    
+
         const user = await User.findById(decodedToken?._id)
-    
+
         if (!user) {
             return res.status(400).json({ error: "Invalid refresh token" });
         }
-    
+
         if (incomingRefreshToken !== user?.refreshToken) {
             return res.status(401).json({ error: "Refresh token expired or used" });
         }
-    
+
         const options = {
             httpOnly: true,
             secure: true,
             sameSite: 'Strict',
             maxAge: 24 * 60 * 60 * 1000
         }
-    
+
         const { accessToken, newRefreshToken } = await generateAccessAndRefreshToken(user._id)
-    
+
         return res.status(200).cookie("accessToken", accessToken, options).cookie("refreshToken", newRefreshToken, options)
     } catch (error) {
         res.status(401).json({ error: "Invalid refresh token" });

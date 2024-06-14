@@ -21,10 +21,10 @@ function UpdateUserModal({ handleClose }) {
             const response = await axiosInstance.post('/user/update', formData)
 
             if (response.success == false) {
-                dispatch(updateFailure(response))
+                dispatch(updateFailure(response.data.user))
             }
 
-            dispatch(updateSuccess(response))
+            dispatch(updateSuccess(response.data.user))
             console.log('Update successful:', response.data)
             handleClose();
         } catch (error) {
