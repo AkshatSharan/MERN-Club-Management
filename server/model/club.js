@@ -40,13 +40,18 @@ const clubSchema = new mongoose.Schema({
         type: String
     }
 });
+
 clubSchema.pre('save', function (next) {
     if (!this.clubSecret) {
         const secureRandomString = crypto.randomBytes(20).toString('hex');
-        this.clubSecret = secureRandomString;
+        this.clubSecret = secureRandomString
     }
-    next();
-});
+    next()
+})
+
+clubSchema.methods.isPasswordCorrect = async function (password) {
+    return await bcrypt.compare(password, this.password)
+}
 
 clubSchema.methods.generateAccessToken = function () {
     return jwt.sign(

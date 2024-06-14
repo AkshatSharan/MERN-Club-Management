@@ -1,10 +1,10 @@
 import Club from "../model/club.js"
-import bcryptjs from 'bcryptjs'
+import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 
 const generateAccessAndRefreshToken = async function (clubSecret) {
     try {
-        const user = await Club.findOne({clubSecret});
+        const user = await Club.findOne({ clubSecret });
         const accessToken = user.generateAccessToken();
         const refreshToken = user.generateRefreshToken();
 
@@ -20,7 +20,7 @@ const generateAccessAndRefreshToken = async function (clubSecret) {
 
 export const signup = async (req, res) => {
     try {
-        const hashedPassword = bcryptjs.hashSync(req.body.password, 10);
+        const hashedPassword = bcrypt.hashSync(req.body.password, 10);
 
         const clubData = new Club({
             ...req.body,
@@ -40,14 +40,15 @@ export const signup = async (req, res) => {
 }
 
 export const signin = async (req, res) => {
-    const { clubEmail, password } = req.body;
+    const { email, password } = req.body;
     try {
-        const user = await Club.findOne({ clubEmail });
+        const user = await Club.findOne({ clubEmail: email });
+
         if (!user) {
             return res.status(404).json({ error: "No club found" });
         }
 
-        const isPasswordValid = await user.isPasswordCorrect(password);
+        const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
             return res.status(401).json({ error: "Incorrect password" });
         }

@@ -35,10 +35,14 @@ const userSlice = createSlice({
             state.loading = true
         },
         updateSuccess: (state, action) => {
-            state.currentUser = action.payload;
-            state.loading = false;
-            state.errorMessage = null;
-        },
+    if (action.payload.data && action.payload.data.user) {
+        state.currentUser = action.payload.data;
+    } else if (action.payload.user) {
+        state.currentUser = action.payload.user;
+    }
+    state.loading = false;
+    state.errorMessage = null;
+},
         updateFailure: (state, action) => {
             state.loading = false;
             state.errorMessage = action.payload;

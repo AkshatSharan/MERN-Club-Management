@@ -1,5 +1,5 @@
 import User from "../model/user.js";
-import bcryptjs from 'bcryptjs';
+import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken'
 
 const generateAccessAndRefreshToken = async function (userId) {
@@ -20,7 +20,7 @@ const generateAccessAndRefreshToken = async function (userId) {
 
 export const signup = async (req, res) => {
     try {
-        const hashedPassword = bcryptjs.hashSync(req.body.password, 10);
+        const hashedPassword = bcrypt.hashSync(req.body.password, 10);
         const userData = new User({
             ...req.body,
             password: hashedPassword

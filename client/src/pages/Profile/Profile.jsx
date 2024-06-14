@@ -33,7 +33,7 @@ function Profile() {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-    const { fname = '', lname = '', phone = '', email = '', collegeRegistration = '', applications = [], registrations = [] } = currentUser?.data?.user || {};
+    const { fname = '', lname = '', phone = '', email = '', collegeRegistration = '', applications = [], registrations = [] } = currentUser.user || {};
 
     return (
         <main>

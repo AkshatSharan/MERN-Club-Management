@@ -9,42 +9,48 @@ import { useDispatch, useSelector } from 'react-redux';
 import axiosInstance from '../../axiosinstance';
 
 function Signin() {
-    const [signinData, setSigninData] = useState({})
-    const { loading, errorMessage } = useSelector((state) => state.user)
-    const [signinType, setSigninType] = useState('student')
+    const [studentSigninData, setStudentSigninData] = useState({ collegeRegistration: '', password: '' });
+    const [clubSigninData, setClubSigninData] = useState({ email: '', password: '' });
+    const { loading, errorMessage } = useSelector((state) => state.user);
+    const [signinType, setSigninType] = useState('student');
     const { currentUser, userType } = useSelector((state) => state.user);
-    
-    const dispatch = useDispatch()
-    const navigate = useNavigate()
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     useEffect(() => {
-        if (currentUser && userType === 'student')
-            navigate('/')
-    }, [currentUser, userType, navigate])
+        if (currentUser && userType === 'student') {
+            navigate('/');
+        }
+    }, [currentUser, userType, navigate]);
 
-    const handleChange = (e) => {
-        setSigninData({ ...signinData, [e.target.id]: e.target.value })
+    const handleStudentDataChange = (e) => {
+        setStudentSigninData({ ...studentSigninData, [e.target.id]: e.target.value });
+    }
+
+    const handleClubDataChange = (e) => {
+        setClubSigninData({ ...clubSigninData, [e.target.id]: e.target.value });
     }
 
     const handleAccountTypeSwitch = (type) => {
-        setSigninType(type)
+        setSigninType(type);
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!signinData.collegeRegistration || !signinData.password) {
-            const errorMessage = 'Please fill up all fields';
-            dispatch(signinFailure(errorMessage));
-            return;
+        let data = {};
+        if (signinType === 'student') {
+            data = studentSigninData;
+        } else if (signinType === 'club') {
+            data = clubSigninData;
         }
         try {
             dispatch(signinStart());
             let response;
             if (signinType === 'student') {
-                response = await axiosInstance.post('/auth/user/signin', signinData);
-                console.log(response)
+                response = await axiosInstance.post('/auth/user/signin', studentSigninData);
             } else if (signinType === 'club') {
-                response = await axiosInstance.post('/auth/club/signin', signinData);
+                response = await axiosInstance.post('/auth/club/signin', clubSigninData);
             }
             dispatch(signinSuccess({ user: response.data, userType: signinType }));
             navigate('/');
@@ -57,7 +63,7 @@ function Signin() {
     };
 
     if (loading) {
-        return <Loader message={"Signing you in"} />
+        return <Loader message={"Signing you in"} />;
     }
 
     return (
@@ -84,20 +90,41 @@ function Signin() {
 
                 <form className='auth-form' onSubmit={handleSubmit}>
                     {errorMessage && <p className='error-message'>{`*${errorMessage}`}</p>}
-                    <input type='text'
-                        placeholder={signinType === 'student'? 'College registration': 'Club email'}
-                        value={signinData.collegeRegistration || ''}
-                        className='auth-form-input'
-                        onChange={handleChange}
-                        id='collegeRegistration'
-                    />
-                    <input type='password'
-                        placeholder='Enter password'
-                        value={signinData.password || ''}
-                        className='auth-form-input'
-                        onChange={handleChange}
-                        id='password'
-                    />
+                    {signinType === 'student' ? (
+                        <>
+                            <input type='text'
+                                placeholder='College registration'
+                                value={studentSigninData.collegeRegistration}
+                                className='auth-form-input'
+                                onChange={handleStudentDataChange}
+                                id='collegeRegistration'
+                            />
+                            <input type='password'
+                                placeholder='Enter password'
+                                value={studentSigninData.password}
+                                className='auth-form-input'
+                                onChange={handleStudentDataChange}
+                                id='password'
+                            />
+                        </>
+                    ) : (
+                        <>
+                            <input type='text'
+                                placeholder='Club email'
+                                value={clubSigninData.email}
+                                className='auth-form-input'
+                                onChange={handleClubDataChange}
+                                id='email'
+                            />
+                            <input type='password'
+                                placeholder='Enter password'
+                                value={clubSigninData.password}
+                                className='auth-form-input'
+                                onChange={handleClubDataChange}
+                                id='password'
+                            />
+                        </>
+                    )}
                     <input type='submit' className='submit-auth' value='Sign in' />
                 </form>
             </section>

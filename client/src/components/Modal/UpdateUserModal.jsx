@@ -7,7 +7,7 @@ import { updateFailure, updateStart, updateSuccess } from '../../redux/userSlice
 
 function UpdateUserModal({ handleClose }) {
     const { currentUser } = useSelector((state) => state.user)
-    const [formData, setFormData] = useState(currentUser.data.user)
+    const [formData, setFormData] = useState(currentUser.user)
     const dispatch = useDispatch()
 
     const handleChange = (e) => {
