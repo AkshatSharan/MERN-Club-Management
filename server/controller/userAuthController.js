@@ -78,8 +78,8 @@ export const signin = async (req, res) => {
         const options = {
             httpOnly: true,
             secure: true,
-            sameSite: 'Strict', // Adjust based on your requirements
-            maxAge: 24 * 60 * 60 * 1000 // 1 day
+            sameSite: 'Strict',
+            maxAge: 24 * 60 * 60 * 1000
         };
 
         console.log('Setting accessToken cookie:', accessToken);
@@ -100,16 +100,51 @@ export const logout = async (req, res) => {
     const { refreshToken } = req.cookies;
 
     try {
-        const user = await User.findOneAndUpdate({ refreshToken }, { refreshToken: '' });
+        const user = await User.findOneAndUpdate({ refreshToken }, { refreshToken: '' }, { new: true })
         if (!user) {
-            return res.status(400).json({ error: "User not found or already logged out" });
+            return res.status(400).json({ error: "User not found or already logged out" })
         }
 
-        res.clearCookie("accessToken");
-        res.clearCookie("refreshToken");
-        res.status(200).json({ message: "Logged out successfully" });
+        res.clearCookie("accessToken")
+        res.clearCookie("refreshToken")
+        res.status(200).json({ message: "Logged out successfully" })
     } catch (error) {
         console.error('Error during logout: ', error);
         res.status(500).json({ error: "An error occurred during logout" });
     }
-};
+}
+
+export const refreshAccessToken = async (req, res) => {
+    const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
+
+    if (!incomingRefreshToken) {
+        return res.status(400).json({ error: "Invalid refresh token" });
+    }
+
+    try {
+        const decodedToken = jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET)
+    
+        const user = await User.findById(decodedToken?._id)
+    
+        if (!user) {
+            return res.status(400).json({ error: "Invalid refresh token" });
+        }
+    
+        if (incomingRefreshToken !== user?.refreshToken) {
+            return res.status(401).json({ error: "Refresh token expired or used" });
+        }
+    
+        const options = {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'Strict',
+            maxAge: 24 * 60 * 60 * 1000
+        }
+    
+        const { accessToken, newRefreshToken } = await generateAccessAndRefreshToken(user._id)
+    
+        return res.status(200).cookie("accessToken", accessToken, options).cookie("refreshToken", newRefreshToken, options)
+    } catch (error) {
+        res.status(401).json({ error: "Invalid refresh token" });
+    }
+}

@@ -31,21 +31,24 @@ export const getSpecificUser = async (req, res) => {
 }
 
 export const updateUser = async (req, res) => {
-    if (req.user.id !== req.params.id) {
-        return res.status(401).json("You can only update your account!")
-    }
-    try {
-        const updatedUser = await User.findByIdAndUpdate(req.params.id, {
-            $set: {
-                fname: req.body.fname,
-                lname: req.body.lname,
-                email: req.body.email,
-            }
-        }, { new: true })
+    const { fname, lname, email, phone } = req.body
 
-        res.status(200).json(updateUser)
+    try {
+        const updatedUser = await User.findByIdAndUpdate(req.user._id, {
+            fname,
+            lname,
+            phone,
+            email,
+        }, { new: true });
+
+        if (!updatedUser) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.status(200).json({ message: 'User updated successfully', user: updatedUser });
     } catch (error) {
-        res.status(500).json({ error: "error" })
+        console.error('Update user error:', error);
+        res.status(500).json({ error: 'An error occurred while updating user' });
     }
 }
 

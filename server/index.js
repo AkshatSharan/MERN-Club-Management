@@ -45,5 +45,5 @@ app.use('/api/recruitment', recruitmentRoute);
 app.use('/api/upcomingevent', upcomingEventRoute);
 app.use('/api/upcomingevent/prize', eventPrizeRoute);
 app.use('/api/upcomingevent/round', eventRoundRoute);
-app.use('/api/auth/club', clubAuthRoute);
 app.use('/api/auth/user', userAuthRoute);
+app.use('/api/auth/club', clubAuthRoute);

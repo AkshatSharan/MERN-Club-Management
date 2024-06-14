@@ -2,6 +2,22 @@ import Club from "../model/club.js"
 import bcryptjs from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 
+const generateAccessAndRefreshToken = async function (clubSecret) {
+    try {
+        const user = await Club.findOne({clubSecret});
+        const accessToken = user.generateAccessToken();
+        const refreshToken = user.generateRefreshToken();
+
+        user.refreshToken = refreshToken;
+        await user.save({ validateBeforeSave: false });
+
+        return { accessToken, refreshToken };
+    } catch (error) {
+        console.error('Something went wrong: ', error);
+        throw new Error("Something went wrong");
+    }
+}
+
 export const signup = async (req, res) => {
     try {
         const hashedPassword = bcryptjs.hashSync(req.body.password, 10);
@@ -24,22 +40,57 @@ export const signup = async (req, res) => {
 }
 
 export const signin = async (req, res) => {
-    const { email, password } = req.body;
+    const { clubEmail, password } = req.body;
     try {
-        const validClub = await Club.findOne({ clubEmail: email });
-        if (!validClub) {
-            return res.status(401).json({ error: "Invalid email or password" });
+        const user = await Club.findOne({ clubEmail });
+        if (!user) {
+            return res.status(404).json({ error: "No club found" });
         }
-        const validPassword = bcryptjs.compareSync(password, validClub.password);
-        if (!validPassword) {
-            return res.status(401).json({ error: "Invalid email or password" });
+
+        const isPasswordValid = await user.isPasswordCorrect(password);
+        if (!isPasswordValid) {
+            return res.status(401).json({ error: "Incorrect password" });
         }
-        const { password: hashedPassword, ...rest } = validClub._doc;
-        const token = jwt.sign({ id: validClub._id }, process.env.JWT_SECRET);
-        const expiryDate = new Date(Date.now() + (30 * 24 * 60 * 60 * 1000));
-        res.cookie('access_token', token, { httpOnly: true, expires: expiryDate }).status(200).json(rest);
+
+        const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user.clubSecret);
+
+        const loggedInUser = await Club.findById(user._id).select("-password -refreshToken");
+
+        const options = {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'Strict',
+            maxAge: 24 * 60 * 60 * 1000
+        }
+
+        console.log('Setting accessToken cookie:', accessToken);
+        console.log('Setting refreshToken cookie:', refreshToken);
+
+        res
+            .cookie("accessToken", accessToken, options)
+            .cookie("refreshToken", refreshToken, options)
+            .status(200)
+            .json({ user: loggedInUser, accessToken, refreshToken });
     } catch (error) {
         console.error('Error during signin: ', error);
         res.status(500).json({ error: "An error occurred during signin" });
     }
 }
+
+export const logout = async (req, res) => {
+    const { refreshToken } = req.cookies;
+
+    try {
+        const user = await Club.findOneAndUpdate({ refreshToken }, { refreshToken: '' });
+        if (!user) {
+            return res.status(400).json({ error: "User not found or already logged out" });
+        }
+
+        res.clearCookie("accessToken");
+        res.clearCookie("refreshToken");
+        res.status(200).json({ message: "Logged out successfully" });
+    } catch (error) {
+        console.error('Error during logout: ', error);
+        res.status(500).json({ error: "An error occurred during logout" });
+    }
+};

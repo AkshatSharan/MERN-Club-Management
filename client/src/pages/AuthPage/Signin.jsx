@@ -42,6 +42,7 @@ function Signin() {
             let response;
             if (signinType === 'student') {
                 response = await axiosInstance.post('/auth/user/signin', signinData);
+                console.log(response)
             } else if (signinType === 'club') {
                 response = await axiosInstance.post('/auth/club/signin', signinData);
             }
