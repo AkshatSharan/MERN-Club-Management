@@ -1,0 +1,93 @@
+.modal-container {
+    height: 100vh;
+    width: 100vw;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 5;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-background {
+    height: 100%;
+    width: 100%;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 6;
+
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(2px);
+}
+
+.modal {
+    width: 500px;
+
+    padding: 20px;
+
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 7;
+
+    background-color: white;
+}
+
+.modal h3 {
+    margin-top: 0;
+}
+
+.updation-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.updation-input {
+    padding: 10px 15px;
+
+    border-radius: 5px;
+    border: 1px solid var(--siteBlue);
+}
+
+.submit-update {
+    padding: 10px;
+
+    color: white;
+
+    border-radius: 5px;
+
+    background-color: var(--siteLightBlue);
+
+    cursor: pointer;
+}
+
+.close-modal {
+    height: 15px;
+
+    cursor: pointer;
+}
+
+@media (max-width: 675px) {
+    .modal {
+        width: 400px;
+    }
+}
+
+@media (max-width: 540px) {
+    .modal {
+        width: 300px;
+    }
+}
+
+@media (max-width: 400px) {
+    .modal {
+        width: 230px;
+    }
+}

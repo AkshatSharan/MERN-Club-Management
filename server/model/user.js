@@ -1,3 +1,6 @@
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+
 import mongoose, { Schema } from "mongoose";
 
 const userSchema = new mongoose.Schema({
@@ -41,5 +44,33 @@ const userSchema = new mongoose.Schema({
         ref: "Registration"
     },
 }, { timestamps: true })
+
+userSchema.methods.isPasswordCorrect = async function (password) {
+    return await bcrypt.compare(password, this.password)
+}
+
+userSchema.methods.generateAccessToken = function () {
+    return jwt.sign(
+        {
+            _id: this._id
+        },
+        process.env.ACCESS_TOKEN_SECRET,
+        {
+            expiresIn: process.env.ACCESS_TOKEN_EXPIRY
+        }
+    )
+}
+
+userSchema.methods.generateRefreshToken = function () {
+    return jwt.sign(
+        {
+            _id: this._id
+        },
+        process.env.REFRESH_TOKEN_SECRET,
+        {
+            expiresIn: process.env.REFRESH_TOKEN_EXPIRY
+        }
+    )
+}
 
 export default mongoose.model("User", userSchema);

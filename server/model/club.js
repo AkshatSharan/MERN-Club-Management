@@ -1,3 +1,6 @@
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+
 import mongoose from "mongoose";
 import crypto from 'crypto'
 
@@ -41,5 +44,29 @@ clubSchema.pre('save', function (next) {
     }
     next();
 });
+
+clubSchema.methods.generateAccessToken = function () {
+    return jwt.sign(
+        {
+            clubSecret: this.clubSecret
+        },
+        process.env.ACCESS_TOKEN_SECRET,
+        {
+            expiresIn: process.env.ACCESS_TOKEN_EXPIRY
+        }
+    )
+}
+
+clubSchema.methods.generateRefreshToken = function () {
+    return jwt.sign(
+        {
+            clubSecret: this.clubSecret
+        },
+        process.env.REFRESH_TOKEN_SECRET,
+        {
+            expiresIn: process.env.REFRESH_TOKEN_EXPIRY
+        }
+    )
+}
 
 export default mongoose.model("Club", clubSchema);
