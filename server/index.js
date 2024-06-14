@@ -15,10 +15,16 @@ import userAuthRoute from "./routes/userAuthRoute.js"
 
 const app = express()
 
+const corsOptions = {
+    origin: 'http://localhost:5173', // Replace with your frontend URL
+    credentials: true, // Allow credentials
+    optionsSuccessStatus: 200 // Some legacy browsers choke on 204
+};
 app.use(bodyParser.json())
 app.use(cookieParser())
-app.use(cors())
+app.use(cors(corsOptions))
 dotenv.config()
+
 
 const PORT = process.env.PORT || 4000
 const URL = process.env.MONGOURL

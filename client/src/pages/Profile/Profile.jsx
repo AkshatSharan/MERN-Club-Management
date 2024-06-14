@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import './profile.css'
-import { useSelector } from 'react-redux'
-import { NavLink, Navigate, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
+import { NavLink, useNavigate } from 'react-router-dom'
+import axios from 'axios'
 import UpdateUserModal from '../../components/Modal/UpdateUserModal'
+import { signOut } from '../../redux/userSlice'
+import axiosInstance from '../../axiosinstance'
 
 function Profile() {
     const [open, setOpen] = useState(false)
     const { currentUser } = useSelector((state) => state.user)
     const [width, setWidth] = useState(window.innerWidth)
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     useEffect(() => {
         const handleResize = () => {
@@ -17,13 +22,22 @@ function Profile() {
         return () => window.removeEventListener('resize', handleResize)
     })
 
+    const handleLogout = async () => {
+        try {
+            await axiosInstance.post('/auth/user/logout');
+            dispatch(signOut())
+        } catch (error) {
+            console.error('Error during logout: ', error);
+        }
+    }
+
     const handleOpen = () => setOpen(true)
     const handleClose = () => setOpen(false)
 
     return (
         <main>
             {open && <UpdateUserModal handleClose={handleClose} />}
-            <h1 className='user-name'>{currentUser.fname + ' ' + currentUser.lname} <button className='signout'>Sign out</button></h1>
+            <h1 className='user-name'>{currentUser.fname + ' ' + currentUser.lname} <button className='signout' onClick={handleLogout}>Sign out</button></h1>
             <section className='user-details'>
                 <p className='user-detail'><b>Phone:</b> {currentUser.phone}</p>
                 {width > 768 && <div className='user-detail-divider'></div>}

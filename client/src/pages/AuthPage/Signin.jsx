@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import Loader from '../../components/Loader/Loader';
 import { signinStart, signinSuccess, signinFailure } from '../../redux/userSlice'
 import { useDispatch, useSelector } from 'react-redux';
+import axiosInstance from '../../axiosinstance';
 
 function Signin() {
     const [signinData, setSigninData] = useState({})
@@ -40,9 +41,9 @@ function Signin() {
             dispatch(signinStart());
             let response;
             if (signinType === 'student') {
-                response = await axios.post('http://localhost:3000/api/auth/user/signin', signinData);
+                response = await axiosInstance.post('/auth/user/signin', signinData);
             } else if (signinType === 'club') {
-                response = await axios.post('http://localhost:3000/api/auth/club/signin', signinData);
+                response = await axiosInstance.post('/auth/club/signin', signinData);
             }
             dispatch(signinSuccess({ user: response.data, userType: signinType }));
             navigate('/');

@@ -43,6 +43,9 @@ const userSchema = new mongoose.Schema({
         type: Schema.ObjectId,
         ref: "Registration"
     },
+    refreshToken: {
+        type: String
+    }
 }, { timestamps: true })
 
 userSchema.methods.isPasswordCorrect = async function (password) {

@@ -36,6 +36,9 @@ const clubSchema = new mongoose.Schema({
         type: String,
         unique: true,
     },
+    refreshToken: {
+        type: String
+    }
 });
 clubSchema.pre('save', function (next) {
     if (!this.clubSecret) {
