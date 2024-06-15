@@ -27,10 +27,17 @@ function ClubDashboard() {
     <div>
       {open && <UpdateClubPrimary handleClose={handleClose} />}
       <div className="club-primary">
-        <button className='signout' onClick={handleLogout}>Signout</button>
+        <button className='signout-club' onClick={handleLogout}>Signout</button>
         <div className="club-logo"><img src={club.clubLogo} /></div>
         <h1 className='club-name'>{club.clubName}</h1>
         <button className='edit-details' onClick={handleOpen}>Edit</button>
+      </div>
+      <div className='club-page-management'>
+        <h2 className='dashboard-section-header'>Club page management</h2>
+        <div className='club-page-management-actions-container'>
+          <button className='club-page-management-action'>View club page</button>
+          <button className='club-page-management-action'>Edit club page</button>
+        </div>
       </div>
     </div>
   )

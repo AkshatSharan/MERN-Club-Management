@@ -1,36 +1,15 @@
 import User from "../model/user.js";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken'
+import refreshTokens from "../middlewares/refreshToken.js";
 
-export const refreshToken = async (req, res) => {
+export const refreshTokenForUser = async (req, res) => {
     const { refreshToken } = req.cookies;
-
     if (!refreshToken) {
         return res.status(401).json({ message: "No refresh token provided" });
     }
-
-    try {
-        const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-        const club = await Club.findById(decoded._id);
-
-        if (!club || club.refreshToken !== refreshToken) {
-            return res.status(403).json({ message: "Invalid refresh token" });
-        }
-
-        const newAccessToken = jwt.sign({ _id: club._id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
-        const newRefreshToken = jwt.sign({ _id: club._id }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
-
-        club.refreshToken = newRefreshToken;
-        await club.save({ validateBeforeSave: false });
-
-        res.cookie("accessToken", newAccessToken, { httpOnly: true, secure: true, sameSite: 'Strict', maxAge: 15 * 60 * 1000 });
-        res.cookie("refreshToken", newRefreshToken, { httpOnly: true, secure: true, sameSite: 'Strict', maxAge: 7 * 24 * 60 * 60 * 1000 });
-
-        res.status(200).json({ accessToken: newAccessToken, refreshToken: newRefreshToken });
-    } catch (error) {
-        res.status(403).json({ message: "Invalid refresh token" });
-    }
-};
+    await refreshTokens(User, refreshToken, res);
+}
 
 const generateAccessAndRefreshToken = async function (userId) {
     try {

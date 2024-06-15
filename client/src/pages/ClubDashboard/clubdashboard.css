@@ -1,9 +1,3 @@
-.clubSignout {
-    position: absolute;
-    right: 0;
-    top: 0;
-}
-
 .club-primary {
     display: flex;
     align-items: center;
@@ -12,9 +6,22 @@
     position: relative;
 }
 
+.signout-club {
+    padding: 3px 5px;
+
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+
+    color: red;
+    font-weight: 700;
+    font-size: 14px;
+}
+
 .club-logo {
     height: 100px;
-    aspect-ratio: 1/1;
+    width: 100px;
 
     display: flex;
     align-items: center;
@@ -27,9 +34,110 @@
 
 .club-logo img {
     height: 100%;
+    width: 100%;
     object-fit: cover;
 }
 
 .club-name {
     margin-right: 15px;
+}
+
+.edit-details {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.club-page-management {
+    width: fit-content;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+}
+
+.dashboard-section-header {
+    margin-bottom: 0;
+}
+
+.club-page-management-actions-container {
+    display: flex;
+    gap: 30px;
+}
+
+.club-page-management-action {
+    padding: 10px 15px;
+
+    color: white;
+    font-weight: 700;
+
+    border-radius: 5px;
+
+    background-color: var(--siteLightBlue);
+}
+
+@media (max-width: 690px) {
+    .signout-club {
+        top: 10px;
+    }
+}
+
+@media (max-width: 620px) {
+    .club-primary {
+        padding-top: 10px;
+    }
+
+    .club-name {
+        font-size: 40px;
+    }
+
+    .club-logo {
+        height: 80px;
+        width: 80px;
+    }
+
+    .edit-details {
+        font-size: 12px;
+    }
+
+    .dashboard-section-header {
+        font-size: 22px;
+    }
+
+    .signout-club {
+        font-size: 12px;
+    }
+
+    .club-page-management-action {
+        padding: 7px 13px;
+
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 460px) {
+    .club-primary {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .club-name {
+        margin: 0;
+        margin-bottom: 10px;
+    }
+
+    .club-logo {
+        height: 80px;
+        width: 80px;
+    }
+
+    .dashboard-section-header {
+        margin-top: 30px;
+    }
+}
+
+@media (max-width: 375px) {
+    .dashboard-section-header {
+        font-size: 20px;
+    }
 }

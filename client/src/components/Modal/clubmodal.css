@@ -1,0 +1,49 @@
+.club-updation-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.club-logo-edit {
+    width: fit-content;
+    
+    margin: auto;
+    margin-bottom: 10px;
+
+    position: relative;
+
+    cursor: pointer;
+
+}
+
+.edit-logo {
+    height: 15px;
+    width: 15px;
+
+    padding: 5px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: absolute;
+    right: 0;
+    bottom: 0;
+
+    border-radius: 50%;
+    border: 1px solid black;
+
+    background-color: white;
+}
+
+.edit-logo img {
+    height: 100%;
+    width: 100%;
+}
+
+@media (max-width: 620px) {
+    .edit-logo {
+        height: 12px;
+        width: 12px;
+    }
+}

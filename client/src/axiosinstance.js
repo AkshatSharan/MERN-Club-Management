@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { store } from './redux/store';
-import { updateSuccess } from './redux/userSlice';
 
 const axiosInstance = axios.create({
     baseURL: 'http://localhost:3000/api',
@@ -50,21 +49,26 @@ axiosInstance.interceptors.response.use(
             originalRequest._retry = true;
             isRefreshing = true;
 
-            return new Promise(async (resolve, reject) => {
-                try {
-                    const response = await axiosInstance.post('/auth/refresh');
-                    const { accessToken } = response.data;
-                    localStorage.setItem('accessToken', accessToken);
-                    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-                    originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-                    onRefreshed(accessToken);
-                    resolve(axiosInstance(originalRequest));
-                } catch (error) {
-                    reject(error);
-                } finally {
-                    isRefreshing = false;
-                }
-            });
+            try {
+                const state = store.getState();
+                const userType = state.user.userType;
+
+                const refreshEndpoint = userType === 'club' ? '/auth/club/refresh' : '/auth/user/refresh';
+
+                const response = await axiosInstance.post(refreshEndpoint);
+                const { accessToken } = response.data;
+                localStorage.setItem('accessToken', accessToken);
+                axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+                originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+                onRefreshed(accessToken);
+                return axiosInstance(originalRequest);
+            } catch (refreshError) {
+                console.error('Token refresh error:', refreshError);
+                return Promise.reject(refreshError);
+            } finally {
+                isRefreshing = false;
+                refreshSubscribers = [];
+            }
         }
 
         return Promise.reject(error);

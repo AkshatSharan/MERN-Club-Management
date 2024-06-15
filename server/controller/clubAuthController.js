@@ -1,35 +1,14 @@
 import Club from "../model/club.js"
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import refreshTokens from "../middlewares/refreshToken.js";
 
-export const refreshToken = async (req, res) => {
+export const refreshTokenForClub = async (req, res) => {
     const { refreshToken } = req.cookies;
-
     if (!refreshToken) {
         return res.status(401).json({ message: "No refresh token provided" });
     }
-
-    try {
-        const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-        const club = await Club.findById(decoded._id);
-
-        if (!club || club.refreshToken !== refreshToken) {
-            return res.status(403).json({ message: "Invalid refresh token" });
-        }
-
-        const newAccessToken = jwt.sign({ _id: club._id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
-        const newRefreshToken = jwt.sign({ _id: club._id }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
-
-        club.refreshToken = newRefreshToken;
-        await club.save({ validateBeforeSave: false });
-
-        res.cookie("accessToken", newAccessToken, { httpOnly: true, secure: true, sameSite: 'Strict', maxAge: 15 * 60 * 1000 });
-        res.cookie("refreshToken", newRefreshToken, { httpOnly: true, secure: true, sameSite: 'Strict', maxAge: 7 * 24 * 60 * 60 * 1000 });
-
-        res.status(200).json({ accessToken: newAccessToken, refreshToken: newRefreshToken });
-    } catch (error) {
-        res.status(403).json({ message: "Invalid refresh token" });
-    }
+    await refreshTokens(Club, refreshToken, res);
 };
 
 const generateAccessAndRefreshToken = (userId) => {
@@ -69,6 +48,7 @@ export const signin = async (req, res) => {
         }
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
+
         if (!isPasswordValid) {
             return res.status(401).json({ error: "Incorrect password" });
         }
@@ -94,9 +74,9 @@ export const signin = async (req, res) => {
             .json({ user: sendUser, accessToken, refreshToken });
     } catch (error) {
         console.error('Error during signin: ', error);
-        res.status(500).json({ error: "An error occurred during signin" });
+        res.status(500).json({ error: "An error occurred during signin" })
     }
-};
+}
 
 export const logout = async (req, res) => {
     const { refreshToken } = req.cookies;
