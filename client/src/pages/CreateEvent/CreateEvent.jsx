@@ -21,6 +21,7 @@ import HorizontalRule from '../../assets/HorizontalRule.svg'
 import LineBreak from '../../assets/LineBreak.svg'
 import Undo from '../../assets/Undo.svg'
 import Redo from '../../assets/Redo.svg'
+import { useNavigate } from 'react-router-dom';
 
 const extensions = [
     StarterKit,
@@ -42,6 +43,8 @@ function CreateEvent() {
         prizes: [],
         registrationFees: 'Free'
     });
+
+    const navigate = useNavigate()
 
     const [isPaid, setIsPaid] = useState(false)
 
@@ -66,6 +69,11 @@ function CreateEvent() {
                 ...prevDetails,
                 eventDescription: editor.getHTML(),
             }));
+        },
+        editorProps: {
+            onFocus: (event) => {
+                event.preventDefault(); // Prevent form submission on editor focus
+            },
         },
     });
 
@@ -248,8 +256,9 @@ function CreateEvent() {
         };
 
         try {
-            await axiosInstance.post('/events', submissionData);
-            console.log('Form Submitted:', submissionData);
+            const response = await axiosInstance.post('/upcomingevent/createupcomingevent', submissionData);
+            console.log('Form Submitted:', response);
+            navigate('/')
         } catch (error) {
             console.error('Error submitting form:', error);
         }
@@ -272,7 +281,7 @@ function CreateEvent() {
 
     if (!editor) return null;
 
-    console.log(eventDetails.registrationFees)
+    // console.log(eventDetails.registrationFees)
 
     return (
         <form className='create-event-form' onSubmit={handleSubmit}>
@@ -382,7 +391,7 @@ function CreateEvent() {
                 Event description
 
                 <div className='controls-container'>
-                    <button
+                    <button type = 'button'
                         onClick={() => editor.chain().focus().toggleBold().run()}
                         disabled={
                             !editor.can()
@@ -395,7 +404,7 @@ function CreateEvent() {
                     >
                         <img src={BoldIcon} className='text-editor-icon' />
                     </button>
-                    <button
+                    <button type = 'button'
                         onClick={() => editor.chain().focus().toggleItalic().run()}
                         disabled={
                             !editor.can()
@@ -408,7 +417,7 @@ function CreateEvent() {
                     >
                         <img src={Italics} className='text-editor-icon' />
                     </button>
-                    <button
+                    <button type = 'button'
                         onClick={() => editor.chain().focus().toggleUnderline().run()}
                         disabled={
                             !editor.can()
@@ -421,31 +430,31 @@ function CreateEvent() {
                     >
                         <img src={UnderlineIcon} className='text-editor-icon' />
                     </button>
-                    <button
+                    <button type = 'button'
                         onClick={() => editor.chain().focus().toggleBulletList().run()}
                         className={editor.isActive('bulletList') ? 'is-active' : ''}
                     >
                         <img src={UL} className='text-editor-icon' />
                     </button>
-                    <button
+                    <button type = 'button'
                         onClick={() => editor.chain().focus().toggleOrderedList().run()}
                         className={editor.isActive('orderedList') ? 'is-active' : ''}
                     >
                         <img src={OL} className='text-editor-icon' />
                     </button>
-                    <button
+                    <button type = 'button'
                         onClick={() => editor.chain().focus().toggleBlockquote().run()}
                         className={editor.isActive('blockquote') ? 'is-active' : ''}
                     >
                         <img src={Quote} className='text-editor-icon' />
                     </button>
-                    <button onClick={() => editor.chain().focus().setHorizontalRule().run()}>
+                    <button type = 'button' onClick={() => editor.chain().focus().setHorizontalRule().run()}>
                         <img src={HorizontalRule} className='text-editor-icon' />
                     </button>
                     <button onClick={() => editor.chain().focus().setHardBreak().run()}>
                         <img src={LineBreak} className='text-editor-icon' />
                     </button>
-                    <button
+                    <button type = 'button'
                         onClick={() => editor.chain().focus().undo().run()}
                         disabled={
                             !editor.can()
@@ -457,7 +466,7 @@ function CreateEvent() {
                     >
                         <img src={Undo} className='text-editor-icon' />
                     </button>
-                    <button
+                    <button type = 'button'
                         onClick={() => editor.chain().focus().redo().run()}
                         disabled={
                             !editor.can()

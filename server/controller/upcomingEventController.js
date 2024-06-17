@@ -1,33 +1,40 @@
 import UpcomingEvent from '../model/upcomingevent.js';
-import Club from '../model/club.js';
+import EventRound from '../model/eventround.js'
+import EventPrize from '../model/eventprize.js';
+import Club from '../model/club.js'
 
 export const createUpcomingEvent = async (req, res) => {
     try {
-        const { clubId, eventTitle, eventDescription, registrationsOpen, registrationDeadline, eventStartDate } = req.body;
+        const { eventTitle, participation, registrationDeadline, coverDescription, teamSize, eventDescription, rounds, prizes, registrationFees } = req.body;
+
+        const club = await Club.findById(req.club._id);
+        if (!club) {
+        console.log("club not found")
+
+            return res.status(404).json({ error: 'Club not found' });
+        }
 
         const newEvent = new UpcomingEvent({
-            club: clubId,
             eventTitle,
-            eventDescription,
-            registrationsOpen,
+            participation,
             registrationDeadline,
-            eventStartDate
+            coverDescription,
+            teamSize,
+            eventDescription,
+            rounds,
+            prizes,
+            registrationFees,
+            club: club._id, // Assign the club reference
         });
 
-        const savedEvent = await newEvent.save();
-
-        await Club.findByIdAndUpdate(
-            clubId,
-            { $push: { upcomingEvents: savedEvent._id } },
-            { new: true }
-        );
-
-        res.status(201).json(savedEvent);
+        await newEvent.save();
+        res.status(201).json({ message: 'Event created successfully', event: newEvent });
     } catch (error) {
         console.error('Error creating upcoming event:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'Error creating upcoming event' });
     }
 };
+
 
 export const getUpcomingEventDetails = async (req, res) => {
     try {

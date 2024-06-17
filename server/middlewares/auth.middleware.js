@@ -42,7 +42,7 @@ export const verifyClub = async (req, res, next) => {
         }
 
         const club = await Club.findById(decodedToken._id).select("-password -refreshToken");
-
+        
         if (!club) {
             console.log("No club found for the given token");
             return res.status(401).json("Invalid access token");
