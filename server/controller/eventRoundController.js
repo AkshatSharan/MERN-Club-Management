@@ -11,29 +11,29 @@ export const getEventRounds = async (req, res) => {
     }
 };
 
-export const createEventRound = async (req, res) => {
+export const createRound = async ({ roundName, roundDate, startTime, endTime, roundLocation, event }) => {
     try {
-        const { event, roundName, roundDate, startTime, endTime, roundLocation } = req.body;
-        const newEventRound = new EventRound({
-            event,
-            roundName,
-            roundDate,
-            startTime,
-            endTime,
-            roundLocation,
-        });
-        const createdEventRound = await newEventRound.save();
-        const upcomingEvent = await UpcomingEvent.findById(event);
+        const parsedStartTime = Date.parse(startTime);
+        const parsedEndTime = Date.parse(endTime);
 
-        if (!upcomingEvent) {
-            return res.status(404).json({ message: "Upcoming event not found" });
+        if (isNaN(parsedStartTime) || isNaN(parsedEndTime)) {
+            throw new Error('Invalid date format for startTime or endTime');
         }
 
-        upcomingEvent.rounds.push(createdEventRound._id);
-        await upcomingEvent.save();
-        res.status(201).json(createdEventRound);
+        const newRound = new EventRound({
+            roundName,
+            roundDate,
+            startTime: new Date(parsedStartTime),
+            endTime: new Date(parsedEndTime),
+            roundLocation,
+            event, // Reference to the UpcomingEvent
+        });
+
+        await newRound.save();
+        return newRound;
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('Error creating event round:', error);
+        throw new Error('Error creating event round');
     }
 };
 

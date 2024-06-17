@@ -138,7 +138,18 @@ function CreateEvent() {
 
     const handleRoundChange = (index, field, value) => {
         const updatedRounds = [...eventDetails.rounds];
-        updatedRounds[index][field] = value;
+
+        if (field === 'startTime' || field === 'endTime') {
+            if (value) {
+                // Ensure value is formatted as ISO string
+                updatedRounds[index][field] = value.toISOString();
+            } else {
+                updatedRounds[index][field] = ''; // Handle empty value if necessary
+            }
+        } else {
+            updatedRounds[index][field] = value;
+        }
+
         setEventDetails(prevState => ({
             ...prevState,
             rounds: updatedRounds,
@@ -227,15 +238,6 @@ function CreateEvent() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        const isValid = eventDetails.rounds.every(round => (
-            round.roundName && round.roundDate && round.startTime && round.endTime && round.roundLocation
-        ));
-
-        if (!isValid) {
-            console.log('Please fill out all round details.');
-            return;
-        }
 
         const earliestRoundDate = eventDetails.rounds.reduce((earliestDate, round) => {
             const roundDate = dayjs(round.roundDate);
@@ -391,7 +393,7 @@ function CreateEvent() {
                 Event description
 
                 <div className='controls-container'>
-                    <button type = 'button'
+                    <button type='button'
                         onClick={() => editor.chain().focus().toggleBold().run()}
                         disabled={
                             !editor.can()
@@ -404,7 +406,7 @@ function CreateEvent() {
                     >
                         <img src={BoldIcon} className='text-editor-icon' />
                     </button>
-                    <button type = 'button'
+                    <button type='button'
                         onClick={() => editor.chain().focus().toggleItalic().run()}
                         disabled={
                             !editor.can()
@@ -417,7 +419,7 @@ function CreateEvent() {
                     >
                         <img src={Italics} className='text-editor-icon' />
                     </button>
-                    <button type = 'button'
+                    <button type='button'
                         onClick={() => editor.chain().focus().toggleUnderline().run()}
                         disabled={
                             !editor.can()
@@ -430,31 +432,31 @@ function CreateEvent() {
                     >
                         <img src={UnderlineIcon} className='text-editor-icon' />
                     </button>
-                    <button type = 'button'
+                    <button type='button'
                         onClick={() => editor.chain().focus().toggleBulletList().run()}
                         className={editor.isActive('bulletList') ? 'is-active' : ''}
                     >
                         <img src={UL} className='text-editor-icon' />
                     </button>
-                    <button type = 'button'
+                    <button type='button'
                         onClick={() => editor.chain().focus().toggleOrderedList().run()}
                         className={editor.isActive('orderedList') ? 'is-active' : ''}
                     >
                         <img src={OL} className='text-editor-icon' />
                     </button>
-                    <button type = 'button'
+                    <button type='button'
                         onClick={() => editor.chain().focus().toggleBlockquote().run()}
                         className={editor.isActive('blockquote') ? 'is-active' : ''}
                     >
                         <img src={Quote} className='text-editor-icon' />
                     </button>
-                    <button type = 'button' onClick={() => editor.chain().focus().setHorizontalRule().run()}>
+                    <button type='button' onClick={() => editor.chain().focus().setHorizontalRule().run()}>
                         <img src={HorizontalRule} className='text-editor-icon' />
                     </button>
                     <button onClick={() => editor.chain().focus().setHardBreak().run()}>
                         <img src={LineBreak} className='text-editor-icon' />
                     </button>
-                    <button type = 'button'
+                    <button type='button'
                         onClick={() => editor.chain().focus().undo().run()}
                         disabled={
                             !editor.can()
@@ -466,7 +468,7 @@ function CreateEvent() {
                     >
                         <img src={Undo} className='text-editor-icon' />
                     </button>
-                    <button type = 'button'
+                    <button type='button'
                         onClick={() => editor.chain().focus().redo().run()}
                         disabled={
                             !editor.can()
@@ -519,7 +521,7 @@ function CreateEvent() {
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <TimePicker
                                         value={round.startTime ? dayjs(round.startTime) : null}
-                                        onChange={(time) => handleRoundChange(index, 'startTime', time ? time.format('HH:mm') : '')}
+                                        onChange={(time) => handleRoundChange(index, 'startTime', time)}
                                         renderInput={(params) => <TextField {...params} variant="standard" />}
                                         label=""
                                         slotProps={{
@@ -535,7 +537,7 @@ function CreateEvent() {
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <TimePicker
                                         value={round.endTime ? dayjs(round.endTime) : null}
-                                        onChange={(time) => handleRoundChange(index, 'endTime', time ? time.format('HH:mm') : '')}
+                                        onChange={(time) => handleRoundChange(index, 'endTime', time)}
                                         renderInput={(params) => <TextField {...params} variant="standard" />}
                                         label=""
                                         slotProps={{

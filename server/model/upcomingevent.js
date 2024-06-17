@@ -5,6 +5,7 @@ const twoWeeksFromNow = () => {
     date.setDate(date.getDate() + 14);
     return date;
 };
+
 const threeWeeksFromNow = () => {
     const date = new Date();
     date.setDate(date.getDate() + 21);
@@ -58,7 +59,7 @@ const upcomingEventSchema = new mongoose.Schema({
     }],
     prizes: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'EventPrizes'
+        ref: 'EventPrize'
     }],
     organizers: [{
         name: String,

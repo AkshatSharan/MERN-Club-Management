@@ -11,30 +11,22 @@ export const getEventPrizes = async (req, res) => {
     }
 };
 
-export const createEventPrize = async (req, res) => {
+export const createEventPrize = async ({ positionName, certificate, trophy, cashPrize, cashPrizeAmt, event }) => {
     try {
-        const { event, positionName, certificate, trophy, cashPrize, cashPrizeAmt } = req.body;
-        const newEventPrize = new EventPrize({
-            event,
+        const newPrize = new EventPrize({
             positionName,
             certificate,
             trophy,
             cashPrize,
             cashPrizeAmt,
+            event, // Reference to the UpcomingEvent
         });
 
-        const createdEventPrize = await newEventPrize.save();
-        const upcomingEvent = await UpcomingEvent.findById(event);
-
-        if (!upcomingEvent) {
-            return res.status(404).json({ message: "Upcoming event not found" });
-        }
-
-        upcomingEvent.prizes.push(createdEventPrize._id);
-        await upcomingEvent.save();
-        res.status(201).json(createdEventPrize);
+        await newPrize.save();
+        return newPrize;
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('Error creating event prize:', error);
+        throw new Error('Error creating event prize');
     }
 };
 

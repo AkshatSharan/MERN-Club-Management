@@ -2,6 +2,8 @@ import UpcomingEvent from '../model/upcomingevent.js';
 import EventRound from '../model/eventround.js'
 import EventPrize from '../model/eventprize.js';
 import Club from '../model/club.js'
+import { createEventPrize } from './eventPrizeController.js';
+import { createRound } from './eventRoundController.js';
 
 export const createUpcomingEvent = async (req, res) => {
     try {
@@ -9,8 +11,6 @@ export const createUpcomingEvent = async (req, res) => {
 
         const club = await Club.findById(req.club._id);
         if (!club) {
-        console.log("club not found")
-
             return res.status(404).json({ error: 'Club not found' });
         }
 
@@ -21,14 +21,28 @@ export const createUpcomingEvent = async (req, res) => {
             coverDescription,
             teamSize,
             eventDescription,
-            rounds,
-            prizes,
             registrationFees,
-            club: club._id, // Assign the club reference
+            club: club._id,
         });
 
         await newEvent.save();
-        res.status(201).json({ message: 'Event created successfully', event: newEvent });
+
+        // Create event prizes
+        const createdPrizes = await Promise.all(prizes.map(prize =>
+            createEventPrize({ ...prize, event: newEvent._id })
+        ));
+        console.log(req.body);
+        // Create event rounds
+        const createdRounds = await Promise.all(rounds.map(round =>
+            createRound({ ...round, event: newEvent._id })
+        ));
+
+        res.status(201).json({
+            message: 'Event created successfully',
+            event: newEvent,
+            prizes: createdPrizes,
+            rounds: createdRounds,
+        });
     } catch (error) {
         console.error('Error creating upcoming event:', error);
         res.status(500).json({ error: 'Error creating upcoming event' });
