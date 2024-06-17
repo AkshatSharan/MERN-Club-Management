@@ -48,4 +48,25 @@ export const updateClub = async (req, res) => {
         console.error('Update club error:', error);
         res.status(500).json({ error: 'An error occurred while updating club' });
     }
-};
+}
+
+export const getUpcomingEvents = async (req, res) => {
+    try {
+        const clubId = req.club?._id;
+
+        if (!clubId) {
+            return res.status(401).json({ error: "Club not authenticated" })
+        }
+
+        const club = await Club.findById(clubId).populate('upcomingEvents').select('-password -refreshToken')
+
+        if (!club) {
+            return res.status(404).json({ error: "Club not found" })
+        }
+
+        res.status(200).json({ upcomingEvents: club.upcomingEvents })
+    } catch (error) {
+        console.error('Error retrieving upcoming events:', error)
+        res.status(500).json({ error: 'Internal server error' })
+    }
+}

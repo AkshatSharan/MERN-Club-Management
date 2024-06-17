@@ -47,7 +47,7 @@
     padding-right: 20px;
 }
 
-.club-page-management {
+.dashboard-management {
     width: fit-content;
 
     display: flex;
@@ -74,6 +74,15 @@
     border-radius: 5px;
 
     background-color: var(--siteLightBlue);
+}
+
+.events-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.createEvent {
+    
 }
 
 @media (max-width: 690px) {

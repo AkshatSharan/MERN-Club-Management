@@ -12,10 +12,11 @@ import Profile from './pages/Profile/Profile';
 import ClubPrivateRoute from './components/ClubPrivateRoute';
 import ClubDashboard from './pages/ClubDashboard/ClubDashboard';
 import { useSelector } from 'react-redux';
+import CreateEvent from './pages/CreateEvent/CreateEvent';
 
 function AppContent() {
   const location = useLocation();
-  const {userType} = useSelector((state)=> state.user)
+  const { userType } = useSelector((state) => state.user)
 
   const scrollToSection = (id) => {
     const element = document.getElementById(id);
@@ -28,7 +29,7 @@ function AppContent() {
     }
   };
 
-  const isAuthPage = userType == null ? true: false;
+  const isAuthPage = userType == null ? true : false;
 
   return (
     <>
@@ -42,6 +43,7 @@ function AppContent() {
 
           <Route element={<ClubPrivateRoute />}>
             {userType === 'club' && <Route path='/' element={<ClubDashboard />} />}
+            <Route path='/create-event' element={<CreateEvent />} />
           </Route>
 
           <Route element={<StudentPrivateRoute />}>

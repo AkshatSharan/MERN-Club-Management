@@ -1,0 +1,199 @@
+.create-event-form {
+    margin-top: 30px;
+
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.save-button {
+    padding: 10px;
+
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    color: white;
+
+    border-radius: 5px;
+
+    background-color: var(--siteGreen);
+
+    cursor: pointer;
+}
+
+.event-title-input {
+    width: max-content;
+
+    margin-bottom: 20px;
+
+    padding: 5px;
+
+    font-size: 30px;
+
+    border-bottom: 1px solid var(--siteBlue);
+}
+
+.form-section-label {
+    margin-top: 0px;
+    margin-bottom: 10px;
+
+    font-weight: 700;
+    font-size: 20px;
+}
+
+.form-section-label ul {
+    list-style-type: disc;
+    padding-left: 40px;
+}
+
+.form-section-label i {
+    font-style: italic;
+}
+
+.participation-type {
+
+    display: flex;
+    flex-direction: column;
+}
+
+.team-size-container {
+    margin-left: 22px;
+}
+
+.team-size-input {
+    width: 190px;
+
+    margin-left: 10px;
+
+    padding: 2px 6px;
+
+    border-bottom: 1px solid black;
+}
+
+.hidden-placeholder {
+    visibility: hidden;
+    position: absolute;
+    white-space: nowrap;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+}
+
+.registration-date-time-container {
+    margin-top: 20px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    font-weight: 400;
+    font-size: 16px;
+}
+
+.date-time-input {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.date-time-picker {
+    height: 20px;
+
+    padding: 5px 10px;
+
+    border: 1px solid black;
+    border-radius: 5px;
+
+    cursor: pointer;
+}
+
+.custom-date-time-picker .MuiInputBase-root {
+    height: 40px;
+    display: flex;
+    align-items: center;
+}
+
+.cover-description-textarea {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    resize: none;
+    /* Disable manual resizing to handle it via JS */
+    overflow: hidden;
+    /* Hide scrollbars */
+    min-height: 100px;
+    /* Optional: minimum height */
+    line-height: 1.5;
+}
+
+.word-count {
+    color: gray;
+    font-weight: 400;
+    font-size: 10px;
+}
+
+.cover-description-textarea::-webkit-scrollbar {
+    width: 0px;
+}
+
+.controls-container {
+    margin-top: 10px;
+
+    padding: 7px;
+    
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    
+    border-radius: 5px;
+    
+    background-color: var(--siteBlue);
+}
+
+.controls-container button {
+    padding: 7px;
+    
+    display: flex;
+    align-items: center;
+}
+
+.text-editor-icon {
+    height: 15px;
+}
+
+.is-active {
+    background-color: var(--siteLightBlue);
+    
+    border-radius: 3px;
+}
+
+.event-description {
+    margin-top: 5px;
+
+    padding: 0px 30px;
+
+    font-weight: 400;
+    font-size: 20px;
+
+    border: 1px solid black;
+    border-radius: 2px;
+
+    background-color: white;
+
+    cursor: text;
+}
+
+.tiptap {  
+    blockquote {
+        margin: 1.5rem 0;
+
+        padding-left: 15px;
+
+        font-style: italic;
+
+        border-left: 2px solid lightgray;
+    }
+  }
