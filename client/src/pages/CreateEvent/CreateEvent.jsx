@@ -37,10 +37,22 @@ function CreateEvent() {
         registrationDeadline: dayjs().toISOString(),
         coverDescription: '',
         teamSize: '',
-        eventDescription: '', // Added eventDescription to state
+        eventDescription: '',
+        rounds: [],
+        prizes: [],
+        registrationFees: 'Free'
     });
 
-    const [participationType, setParticipationType] = useState('individual');
+    const [isPaid, setIsPaid] = useState(false)
+
+    const [newPrize, setNewPrize] = useState({
+        positionName: '',
+        trophy: false,
+        certificate: false,
+        cashPrize: false,
+        cashPrizeAmt: '',
+    });
+
     const [registrationDate, setRegistrationDate] = useState(dayjs());
     const [registrationTime, setRegistrationTime] = useState(dayjs().set('hour', 12).set('minute', 0));
     const [coverWordCount, setCoverWordCount] = useState(0);
@@ -116,14 +128,125 @@ function CreateEvent() {
         }));
     };
 
+    const handleRoundChange = (index, field, value) => {
+        const updatedRounds = [...eventDetails.rounds];
+        updatedRounds[index][field] = value;
+        setEventDetails(prevState => ({
+            ...prevState,
+            rounds: updatedRounds,
+        }));
+    };
+
+    const adjustTextareaHeight = () => {
+        if (textareaRef.current) {
+            textareaRef.current.style.height = 'auto';
+            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+        }
+    };
+
+    const addRound = () => {
+        const isAnyRoundIncomplete = eventDetails.rounds.some(round => (
+            !round.roundName || !round.roundDate || !round.startTime || !round.endTime || !round.roundLocation
+        ));
+
+        if (isAnyRoundIncomplete) {
+            alert('Please fill out all round details before adding a new round.');
+            return;
+        }
+
+        setEventDetails(prevState => ({
+            ...prevState,
+            rounds: [...prevState.rounds, {
+                roundName: '',
+                roundDate: '',
+                startTime: '',
+                endTime: '',
+                roundLocation: '',
+            }],
+        }));
+    };
+
+    const deleteRound = (index) => {
+        const updatedRounds = [...eventDetails.rounds];
+        updatedRounds.splice(index, 1);
+        setEventDetails(prevState => ({
+            ...prevState,
+            rounds: updatedRounds,
+        }));
+    };
+
+    const handlePrizeInputChange = (index, field, value) => {
+        const updatedPrizes = [...eventDetails.prizes];
+        updatedPrizes[index][field] = value;
+        setEventDetails(prevDetails => ({
+            ...prevDetails,
+            prizes: updatedPrizes,
+        }));
+    };
+
+    const addPrize = () => {
+        const isAnyPrizeIncomplete = eventDetails.prizes.some(prize => (
+            (prize.cashPrize && !prize.cashPrizeAmt)
+        ));
+
+        if (isAnyPrizeIncomplete) {
+            alert('Please fill out all round details before adding a new round.');
+            return;
+        }
+
+        setEventDetails(prevDetails => ({
+            ...prevDetails,
+            prizes: [...prevDetails.prizes, { ...newPrize }],
+        }));
+
+        setNewPrize({
+            positionName: '',
+            trophy: false,
+            certificate: false,
+            cashPrize: false,
+            cashPrizeAmt: '',
+        });
+    };
+
+    const deletePrize = (index) => {
+        const updatedPrizes = [...eventDetails.prizes];
+        updatedPrizes.splice(index, 1);
+        setEventDetails(prevDetails => ({
+            ...prevDetails,
+            prizes: updatedPrizes,
+        }));
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        const isValid = eventDetails.rounds.every(round => (
+            round.roundName && round.roundDate && round.startTime && round.endTime && round.roundLocation
+        ));
+
+        if (!isValid) {
+            console.log('Please fill out all round details.');
+            return;
+        }
+
+        const earliestRoundDate = eventDetails.rounds.reduce((earliestDate, round) => {
+            const roundDate = dayjs(round.roundDate);
+            if (!earliestDate || roundDate.isBefore(dayjs(earliestDate))) {
+                return roundDate.toDate();
+            }
+            return earliestDate;
+        }, null);
+
+        const eventStartDate = earliestRoundDate || null;
+
         const submissionData = {
             ...eventDetails,
             participation: eventDetails.participation === 'team' && eventDetails.teamSize
                 ? eventDetails.teamSize
                 : 'Individual',
+            eventStartDate: eventStartDate,
         };
+
         try {
             await axiosInstance.post('/events', submissionData);
             console.log('Form Submitted:', submissionData);
@@ -132,11 +255,11 @@ function CreateEvent() {
         }
     };
 
-    const adjustTextareaHeight = () => {
-        if (textareaRef.current) {
-            textareaRef.current.style.height = 'auto';
-            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-        }
+    const handleFeeInputChange = (e) => {
+        setEventDetails((prevDetails) => ({
+            ...prevDetails,
+            registrationFees: e.target.value,
+        }));
     };
 
     useEffect(() => {
@@ -149,7 +272,7 @@ function CreateEvent() {
 
     if (!editor) return null;
 
-    // console.log(eventDetails.eventDescription)
+    console.log(eventDetails.registrationFees)
 
     return (
         <form className='create-event-form' onSubmit={handleSubmit}>
@@ -354,8 +477,187 @@ function CreateEvent() {
 
             <label className='form-section-label'>
                 Event details
+                <div className='new-rounds-container'>
+                    {eventDetails.rounds.map((round, index) => (
+                        <div key={index} className='event-round-box'>
+
+                            <input
+                                type="text"
+                                name="roundName"
+                                placeholder="Round Name"
+                                value={round.roundName}
+                                onChange={(e) => handleRoundChange(index, 'roundName', e.target.value)}
+                                required
+                                className='new-round-name'
+                            />
+                            <label className='date-time-input'> Round date
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <DatePicker
+                                        value={round.roundDate ? dayjs(round.roundDate) : null}
+                                        onChange={(date) => handleRoundChange(index, 'roundDate', date ? date.toISOString() : '')}
+                                        renderInput={(params) => <TextField {...params} variant="standard" />}
+                                        label=""
+                                        slotProps={{
+                                            textField: {
+                                                variant: 'outlined',
+                                                className: 'custom-date-time-picker',
+                                            },
+                                        }}
+                                    />
+                                </LocalizationProvider>
+                            </label>
+                            <label className='date-time-input'> Start time
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <TimePicker
+                                        value={round.startTime ? dayjs(round.startTime) : null}
+                                        onChange={(time) => handleRoundChange(index, 'startTime', time ? time.format('HH:mm') : '')}
+                                        renderInput={(params) => <TextField {...params} variant="standard" />}
+                                        label=""
+                                        slotProps={{
+                                            textField: {
+                                                variant: 'outlined',
+                                                className: 'custom-date-time-picker',
+                                            },
+                                        }}
+                                    />
+                                </LocalizationProvider>
+                            </label>
+                            <label className='date-time-input'> End time
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <TimePicker
+                                        value={round.endTime ? dayjs(round.endTime) : null}
+                                        onChange={(time) => handleRoundChange(index, 'endTime', time ? time.format('HH:mm') : '')}
+                                        renderInput={(params) => <TextField {...params} variant="standard" />}
+                                        label=""
+                                        slotProps={{
+                                            textField: {
+                                                variant: 'outlined',
+                                                className: 'custom-date-time-picker',
+                                            },
+                                        }}
+                                    />
+                                </LocalizationProvider>
+                            </label>
+                            <input
+                                type="text"
+                                name="roundLocation"
+                                placeholder="Round Location"
+                                value={round.roundLocation}
+                                onChange={(e) => handleRoundChange(index, 'roundLocation', e.target.value)}
+                                required
+                                className='new-round-location'
+                            />
+                            <div style={{ marginTop: 20 }}>
+                                <button type="button" onClick={(e) => { deleteRound(index), e.preventDefault() }} style={{ backgroundColor: 'orangered' }} className='edit-details'>Delete round</button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+                <div style={{ marginTop: 20 }}><button type="button" onClick={addRound} className='edit-details'>Add Round +</button></div>
             </label>
-        </form>
+
+            <label className='form-section-label'>Event prizes
+                <div className='new-rounds-container'>
+                    {eventDetails.prizes.map((prize, index) => (
+                        <div key={index} className='event-round-box'>
+                            <input
+                                type='text'
+                                className='new-round-name'
+                                placeholder='Position Name'
+                                value={prize.positionName}
+                                onChange={(e) => handlePrizeInputChange(index, 'positionName', e.target.value)}
+                                required
+                            />
+                            <label>
+                                <input
+                                    type='checkbox'
+                                    className='prize-option-input'
+                                    checked={prize.trophy}
+                                    onChange={(e) => handlePrizeInputChange(index, 'trophy', e.target.checked)}
+                                />
+                                Trophy
+                            </label>
+                            <label>
+                                <input
+                                    type='checkbox'
+                                    className='prize-option-input'
+                                    checked={prize.certificate}
+                                    onChange={(e) => handlePrizeInputChange(index, 'certificate', e.target.checked)}
+                                />
+                                Certificate
+                            </label>
+                            <label>
+                                <input
+                                    type='checkbox'
+                                    className='prize-option-input'
+                                    checked={prize.cashPrize}
+                                    onChange={(e) => handlePrizeInputChange(index, 'cashPrize', e.target.checked)}
+                                />
+                                Cash Prize
+                                {prize.cashPrize && (
+                                    <input
+                                        type='text'
+                                        className='cash-prize-amt-input'
+                                        placeholder='Amount'
+                                        value={prize.cashPrizeAmt}
+                                        onChange={(e) => handlePrizeInputChange(index, 'cashPrizeAmt', e.target.value)}
+                                        required
+                                    />
+                                )}
+                            </label>
+                            <div style={{ marginTop: 20 }}><button type='button' className='edit-details' style={{ backgroundColor: 'orangered' }} onClick={(e) => { deletePrize(index), e.preventDefault() }}>Delete</button></div>
+                        </div>
+                    ))}
+                </div>
+                <div style={{ marginTop: 20 }}><button type='button' onClick={addPrize} className='edit-details '>Add Prize +</button></div>
+            </label>
+
+            <div className='participation-type'>
+                <label className='form-section-label'>Registration Fees</label>
+                <label className='form-field-label'>
+                    <input
+                        type='radio'
+                        name='registrationFees'
+                        value='Free'
+                        checked={!isPaid}
+                        onChange={() => {
+                            setIsPaid(false), setEventDetails((prevDetails) => ({
+                                ...prevDetails,
+                                registrationFees: 'Free',
+                            }));
+                        }}
+                    />
+                    Free
+                </label>
+                <label className='form-field-label'>
+                    <input
+                        type='radio'
+                        name='registrationFees'
+                        value='Paid'
+                        checked={isPaid}
+                        onChange={() => {
+                            setIsPaid(true),
+                                setEventDetails((prevDetails) => ({
+                                    ...prevDetails,
+                                    registrationFees: '',
+                                }));
+                        }}
+                    />
+                    Paid
+                    {isPaid && (
+                        <input
+                            type='text'
+                            className='cash-prize-amt-input'
+                            name='registrationFeesAmount'
+                            placeholder='Enter fee amount'
+                            value={eventDetails.registrationFees}
+                            onChange={handleFeeInputChange}
+                            required
+                        />
+                    )}
+                </label>
+            </div>
+        </form >
     );
 }
 
