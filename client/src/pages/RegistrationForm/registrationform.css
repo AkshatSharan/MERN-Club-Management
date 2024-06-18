@@ -1,0 +1,166 @@
+.registration-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-title {
+    width: fit-content;
+
+    margin-top: 10px;
+
+    font-size: 28px;
+
+    border-bottom: 1px solid black;
+}
+
+.form-description-header {
+    margin-bottom: 10px;
+}
+
+.form-description {
+    width: 94%;
+    padding: 10px;
+
+    font: inherit;
+
+    border-radius: 5px;
+    border: 2px solid lightgray;
+
+    resize: none;
+}
+
+.add-question-section {
+    padding: 20px;
+
+    display: flex;
+    flex-direction: column;
+
+    border-radius: 5px;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.05);
+
+    background-color: white;
+}
+
+.question-type-select {
+    width: fit-content;
+
+    padding: 5px;
+}
+
+.question-type-select option {
+    font: inherit;
+}
+
+.question-input {
+    margin-top: 20px;
+
+    padding: 5px;
+
+    border-bottom: 1px solid black;
+}
+
+.save-question {
+    width: fit-content;
+
+    margin-top: 20px;
+}
+
+.set-question {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.question-actions {
+    margin-top: 15px;
+
+    display: flex;
+
+    position: relative;
+}
+
+.delete-question {
+    height: 20px;
+
+    position: absolute;
+    right: 0;
+    bottom: 2px;
+}
+
+.option-input-container {
+    margin-top: 20px;
+    margin-left: 20px;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    position: relative;
+}
+
+.option-input-container::after {
+    content: '';
+    height: 100%;
+    width: 2px;
+
+    position: absolute;
+    bottom: 0;
+    left: -10px;
+
+    background-color: lightgray;
+}
+
+.options-input {
+    width: 60%;
+
+    padding: 5px;
+
+    border-bottom: 1px solid gray;
+}
+
+.option-input {
+    width: fit-content;
+
+    margin-top: 20px;
+    margin-left: 20px;
+
+    padding: 5px;
+
+    border-bottom: 1px solid gray;
+}
+
+.add-option {
+    height: 20px;
+}
+
+.edit-question {
+    margin-top: 10px;
+
+    padding: 5px 10px;
+
+    color: black;
+    font-weight: 700;
+
+    border-radius: 5px;
+
+    background-color: lightgray;
+}
+
+.update-question {
+    width: fit-content;
+
+    margin-top: 15px;
+
+    background-color: var(--siteGreen);
+}
+
+.submit-registration-form {
+    padding: 10px;
+
+    color: white;
+    font-weight: 700;
+
+    border-radius: 5px;
+
+    background-color: var(--siteGreen);
+}

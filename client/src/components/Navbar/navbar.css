@@ -11,6 +11,11 @@
     position: relative;
 }
 
+#navbar ul {
+    list-style: none;
+    padding: 0;
+}
+
 #site-title {
     margin: 0px 32px;
 

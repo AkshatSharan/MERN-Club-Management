@@ -106,8 +106,8 @@ function UpcomingEvents() {
                     <div className='month-section' key={index}>
                         <h1 className='month-title'>{month}</h1>
                         {eventsByMonth[month].map((eventData, eventIndex) => {
-                            const smallEventDescription = eventData.event.eventDescription.substring(0, 250)
-                            const bigEventDescription = eventData.event.eventDescription
+                            const smallEventDescription = eventData.event.coverDescription.substring(0, 250)
+                            const bigEventDescription = eventData.event.coverDescription
                             return (
                                 <div className='upcoming-event-card' key={eventIndex} onClick={() => handleDivClick(eventData.event._id)}>
                                     <div className='upcoming-event-card-properties'>
@@ -121,7 +121,7 @@ function UpcomingEvents() {
                                         </div>
                                         <div className='upcoming-event-details'>
                                             <h1 className='upcoming-event-title'>{eventData.event.eventTitle}</h1>
-                                            {viewportWidth > 629 && <p className='upcoming-event-description'>{eventData.event.eventDescription}</p>}
+                                            {viewportWidth > 629 && <p className='upcoming-event-description'>{eventData.event.coverDescription}</p>}
                                         </div>
                                         <div className='event-organizer'>
                                             <div className='organizer-logo'><img src={eventData.club.clubLogo} alt='Organizer Logo' /></div>

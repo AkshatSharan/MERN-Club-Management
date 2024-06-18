@@ -1,5 +1,3 @@
-// EventDetails.jsx
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
@@ -14,6 +12,8 @@ import CashIcon from '../../assets/CashIcon.svg';
 import CertificateIcon from '../../assets/CertificateIcon.svg';
 import RupeesIcon from '../../assets/RupeesIcon.svg';
 import './eventdetails.css';
+import parser from 'html-react-parser';
+import { useSelector } from 'react-redux';
 
 function EventDetails() {
     const [isLoading, setIsLoading] = useState(true);
@@ -21,6 +21,8 @@ function EventDetails() {
     const [eventDetails, setEventDetails] = useState(null);
     const [eventRounds, setEventRounds] = useState([]);
     const [eventPrizes, setEventPrizes] = useState([]);
+
+    const { userType } = useSelector((state) => state.user)
 
     const navigate = useNavigate();
 
@@ -43,7 +45,7 @@ function EventDetails() {
         const minutes = date.getMinutes().toString().padStart(2, '0');
         const ampm = hours >= 12 ? 'pm' : 'am';
         hours = hours % 12;
-        hours = hours ? hours : 12;
+        hours = hours ? 12 : 0;
         return `${hours}:${minutes} ${ampm}`;
     }
 
@@ -51,7 +53,7 @@ function EventDetails() {
         const fetchEvent = async () => {
             try {
                 const eventResponse = await axios.get(`http://localhost:3000/api/upcomingevent/event/${eventId}`);
-                
+
                 const sortedRounds = eventResponse.data.rounds.sort((a, b) => {
                     const dateA = new Date(a.roundDate).setHours(0, 0, 0, 0);
                     const dateB = new Date(b.roundDate).setHours(0, 0, 0, 0);
@@ -79,9 +81,8 @@ function EventDetails() {
         return <Loader message={'Fetching details'} />;
     }
 
-
     return (
-        <div>
+        <div className={userType == null ? 'main-content' : ''}>
             <div className='event-title-container'>
                 <img src={BackArrow} className='back-arrow' onClick={() => navigate(-1)} alt="Back" />
                 <h1 className='event-title'>{eventDetails.eventTitle}</h1>
@@ -95,7 +96,9 @@ function EventDetails() {
                 <p><b>Registration Deadline:</b> {formatDate(eventDetails.registrationDeadline)} • {formatTime(eventDetails.registrationDeadline)}</p>
             </div>
             <h1 className='section-header'>Event description</h1>
-            <p className='event-detail'>{eventDetails.eventDescription}</p>
+            <div className='event-detail'>
+                {parser(eventDetails.eventDescription)}
+            </div>
             <h1 className='section-header'>Event details</h1>
             <h1 className='section-subheader'>Date and time</h1>
             <div className='event-cards-container'>

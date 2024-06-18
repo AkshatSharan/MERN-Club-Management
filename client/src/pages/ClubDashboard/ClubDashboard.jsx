@@ -52,7 +52,7 @@ function ClubDashboard() {
   }, [])
 
   const handleDivClick = (eventId) => {
-    navigate(`/event/${eventId}`)
+    navigate(`/event-management/${eventId}`)
   }
 
   return (

@@ -1,4 +1,7 @@
 import mongoose from "mongoose";
+import { JSDOM } from 'jsdom';
+import DOMPurify from 'dompurify';
+import { stripHtml } from 'string-strip-html';
 
 const twoWeeksFromNow = () => {
     const date = new Date();
@@ -64,6 +67,10 @@ const upcomingEventSchema = new mongoose.Schema({
     organizers: [{
         name: String,
         phoneNumber: String
+    }],
+    registrationForm: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'RegistrationForm'
     }],
     registrations: [{
         type: mongoose.Schema.Types.ObjectId,

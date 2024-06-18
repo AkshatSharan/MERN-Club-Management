@@ -1,0 +1,13 @@
+.management-section-header {
+    margin-top: 60px;
+    margin-bottom: 10px;
+}
+
+.toggle-form-state {
+    display: flex;
+    align-items: center;
+}
+
+.toggle-form-state h3 {
+    font-weight: 400;
+}
