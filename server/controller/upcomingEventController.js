@@ -27,15 +27,25 @@ export const createUpcomingEvent = async (req, res) => {
 
         await newEvent.save();
 
-        // Create event prizes
-        const createdPrizes = await Promise.all(prizes.map(prize =>
-            createEventPrize({ ...prize, event: newEvent._id })
-        ));
-        console.log(req.body);
-        // Create event rounds
-        const createdRounds = await Promise.all(rounds.map(round =>
-            createRound({ ...round, event: newEvent._id })
-        ));
+        // Add the new event to the club's upcoming events
+        club.upcomingEvents.push(newEvent._id);
+        await club.save();
+
+        // Create event prizes and add to event
+        const createdPrizes = await Promise.all(prizes.map(async (prize) => {
+            const newPrize = await createEventPrize({ ...prize, event: newEvent._id });
+            newEvent.prizes.push(newPrize._id); // Add prize ID to event's prizes array
+            return newPrize;
+        }));
+
+        // Create event rounds and add to event
+        const createdRounds = await Promise.all(rounds.map(async (round) => {
+            const newRound = await createRound({ ...round, event: newEvent._id });
+            newEvent.rounds.push(newRound._id); // Add round ID to event's rounds array
+            return newRound;
+        }));
+
+        await newEvent.save(); // Save event with updated rounds and prizes
 
         res.status(201).json({
             message: 'Event created successfully',
@@ -49,19 +59,18 @@ export const createUpcomingEvent = async (req, res) => {
     }
 };
 
-
 export const getUpcomingEventDetails = async (req, res) => {
     try {
-        const eventId = req.params.eventId
-        const event = await UpcomingEvent.findById(eventId).populate('club')
+        const eventId = req.params.eventId;
+        const event = await UpcomingEvent.findById(eventId).populate('club rounds prizes');
 
         if (!event) {
-            return res.status(404).json({ error: 'Event not found' })
+            return res.status(404).json({ error: 'Event not found' });
         }
 
         res.status(200).json(event);
     } catch (error) {
-        console.log("Error fetching details", error)
+        console.log("Error fetching details", error);
         res.status(500).json({ error: 'Internal server error' });
     }
-}
+};

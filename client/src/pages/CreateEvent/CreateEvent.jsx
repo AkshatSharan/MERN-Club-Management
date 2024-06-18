@@ -247,7 +247,7 @@ function CreateEvent() {
             return earliestDate;
         }, null);
 
-        const eventStartDate = earliestRoundDate || null;
+        const eventStartDate = earliestRoundDate;
 
         const submissionData = {
             ...eventDetails,
@@ -487,7 +487,7 @@ function CreateEvent() {
             </label>
 
             <label className='form-section-label'>
-                Event details
+                Round details
                 <div className='new-rounds-container'>
                     {eventDetails.rounds.map((round, index) => (
                         <div key={index} className='event-round-box'>

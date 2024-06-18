@@ -17,6 +17,17 @@ function ClubDashboard() {
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
 
+  const extractDayInfo = (dateString) => {
+    const date = new Date(dateString);
+
+    const dayOfWeek = date.toLocaleString('default', { weekday: 'short' })
+
+    const dayOfMonth = date.getDate()
+
+    return { dayOfWeek, dayOfMonth }
+  }
+
+
   const handleLogout = async () => {
     try {
       await axiosInstance.post('/auth/club/logout')
@@ -40,6 +51,10 @@ function ClubDashboard() {
     fetchEvents()
   }, [])
 
+  const handleDivClick = (eventId) => {
+    navigate(`/event/${eventId}`)
+  }
+
   return (
     <div>
       {open && <UpdateClubPrimary handleClose={handleClose} />}
@@ -49,6 +64,7 @@ function ClubDashboard() {
         <h1 className='club-name'>{club.clubName}</h1>
         <button className='edit-details' onClick={handleOpen}>Edit</button>
       </div>
+
       <section className='dashboard-management'>
         <h2 className='dashboard-section-header'>Club page management</h2>
         <div className='club-page-management-actions-container'>
@@ -56,17 +72,25 @@ function ClubDashboard() {
           <button className='club-page-management-action'>Edit club page</button>
         </div>
       </section>
+
       <section className='dashboard-management'>
         <h2 className='dashboard-section-header'>Upcoming events</h2>
         <div className='events-container'>
           {upcomingEvents.length > 0 &&
-            upcomingEvents.map((event, index) => (
-              <div key={index} className='event-card'>
-                <h3>{event.eventTitle}</h3>
-              </div>
-            ))}
+            upcomingEvents.map((event, index) => {
+              const { dayOfWeek, dayOfMonth } = extractDayInfo(event.eventStartDate)
+              return (
+                <div key={index} className='event-card' onClick={()=> handleDivClick(event._id)}>
+                  <div className='event-date'>
+                    <h2>{dayOfMonth}</h2>
+                    <h2>{dayOfWeek.toUpperCase()}</h2>
+                  </div>
+                  <h3>{event.eventTitle}</h3>
+                </div>
+              )
+            })}
         </div>
-        <button className='edit-details' style={{backgroundColor: 'var(--siteGreen)'}} onClick={() => navigate('/create-event')}>Create event</button>
+        <button className='edit-details' style={{ backgroundColor: 'var(--siteGreen)' }} onClick={() => navigate('/create-event')}>Create event</button>
       </section>
     </div>
   )
