@@ -11,3 +11,69 @@
 .toggle-form-state h3 {
     font-weight: 400;
 }
+
+.event-registration-form {
+    margin: 20px;
+}
+
+.table-container {
+    margin-top: 20px;
+
+    border-radius: 10px;
+    border: 1px solid lightgray;
+    
+    overflow: auto;
+}
+
+.registration-table {
+    width: 100%;
+    
+    border-collapse: collapse;
+}
+
+.registration-table th,
+.registration-table td {
+    padding: 15px;
+    
+    max-width: 200px;
+
+    white-space: pre-wrap;
+    word-wrap: break-word;
+
+    text-align: left;
+    /* border: 1px solid lightgray; */
+}
+
+.registration-table th {
+    padding: 20px;
+
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    color: white;
+
+    background-color: var(--siteLightBlue);
+}
+
+.registration-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.header-items {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.sorting-icon {
+    height: 15px;
+}
+
+.registration-table td {
+    max-width: 200px; /* Limit width of table cells */
+    white-space: nowrap; /* Prevent text from wrapping */
+    overflow: hidden; /* Hide overflowing content */
+    text-overflow: ellipsis; /* Show ellipsis for overflow */
+    padding: 10px; /* Adjust padding as needed */
+}

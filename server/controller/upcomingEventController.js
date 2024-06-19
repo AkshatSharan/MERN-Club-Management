@@ -83,6 +83,35 @@ export const getUpcomingEventDetails = async (req, res) => {
     }
 };
 
+export const getEventManagementDetails = async (req, res) => {
+    try {
+        const eventId = req.params.eventId;
+        const event = await UpcomingEvent.findById(eventId)
+            .populate({
+                path: 'club',
+            })
+            .populate({
+                path: 'registrationForm',
+            })
+            .populate({
+                path: 'registrations',
+                populate: {
+                    path: 'student',
+                    select: '-_id -password -refreshToken',
+                },
+            });
+
+        if (!event) {
+            return res.status(404).json({ error: 'Event not found' });
+        }
+
+        res.status(200).json(event);
+    } catch (error) {
+        console.error("Error fetching details:", error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
 export const toggleRegistrationStatus = async (req, res) => {
     try {
         const eventId = req.params.eventId;

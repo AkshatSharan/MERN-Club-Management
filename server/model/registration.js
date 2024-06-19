@@ -1,5 +1,3 @@
-// registration.js
-
 import mongoose from 'mongoose';
 
 const registrationSchema = new mongoose.Schema({
