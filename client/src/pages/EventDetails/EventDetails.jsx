@@ -16,37 +16,37 @@ import parser from 'html-react-parser';
 import { useSelector } from 'react-redux';
 
 function EventDetails() {
-    const [isLoading, setIsLoading] = useState(true);
-    const { eventId } = useParams();
-    const [eventDetails, setEventDetails] = useState(null);
-    const [eventRounds, setEventRounds] = useState([]);
-    const [eventPrizes, setEventPrizes] = useState([]);
+    const [isLoading, setIsLoading] = useState(true)
+    const { eventId } = useParams()
+    const [eventDetails, setEventDetails] = useState(null)
+    const [eventRounds, setEventRounds] = useState([])
+    const [eventPrizes, setEventPrizes] = useState([])
 
     const { userType } = useSelector((state) => state.user)
 
-    const navigate = useNavigate();
+    const navigate = useNavigate()
 
     function getMonthAbbreviation(monthIndex) {
-        const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
-        return months[monthIndex];
+        const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
+        return months[monthIndex]
     }
 
     function formatDate(dateString) {
-        const date = new Date(dateString);
-        const day = date.getDate().toString().padStart(2, '0');
-        const monthAbbreviation = getMonthAbbreviation(date.getMonth());
-        const year = date.getFullYear().toString().slice(2);
-        return `${day} ${monthAbbreviation} ${year}`;
+        const date = new Date(dateString)
+        const day = date.getDate().toString().padStart(2, '0')
+        const monthAbbreviation = getMonthAbbreviation(date.getMonth())
+        const year = date.getFullYear().toString().slice(2)
+        return `${day} ${monthAbbreviation} ${year}`
     }
 
     function formatTime(dateString) {
-        const date = new Date(dateString);
-        let hours = date.getHours();
-        const minutes = date.getMinutes().toString().padStart(2, '0');
-        const ampm = hours >= 12 ? 'pm' : 'am';
-        hours = hours % 12;
-        hours = hours ? 12 : 0;
-        return `${hours}:${minutes} ${ampm}`;
+        const date = new Date(dateString)
+        let hours = date.getHours()
+        const minutes = date.getMinutes().toString().padStart(2, '0')
+        const ampm = hours >= 12 ? 'pm' : 'am'
+        hours = hours % 12
+        hours = hours ? 12 : 0
+        return `${hours}:${minutes} ${ampm}`
     }
 
     useEffect(() => {
@@ -55,30 +55,34 @@ function EventDetails() {
                 const eventResponse = await axios.get(`http://localhost:3000/api/upcomingevent/event/${eventId}`);
 
                 const sortedRounds = eventResponse.data.rounds.sort((a, b) => {
-                    const dateA = new Date(a.roundDate).setHours(0, 0, 0, 0);
-                    const dateB = new Date(b.roundDate).setHours(0, 0, 0, 0);
-                    if (dateA < dateB) return -1;
-                    if (dateA > dateB) return 1;
-                    const startTimeA = new Date(a.roundDate).setHours(new Date(a.startTime).getHours(), new Date(a.startTime).getMinutes());
-                    const startTimeB = new Date(b.roundDate).setHours(new Date(b.startTime).getHours(), new Date(b.startTime).getMinutes());
+                    const dateA = new Date(a.roundDate).setHours(0, 0, 0, 0)
+                    const dateB = new Date(b.roundDate).setHours(0, 0, 0, 0)
+                    if (dateA < dateB) return -1
+                    if (dateA > dateB) return 1
+                    const startTimeA = new Date(a.roundDate).setHours(new Date(a.startTime).getHours(), new Date(a.startTime).getMinutes())
+                    const startTimeB = new Date(b.roundDate).setHours(new Date(b.startTime).getHours(), new Date(b.startTime).getMinutes())
                     return startTimeA - startTimeB;
                 });
 
-                setEventDetails(eventResponse.data);
-                setEventRounds(sortedRounds);
-                setEventPrizes(eventResponse.data.prizes);
+                setEventDetails(eventResponse.data)
+                setEventRounds(sortedRounds)
+                setEventPrizes(eventResponse.data.prizes)
             } catch (error) {
-                console.error('Error fetching event:', error);
+                console.error('Error fetching event:', error)
             } finally {
-                setIsLoading(false);
+                setIsLoading(false)
             }
-        };
+        }
 
-        fetchEvent();
-    }, [eventId]);
+        fetchEvent()
+    }, [eventId])
+
+    const handleRegisterNow = () => {
+        navigate(`/register/${eventId}`)
+    }
 
     if (isLoading) {
-        return <Loader message={'Fetching details'} />;
+        return <Loader message={'Fetching details'} />
     }
 
     return (
@@ -152,17 +156,22 @@ function EventDetails() {
                     </div>
                 ))}
             </div>
-            <div className='registration'>
-                <h2>Registration:</h2> {eventDetails.registrationFees === 'Free' ? (
-                    <h2 style={{ color: 'var(--siteGreen)' }}>{eventDetails.registrationFees}</h2>
-                ) : (
-                    <h2 style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'black' }}>
-                        <img src={RupeesIcon} className='prize-money-icon' alt="Rupees" />
-                        {eventDetails.registrationFees}
-                    </h2>
-                )}
-            </div>
-            <button className='register-now'>Register now</button>
+            {eventDetails.registrationsOpen && (
+                <>
+                    <div className='registration'>
+                        <h2>Registration:</h2>
+                        {eventDetails.registrationFees === 'Free' ? (
+                            <h2 style={{ color: 'var(--siteGreen)' }}>{eventDetails.registrationFees}</h2>
+                        ) : (
+                            <h2 style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'black' }}>
+                                <img src={RupeesIcon} className='prize-money-icon' alt="Rupees" />
+                                {eventDetails.registrationFees}
+                            </h2>
+                        )}
+                    </div>
+                    <button className='register-now' onClick={handleRegisterNow}>Register now</button>
+                </>
+            )}
         </div>
     );
 }

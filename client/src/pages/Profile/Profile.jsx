@@ -5,6 +5,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import axiosInstance from '../../axiosinstance';
 import UpdateUserModal from '../../components/Modal/UpdateUserModal';
 import { signOut } from '../../redux/userSlice';
+import Loader from '../../components/Loader/Loader';
 
 function Profile() {
     const [open, setOpen] = useState(false);
@@ -12,6 +13,9 @@ function Profile() {
     const [width, setWidth] = useState(window.innerWidth);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const [myRegistations, setMyRegistrations] = useState(null)
+    const [myApplications, setMyApplications] = useState(null)
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         const handleResize = () => {
@@ -28,7 +32,25 @@ function Profile() {
         } catch (error) {
             console.error('Error during logout: ', error);
         }
-    };
+    }
+
+    useEffect(() => {
+        const fetchInfo = async () => {
+            try {
+                const info = await axiosInstance.get('/user/getspecificuser')
+                setMyRegistrations(info.data.user.registrations)
+            } catch (error) {
+                console.error('Error during logout: ', error);
+            } finally {
+                setIsLoading(false)
+            }
+        }
+        fetchInfo()
+    }, [])
+
+    if(isLoading) {
+        return <Loader message="Loading profile" />
+    }
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -49,7 +71,7 @@ function Profile() {
                 <p className='user-detail'><b>College registration:</b> {collegeRegistration}</p>
                 <button className='edit-details' onClick={handleOpen}>Edit details</button>
             </section>
-            
+
             <section className='detail-section'>
                 <h2>Club applications</h2>
                 {applications.length > 0 ?

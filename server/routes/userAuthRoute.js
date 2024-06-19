@@ -6,7 +6,7 @@ const userAuthRoute = express()
 
 userAuthRoute.post('/signup', signup)
 userAuthRoute.post('/signin', signin)
-userAuthRoute.post('/logout', verifyUser,logout)
+userAuthRoute.post('/logout', verifyUser, logout)
 userAuthRoute.post('/refresh', refreshTokenForUser);
 
 export default userAuthRoute

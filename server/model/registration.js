@@ -15,7 +15,7 @@ const registrationSchema = new mongoose.Schema({
     },
     student: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User', // Assuming there's a User schema for students
+        ref: 'User',
         required: true,
     },
     responses: [{
@@ -25,7 +25,7 @@ const registrationSchema = new mongoose.Schema({
             required: true,
         },
         answer: {
-            type: String,
+            type: mongoose.Schema.Types.Mixed,
             required: true,
         },
     }],

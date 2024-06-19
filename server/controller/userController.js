@@ -15,18 +15,37 @@ export const getAllUser = async (req, res) => {
 }
 
 export const getSpecificUser = async (req, res) => {
+    const userId = req.user._id;
+
     try {
+        const user = await User.findById(userId)
+            .populate({
+                path: 'registrations',
+                populate: {
+                    path: 'event',
+                    select: 'eventTitle eventStartDate',
+                    populate: {
+                        path: 'club',
+                        select: 'clubLogo'
+                    }
+                }
+            });
 
-        const id = req.params.email
-        const userExist = await User.findOne({ email: id })
-
-        if (!userExist) {
-            return res.status(404).json({ msg: "user data not found" })
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
         }
-        res.status(200).json(userExist)
 
+        res.status(200).json({
+            user: {
+                applications: user.applications,
+                registrations: user.registrations,
+            },
+            accessToken: req.accessToken,
+            refreshToken: req.refreshToken
+        });
     } catch (error) {
-        res.status(500).json({ error: "error" })
+        console.error('Error retrieving user profile:', error);
+        res.status(500).json({ message: 'Error retrieving user profile', error });
     }
 }
 

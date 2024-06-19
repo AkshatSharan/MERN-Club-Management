@@ -5,8 +5,8 @@ import { verifyUser } from "../middlewares/auth.middleware.js";
 const userRoute = express.Router();
 
 userRoute.get("/getalluser", getAllUser)
-userRoute.get("/getspecificuser/:email", getSpecificUser)
 userRoute.delete('/deleteuser/:email', deleteUser)
 userRoute.post('/update', verifyUser, updateUser)
+userRoute.get("/getspecificuser", verifyUser, getSpecificUser)
 
 export default userRoute;

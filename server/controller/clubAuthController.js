@@ -3,18 +3,28 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import refreshTokens from "../middlewares/refreshToken.js";
 
+const generateAccessAndRefreshToken = (userId) => {
+    const accessToken = jwt.sign({ _id: userId }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+    const refreshToken = jwt.sign({ _id: userId }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
+    return { accessToken, refreshToken };
+};
+
 export const refreshTokenForClub = async (req, res) => {
     const { refreshToken } = req.cookies;
     if (!refreshToken) {
         return res.status(401).json({ message: "No refresh token provided" });
     }
-    await refreshTokens(Club, refreshToken, res);
-};
-
-const generateAccessAndRefreshToken = (userId) => {
-    const accessToken = jwt.sign({ _id: userId }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
-    const refreshToken = jwt.sign({ _id: userId }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
-    return { accessToken, refreshToken };
+    try {
+        const club = await Club.findOne({ refreshToken });
+        if (!club) {
+            return res.status(404).json({ message: "Club not found" });
+        }
+        // Assuming refreshTokens is a function that handles token refreshing
+        await refreshTokens(Club, refreshToken, res); // Ensure this function is correctly implemented
+    } catch (error) {
+        console.error('Token refresh error:', error);
+        res.status(500).json({ message: 'Token refresh failed' });
+    }
 };
 
 export const signup = async (req, res) => {

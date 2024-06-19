@@ -39,10 +39,10 @@ const userSchema = new mongoose.Schema({
         type: Schema.ObjectId,
         ref: "Club"
     }],
-    registrations: {
+    registrations: [{
         type: Schema.ObjectId,
         ref: "Registration"
-    },
+    }],
     refreshToken: {
         type: String
     }
