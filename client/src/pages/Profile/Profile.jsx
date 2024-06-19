@@ -48,14 +48,22 @@ function Profile() {
         fetchInfo()
     }, [])
 
-    if(isLoading) {
+    if (isLoading) {
         return <Loader message="Loading profile" />
     }
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-    const { fname = '', lname = '', phone = '', email = '', collegeRegistration = '', applications = [], registrations = [] } = currentUser.user || {};
+    function formatDateString(dateString) {
+        const date = new Date(dateString);
+        const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+        return date.toLocaleDateString('en-GB', options);
+    }
+
+    const { fname = '', lname = '', phone = '', email = '', collegeRegistration = '', applications = [] } = currentUser.user || {};
+
+    // console.log(myRegistations)
 
     return (
         <main>
@@ -100,15 +108,24 @@ function Profile() {
 
             <section className='detail-section'>
                 <h2>Event registrations</h2>
-                {registrations.length > 0 ?
+                {myRegistations.length > 0 ?
                     (
-                        <div>
-                            {registrations.map((reg, index) => (
-                                <div key={index}>
-                                    {/* Render individual registration details */}
-                                    <p>{/* Registration detail rendering logic */}</p>
-                                </div>
-                            ))}
+                        <div className='event-registrations-container'>
+                            {myRegistations.map((registration, index) => {
+                                const eventStartDate = registration.event.eventStartDate
+                                return (
+                                    <div key={index}
+                                        className='event-registration-card'
+                                        onClick={() => navigate(`/event/${registration.event._id}`)}
+                                    >
+                                        <div className='event-main-details'>
+                                            <h3>{registration.event.eventTitle}</h3>
+                                            <p>{formatDateString(eventStartDate)}</p>
+                                        </div>
+                                        <div className='club-logo'><img src={registration.event.club.clubLogo} /></div>
+                                    </div>
+                                )
+                            })}
                         </div>
                     ) :
                     (

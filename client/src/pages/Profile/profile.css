@@ -49,6 +49,31 @@
     margin-top: 40px;
 }
 
+.event-registrations-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.event-registration-card {
+    width: fit-content;
+
+    padding: 20px;
+
+    display: flex;
+    gap: 60px;
+
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.05);
+    border-radius: 5px;
+    
+    background-color: white;
+
+    cursor: pointer;
+}
+
+.profile-size {
+    font-size: 17px;
+}
+
 @media (max-width: 961px) {
     .user-details {
         gap: 20px;

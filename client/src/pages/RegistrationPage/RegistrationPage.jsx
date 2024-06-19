@@ -8,40 +8,54 @@ function RegistrationPage() {
     const { eventId } = useParams();
     const [form, setForm] = useState(null);
     const [responses, setResponses] = useState([]);
-    const { currentUser } = useSelector((state) => state.user)
-    const [registrationsOpen, setRegistrationsOpen] = useState(null)
+    const { currentUser } = useSelector((state) => state.user);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isRegistered, setIsRegistered] = useState(false); // Added state for debugging
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        const isRegistered = currentUser.user.registrations.some(reg => reg.event === eventId)
-        if (!isRegistered) {
-            navigate('/profile')
-            alert("Already registered for event")
-        } else {
-            const fetchForm = async () => {
-                try {
-                    const eventResponse = await axiosInstance.get(`/upcomingevent/event/${eventId}`);
-                    if(!eventResponse.data.registrationsOpen){
-                        navigate('/profile')
-                    }
-                    const response = await axiosInstance.get(`/upcomingevent/getform/${eventId}`);
-                    if (response.data) {
-                        setForm(response.data);
-                        initializeResponses(response.data.questions);
-                    }
-                } catch (error) {
-                    console.error('Error fetching form data:', error);
+        const getUser = async () => {
+            try {
+                const info = await axiosInstance.get('/user/getspecificuser');
+                const registrations = info.data.user.registrations;
+                const isRegistered = registrations.some((reg) => reg.event._id === eventId);
+
+                if (isRegistered) {
+                    navigate('/profile');
+                    alert('Already registered for event');
+                } else {
+                    const fetchForm = async () => {
+                        try {
+                            const eventResponse = await axiosInstance.get(`/upcomingevent/event/${eventId}`);
+                            if (!eventResponse.data.registrationsOpen) {
+                                navigate('/profile');
+                            }
+                            const response = await axiosInstance.get(`/upcomingevent/getform/${eventId}`);
+                            if (response.data) {
+                                setForm(response.data);
+                                initializeResponses(response.data.questions);
+                            }
+                        } catch (error) {
+                            console.error('Error fetching form data:', error);
+                        } finally {
+                            setIsLoading(false);
+                        }
+                    };
+
+                    fetchForm();
                 }
-            };
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                setIsLoading(false); // Ensure isLoading is set to false on error
+            }
+        };
 
-            fetchForm();
-        }
-
-    }, [eventId]);
+        getUser();
+    }, [eventId, navigate]);
 
     const initializeResponses = (questions) => {
-        const initialResponses = questions.map(question => {
+        const initialResponses = questions.map((question) => {
             let answer = '';
             if (question.type === 'radio' || question.type === 'checkbox' || question.type === 'select') {
                 answer = [];
@@ -71,7 +85,7 @@ function RegistrationPage() {
         }
     };
 
-    if (!form) {
+    if (isLoading) {
         return <Loader message="Fetching form" />;
     }
 
@@ -125,7 +139,7 @@ function RegistrationPage() {
                                             if (isChecked) {
                                                 updatedAnswers.push(option);
                                             } else {
-                                                updatedAnswers = updatedAnswers.filter(ans => ans !== option);
+                                                updatedAnswers = updatedAnswers.filter((ans) => ans !== option);
                                             }
                                             handleInputChange(index, updatedAnswers);
                                         }}
