@@ -1,0 +1,63 @@
+.reg-form-title {}
+
+.reg-form-description {
+    margin-bottom: 30px;
+}
+
+.reg-question-container {
+    padding: 30px;
+
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.05);
+
+    background-color: white;
+}
+
+.reg-question {
+    margin-top: 0;
+}
+
+.reg-form-input {
+    width: 90%;
+
+    padding: 5px 10px;
+
+    position: relative;
+
+    border-bottom: 2px solid lightgray;
+}
+
+.reg-form-input:focus {
+    transition: 100ms;
+
+    border-color: var(--siteBlue);
+}
+
+.reg-radio,
+.reg-checkbox {
+    margin-bottom: 5px;
+
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+}
+
+.reg-dropdown {
+    width: fit-content;
+
+    padding: 5px;
+}
+
+.reg-textarea {
+    width: 90%;
+
+    resize: none;
+
+    border: none;
+    border-bottom: 2px solid lightgray;
+}
+
+.reg-textarea:focus {
+    transition: 100ms;
+
+    border-color: var(--siteBlue);
+}
