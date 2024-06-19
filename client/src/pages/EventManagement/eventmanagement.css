@@ -17,24 +17,24 @@
 }
 
 .table-container {
-    margin-top: 20px;
+    margin-top: 10px;
 
     border-radius: 10px;
     border: 1px solid lightgray;
-    
+
     overflow: auto;
 }
 
 .registration-table {
     width: 100%;
-    
+
     border-collapse: collapse;
 }
 
 .registration-table th,
 .registration-table td {
     padding: 15px;
-    
+
     max-width: 200px;
 
     white-space: pre-wrap;
@@ -47,7 +47,7 @@
 .registration-table th {
     padding: 20px;
 
-    white-space: nowrap; 
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 
@@ -57,7 +57,12 @@
 }
 
 .registration-table tr:nth-child(even) {
-    background-color: #f9f9f9;
+    background-color: #f0f6ff;
+
+    border-top: 1px solid lightgray;
+    border-bottom: 1px solid lightgray;
+
+    box-sizing: border-box;
 }
 
 .header-items {
@@ -71,9 +76,27 @@
 }
 
 .registration-table td {
-    max-width: 200px; /* Limit width of table cells */
-    white-space: nowrap; /* Prevent text from wrapping */
-    overflow: hidden; /* Hide overflowing content */
-    text-overflow: ellipsis; /* Show ellipsis for overflow */
-    padding: 10px; /* Adjust padding as needed */
+    max-width: 200px;
+
+    padding: 10px 15px;
+}
+
+.search-input {
+    width: 200px;
+
+    padding: 10px;
+
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+.export-button {
+    margin-left: 20px;
+
+    padding: 10px;
+
+    border-radius: 10px;
+    border: 2px solid gray;
+
+    background-color: lightgrey;
 }
