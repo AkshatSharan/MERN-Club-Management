@@ -81,3 +81,36 @@ export const deleteUser = async (req, res) => {
     await User.findOneAndDelete({ email: id })
     res.status(200).json({ msg: "user deleted" })
 }
+
+export const getNotifications = async (req, res) => {
+    try {
+        const userId = req.user._id;
+
+        const user = await User.findById(userId, 'notifications');
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.status(200).json({ notifications: user.notifications });
+    } catch (error) {
+        console.error('Error fetching notifications:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+export const deleteNotification = async (req, res) => {
+    try {
+        const { notificationText } = req.params;
+
+        const user = await User.findOneAndUpdate(
+            { _id: req.user._id },
+            { $pull: { notifications: notificationText } },
+            { new: true }
+        );
+
+        res.status(200).json({ message: 'Notification deleted successfully', user });
+    } catch (error) {
+        console.error('Error deleting notification:', error);
+        res.status(500).json({ error: 'Error deleting notification' });
+    }
+};

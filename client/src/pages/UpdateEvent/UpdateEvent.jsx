@@ -56,6 +56,8 @@ const UpdateEvent = () => {
     const [registrationTime, setRegistrationTime] = useState(dayjs());
     const [loading, setLoading] = useState(false);
     const [isDataLoaded, setDataLoaded] = useState(false);
+    const [deletedRoundIds, setDeletedRoundIds] = useState([]);
+    const [deletedPrizeIds, setDeletedPrizeIds] = useState([]);
 
     const editor = useEditor({
         extensions,
@@ -152,8 +154,13 @@ const UpdateEvent = () => {
     };
 
     const removeRound = (index) => {
-        const updatedRounds = eventDetails.rounds.filter((_, i) => i !== index);
-        setEventDetails({ ...eventDetails, rounds: updatedRounds });
+        const roundId = eventDetails.rounds[index]._id;
+        console.log(roundId)
+        setEventDetails(prevState => ({
+            ...prevState,
+            rounds: eventDetails.rounds.filter((_, i) => i !== index),
+        }));
+        setDeletedRoundIds(prevIds => [...prevIds, roundId]);
     };
 
     const addPrize = () => {
@@ -162,8 +169,13 @@ const UpdateEvent = () => {
     };
 
     const removePrize = (index) => {
-        const updatedPrizes = eventDetails.prizes.filter((_, i) => i !== index);
-        setEventDetails({ ...eventDetails, prizes: updatedPrizes });
+        const prizeId = eventDetails.prizes[index]._id;
+        console.log(prizeId)
+        setEventDetails(prevState => ({
+            ...prevState,
+            prizes: eventDetails.prizes.filter((_, i) => i !== index),
+        }));
+        setDeletedPrizeIds(prevIds => [...prevIds, prizeId]);
     };
 
     const handleSubmit = async (e) => {
@@ -187,9 +199,38 @@ const UpdateEvent = () => {
                 response = await axiosInstance.post('/upcomingevent/create', submissionData);
             }
 
+            await Promise.all([
+                deleteRounds(),
+                deletePrizes()
+            ]);
+
             navigate('/');
         } catch (error) {
             console.error('Error submitting event:', error);
+        }
+    };
+
+    const deleteRounds = async () => {
+        try {
+            await Promise.all(deletedRoundIds.map(async (roundId) => {
+                const response = await axiosInstance.delete(`/upcomingevent/round/delete/${roundId}`);
+                console.log(response.data.message);
+            }));
+            setDeletedRoundIds([]);
+        } catch (error) {
+            console.error('Error deleting rounds:', error);
+        }
+    };
+
+    const deletePrizes = async () => {
+        try {
+            await Promise.all(deletedPrizeIds.map(async (prizeId) => {
+                const response = await axiosInstance.delete(`/upcomingevent/prize/delete/${prizeId}`);
+                console.log(response.data.message);
+            }));
+            setDeletedPrizeIds([]);
+        } catch (error) {
+            console.error('Error deleting prizes:', error);
         }
     };
 

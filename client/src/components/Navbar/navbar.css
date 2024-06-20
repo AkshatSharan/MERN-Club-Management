@@ -102,6 +102,73 @@
     animation: hamburgeropen 200ms forwards;
 }
 
+.notifications {
+    position: relative;
+
+    cursor: pointer;
+
+    position: relative;
+}
+
+.notification-alert {
+    width: 10px;
+    height: 10px;
+
+    font-size: 8px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: absolute;
+    right: -2px;
+    top: 0;
+
+    border-radius: 50%;
+
+    background-color: orangered;
+}
+
+.notifications-screen {
+    height: fit-content;
+    width: 470px;
+
+    position: absolute;
+    right: 0;
+    top: 100%;
+    z-index: 1000;
+
+    box-shadow: -5px 8px 10px rgba(0, 0, 0, 0.1);
+    border-bottom-left-radius: 10px;
+
+    background-color: white;
+}
+
+.notification {
+    padding: 15px;
+
+    display: flex;
+    gap: 10px;
+
+    color: black;
+}
+
+.notification-text {
+    margin: 10px;
+}
+
+.notifications-screen :not(:first-child) {
+    border-top: 1px solid lightgray;
+}
+
+.delete-notification {
+    margin-right: 10px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
 @keyframes hamburgeropen {
     to {
         transform: scaleY(1);
@@ -138,5 +205,10 @@
 
     #notification-icon {
         height: 5.05vw;
+    }
+
+    .notification-alert {
+        height: 2vw;
+        width: 2vw;
     }
 }

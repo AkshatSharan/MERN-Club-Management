@@ -13,4 +13,16 @@ const eventRoundSchema = new mongoose.Schema({
     roundLocation: String,
 })
 
+eventRoundSchema.post('remove', async function (doc) {
+    const UpcomingEvent = mongoose.model('UpcomingEvent');
+    try {
+        await UpcomingEvent.findByIdAndUpdate(doc.event, {
+            $pull: { rounds: doc._id }
+        });
+    } catch (error) {
+        console.error('Error updating UpcomingEvent after removing round:', error);
+        throw error;
+    }
+});
+
 export default mongoose.model('EventRound', eventRoundSchema)

@@ -31,6 +31,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    notifications: [{
+        type: String,
+        required: true,
+    }],
     applications: [{
         type: Schema.ObjectId,
         ref: "Application"
