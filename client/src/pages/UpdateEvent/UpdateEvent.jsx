@@ -21,6 +21,7 @@ import HorizontalRule from '../../assets/HorizontalRule.svg';
 import LineBreak from '../../assets/LineBreak.svg';
 import Undo from '../../assets/Undo.svg';
 import Redo from '../../assets/Redo.svg';
+import './updateevent.css'
 
 const extensions = [
     StarterKit,
@@ -178,7 +179,7 @@ const UpdateEvent = () => {
         setDeletedPrizeIds(prevIds => [...prevIds, prizeId]);
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e, notify) => {
         e.preventDefault();
 
         const registrationDeadline = dayjs(registrationDate).hour(dayjs(registrationTime).hour()).minute(dayjs(registrationTime).minute());
@@ -189,6 +190,7 @@ const UpdateEvent = () => {
                 ? eventDetails.teamSize
                 : 'Individual',
             registrationDeadline,
+            notify: document.getElementById('notifyInput').value === "true",
         };
 
         try {
@@ -232,7 +234,11 @@ const UpdateEvent = () => {
         } catch (error) {
             console.error('Error deleting prizes:', error);
         }
-    };
+    }
+
+    const handleNotify = (shouldNotify) => {
+        document.getElementById('notifyInput').value = shouldNotify ? "true" : "false";
+    }
 
     if (loading) {
         return <div>Loading...</div>;
@@ -588,7 +594,11 @@ const UpdateEvent = () => {
                         Add Prize
                     </button>
                 </div>
-                <button type="submit" className="save-button">{eventId ? 'Save' : 'Create Event'}</button>
+                <input type="hidden" id="notifyInput" name="notify" value="false" />
+                <div className='save-button'>
+                    <button type="submit" className="edit-details" onClick={() => handleNotify(true)}>{eventId ? 'Save and Notify' : 'Create Event'}</button>
+                    <button type="submit" className="edit-details" onClick={() => handleNotify(false)}>{eventId ? 'Save' : 'Create Event'}</button>
+                </div>
             </form>
         </div >
     );

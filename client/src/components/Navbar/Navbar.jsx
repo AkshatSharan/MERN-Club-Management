@@ -44,17 +44,17 @@ function Navbar() {
         }
     }, [])
 
-    // const deleteNotification = async (notificationText) => {
-    //     try {
-    //         await axiosInstance.delete(`/user/delete-notification/${encodeURIComponent(notificationText)}`);
+    const deleteNotification = async (notificationText) => {
+        try {
+            await axiosInstance.delete(`/user/delete-notification/${encodeURIComponent(notificationText)}`);
 
-    //         setNotifications(prevNotifications =>
-    //             prevNotifications.filter(notification => notification !== notificationText)
-    //         );
-    //     } catch (error) {
-    //         console.error('Error deleting notification:', error);
-    //     }
-    // }
+            setNotifications(prevNotifications =>
+                prevNotifications.filter(notification => notification !== notificationText)
+            );
+        } catch (error) {
+            console.error('Error deleting notification:', error);
+        }
+    }
 
 
     return (
@@ -87,7 +87,7 @@ function Navbar() {
                                     (
                                         <div key={index} className='notification'>
                                             <p className='notification-text'>{parser(notification)}</p>
-                                            <p className='delete-notification' >X</p>
+                                            <p className='delete-notification' onClick={() => deleteNotification(notification)}>X</p>
                                         </div>
                                     )
                                     )}

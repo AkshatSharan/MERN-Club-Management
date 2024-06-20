@@ -142,7 +142,7 @@ export const updateUpcomingEvent = async (req, res) => {
         const { eventId } = req.params;
         const {
             eventTitle, participation, registrationDeadline, coverDescription,
-            teamSize, eventDescription, rounds, prizes, registrationFees
+            teamSize, eventDescription, rounds, prizes, registrationFees, notify
         } = req.body;
 
         const window = new JSDOM('').window;
@@ -189,18 +189,20 @@ export const updateUpcomingEvent = async (req, res) => {
 
         await updatedEvent.save();
 
-        const registrations = await Registration.find({ event: eventId }).populate('student');
+        if (notify) {
+            const registrations = await Registration.find({ event: eventId }).populate('student');
 
-        const notificationMessage = `<p>Event "${updatedEvent.eventTitle}" has been updated. <a href="/event/${eventId}">Click here</a> to view the details.</p>`;
-        const notificationPromises = registrations.map(reg => {
-            return User.findByIdAndUpdate(
-                reg.student._id,
-                { $push: { notifications: notificationMessage } },
-                { new: true }
-            );
-        });
+            const notificationMessage = `<p>Event "${updatedEvent.eventTitle}" has been updated. <a href="/event/${eventId}">Click here</a> to view the details.</p>`;
+            const notificationPromises = registrations.map(reg => {
+                return User.findByIdAndUpdate(
+                    reg.student._id,
+                    { $push: { notifications: notificationMessage } },
+                    { new: true }
+                );
+            });
 
-        await Promise.all(notificationPromises);
+            await Promise.all(notificationPromises);
+        }
 
         res.status(200).json({
             message: 'Event updated successfully',
