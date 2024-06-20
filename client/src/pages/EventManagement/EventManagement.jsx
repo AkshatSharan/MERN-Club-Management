@@ -54,60 +54,60 @@ function EventManagement() {
             };
 
             event.registrationForm[0].questions.forEach(question => {
-                const answer = registration.responses.find(response => response.question === question._id)?.answer || '-';
-                registrationData[question.question] = Array.isArray(answer) ? answer.join(', ') : answer;
-            });
+                const answer = registration.responses.find(response => response.question === question._id)?.answer || '-'
+                registrationData[question.question] = Array.isArray(answer) ? answer.join(', ') : answer
+            })
 
-            registrationData.Attended = registration.attended ? 'Yes' : 'No';
+            registrationData.Attended = registration.attended ? 'Yes' : 'No'
             return registrationData;
-        });
+        })
 
         const worksheet = XLSX.utils.json_to_sheet(worksheetData);
         const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Registrations");
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Registrations")
 
-        XLSX.writeFile(workbook, `${event.eventTitle}_registrations.xlsx`);
+        XLSX.writeFile(workbook, `${event.eventTitle}_registrations.xlsx`)
     }
 
     const handelEditFormClick = () => {
-        navigate(`/registration-form/${eventId}`);
+        navigate(`/registration-form/${eventId}`)
     }
 
     const formatAnswers = (answers) => {
-        return Array.isArray(answers) ? answers.join(', ') : answers;
+        return Array.isArray(answers) ? answers.join(', ') : answers
     };
 
     const handleSort = (key) => {
-        let direction = 'asc';
+        let direction = 'asc'
         if (sortConfig.key === key && sortConfig.direction === 'asc') {
-            direction = 'desc';
+            direction = 'desc'
         }
 
         const sortedArray = [...sortedData].sort((a, b) => {
-            const getValue = (obj, key) => key.split('.').reduce((o, i) => o[i], obj);
-            const valueA = getValue(a, key);
-            const valueB = getValue(b, key);
+            const getValue = (obj, key) => key.split('.').reduce((o, i) => o[i], obj)
+            const valueA = getValue(a, key)
+            const valueB = getValue(b, key)
 
             if (valueA < valueB) {
-                return direction === 'asc' ? -1 : 1;
+                return direction === 'asc' ? -1 : 1
             }
             if (valueA > valueB) {
-                return direction === 'asc' ? 1 : -1;
+                return direction === 'asc' ? 1 : -1
             }
-            return 0;
+            return 0
         });
 
-        setSortedData(sortedArray);
-        setSortConfig({ key, direction });
+        setSortedData(sortedArray)
+        setSortConfig({ key, direction })
     };
 
     const handleSearch = (e) => {
-        const query = e.target.value.toLowerCase();
-        setSearchQuery(query);
+        const query = e.target.value.toLowerCase()
+        setSearchQuery(query)
         const filteredData = registrationsData.filter(registration =>
             registration.student.collegeRegistration.toLowerCase().includes(query)
-        );
-        setSortedData(filteredData);
+        )
+        setSortedData(filteredData)
     };
 
     const handleAttendanceChange = (registrationId, value) => {
@@ -115,20 +115,24 @@ function EventManagement() {
             prevData.map(registration =>
                 registration._id === registrationId ? { ...registration, attended: value } : registration
             )
-        );
-    };
+        )
+    }
+
+    const viewEventPage = () => {
+        navigate(`/event/${eventId}`)
+    }
 
     if (isLoading) {
         return <Loader message='Fetching event' />;
     }
 
-    if (!event || !event.registrationForm || !event.registrationForm.length) {
-        return <p>No registration form questions found.</p>;
-    }
-
     return (
         <div>
             <h1><u>{event.eventTitle}</u></h1>
+            <div className="event-info-management">
+                <button className="edit-details " style={{ backgroundColor: 'var(--siteLightGreen)' }} onClick={viewEventPage}>View event page</button>
+                <button className="edit-details " style={{ backgroundColor: 'var(--siteGreen)' }} onClick={() => navigate(`/update-event/${eventId}`)}>Edit event page</button>
+            </div>
             <section className="event-registration-form">
                 <h2 className="management-section-header">Registration form</h2>
                 <div className="toggle-form-state">

@@ -34,6 +34,8 @@
 }
 
 .nav-items-list-desktop {
+    list-style: none;
+
     display: flex;
     align-items: center;
     gap: 30px;
@@ -75,6 +77,8 @@
 }
 
 .nav-items-list-mobile {
+    list-style: none;
+
     color: white;
 
     padding: 30px;

@@ -16,6 +16,7 @@ import CreateEvent from './pages/CreateEvent/CreateEvent';
 import EventManagement from './pages/EventManagement/EventManagement';
 import RegistrationFormAdmin from './pages/RegistrationForm/RegistrationFormAdmin';
 import RegistrationPage from './pages/RegistrationPage/RegistrationPage';
+import UpdateEvent from './pages/UpdateEvent/UpdateEvent';
 
 function AppContent() {
   const location = useLocation();
@@ -49,13 +50,14 @@ function AppContent() {
             <Route path='/create-event' element={<CreateEvent />} />
             <Route path='/event-management/:eventId' element={<EventManagement />} />
             <Route path='/registration-form/:eventId' element={<RegistrationFormAdmin />} />
+            <Route path='update-event/:eventId' element={<UpdateEvent />} />
           </Route>
-            <Route path='/register/:eventId' element={<RegistrationPage />} />
 
           <Route element={<StudentPrivateRoute />}>
             {userType === 'student' && <Route path="/" element={<Home scrollToSection={scrollToSection} />} />}
             <Route path="/upcomingevents" element={<UpcomingEvents />} />
             <Route path='/profile' element={<Profile />} />
+            <Route path='/register/:eventId' element={<RegistrationPage />} />
           </Route>
 
           <Route path="/event/:eventId" element={<EventDetails />} />

@@ -19,7 +19,7 @@ export const createEventPrize = async ({ positionName, certificate, trophy, cash
             trophy,
             cashPrize,
             cashPrizeAmt,
-            event, // Reference to the UpcomingEvent
+            event,
         });
 
         await newPrize.save();
@@ -30,23 +30,34 @@ export const createEventPrize = async ({ positionName, certificate, trophy, cash
     }
 };
 
-export const deleteEventPrize = async (req, res) => {
+export const updatePrize = async (req, res) => {
     try {
         const { id } = req.params;
-        const deletedEventPrize = await EventPrize.findByIdAndDelete(id);
+        const updatedPrize = await EventPrize.findByIdAndUpdate(id, req.body, { new: true });
 
-        if (!deletedEventPrize) {
-            return res.status(404).json({ message: "Event prize not found" });
+        if (!updatedPrize) {
+            return res.status(404).json({ error: 'Prize not found' });
         }
 
-        const upcomingEvents = await UpcomingEvent.find({ prizes: id });
-        for (const event of upcomingEvents) {
-            event.prizes = event.prizes.filter(prize => prize.toString() !== id);
-            await event.save();
-        }
-
-        res.status(200).json({ message: "Event prize deleted successfully" });
+        res.status(200).json(updatedPrize);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('Error updating prize:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+export const deletePrize = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedPrize = await EventPrize.findByIdAndDelete(id);
+
+        if (!deletedPrize) {
+            return res.status(404).json({ error: 'Prize not found' });
+        }
+
+        res.status(200).json({ message: 'Prize deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting prize:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 };

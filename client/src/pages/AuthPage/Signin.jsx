@@ -17,7 +17,7 @@ function Signin() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (currentUser && userType === 'student') {
+        if (currentUser) {
             navigate('/');
         }
         dispatch(resetErrorMessage())

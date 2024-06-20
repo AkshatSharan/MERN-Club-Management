@@ -5,12 +5,6 @@ import { DatePicker, TimePicker } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
-import { useEditor, EditorContent } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import Text from '@tiptap/extension-text'
-import TextStyle from '@tiptap/extension-text-style'
-import { Color } from '@tiptap/extension-color'
-import { Underline } from '@tiptap/extension-underline';
 import UnderlineIcon from '../../assets/Underline.svg'
 import BoldIcon from '../../assets/Bold.svg'
 import Italics from '../../assets/Italics.svg'
@@ -22,6 +16,13 @@ import LineBreak from '../../assets/LineBreak.svg'
 import Undo from '../../assets/Undo.svg'
 import Redo from '../../assets/Redo.svg'
 import { useNavigate } from 'react-router-dom';
+
+import StarterKit from '@tiptap/starter-kit';
+import Text from '@tiptap/extension-text'
+import TextStyle from '@tiptap/extension-text-style'
+import { Underline } from '@tiptap/extension-underline';
+import { useEditor, EditorContent } from '@tiptap/react';
+import { Color } from '@tiptap/extension-color'
 
 const extensions = [
     StarterKit,
@@ -72,7 +73,7 @@ function CreateEvent() {
         },
         editorProps: {
             onFocus: (event) => {
-                event.preventDefault(); // Prevent form submission on editor focus
+                event.preventDefault();
             },
         },
     });
@@ -96,7 +97,6 @@ function CreateEvent() {
                 adjustTextareaHeight();
             }
         } else if (name === 'eventDescription') {
-            // Handle eventDescription change
             setEventDetails(prevDetails => ({
                 ...prevDetails,
                 eventDescription: value,
@@ -337,6 +337,7 @@ function CreateEvent() {
                     )}
                 </label>
             </div>
+
             <label className='form-section-label'>Registration deadline
                 <div className='registration-date-time-container'>
                     <label className='date-time-input'>Date:

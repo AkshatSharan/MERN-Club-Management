@@ -14,6 +14,7 @@ import RupeesIcon from '../../assets/RupeesIcon.svg';
 import './eventdetails.css';
 import parser from 'html-react-parser';
 import { useSelector } from 'react-redux';
+import axiosInstance from '../../axiosinstance';
 
 function EventDetails() {
     const [isLoading, setIsLoading] = useState(true)
@@ -52,7 +53,7 @@ function EventDetails() {
     useEffect(() => {
         const fetchEvent = async () => {
             try {
-                const eventResponse = await axios.get(`http://localhost:3000/api/upcomingevent/event/${eventId}`);
+                const eventResponse = await axiosInstance.get(`/upcomingevent/event/${eventId}`);
 
                 const sortedRounds = eventResponse.data.rounds.sort((a, b) => {
                     const dateA = new Date(a.roundDate).setHours(0, 0, 0, 0)

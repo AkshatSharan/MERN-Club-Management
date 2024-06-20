@@ -37,23 +37,35 @@ export const createRound = async ({ roundName, roundDate, startTime, endTime, ro
     }
 };
 
-export const deleteEventRound = async (req, res) => {
+export const updateRound = async (req, res) => {
     try {
         const { id } = req.params;
-        const deletedEventRound = await EventRound.findByIdAndDelete(id);
+        const updatedRound = await EventRound.findByIdAndUpdate(id, req.body, { new: true });
 
-        if (!deletedEventRound) {
-            return res.status(404).json({ message: "Event round not found" });
+        if (!updatedRound) {
+            return res.status(404).json({ error: 'Round not found' });
         }
 
-        const upcomingEvents = await UpcomingEvent.find({ rounds: id });
-        upcomingEvents.forEach(async (event) => {
-            event.rounds = event.rounds.filter((round) => round.toString() !== id);
-            await event.save();
-        });
-
-        res.status(200).json({ message: "Event round deleted successfully" });
+        res.status(200).json(updatedRound);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('Error updating round:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+// Delete an existing round
+export const deleteRound = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedRound = await EventRound.findByIdAndDelete(id);
+
+        if (!deletedRound) {
+            return res.status(404).json({ error: 'Round not found' });
+        }
+
+        res.status(200).json({ message: 'Round deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting round:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 };

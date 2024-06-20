@@ -133,4 +133,66 @@ export const toggleRegistrationStatus = async (req, res) => {
         console.error('Error toggling registration status:', error);
         res.status(500).json({ error: 'Error toggling registration status' });
     }
+}
+
+export const updateUpcomingEvent = async (req, res) => {
+    try {
+        const { eventId } = req.params;
+        const {
+            eventTitle, participation, registrationDeadline, coverDescription,
+            teamSize, eventDescription, rounds, prizes, registrationFees
+        } = req.body;
+
+        const window = new JSDOM('').window;
+        const DOMPurifyInstance = DOMPurify(window);
+
+        const sanitizedEventDescription = DOMPurifyInstance.sanitize(eventDescription, {
+            ALLOWED_TAGS: ['b', 'i', 'u', 'strong', 'p', 'ul', 'ol', 'li', 'blockquote'],
+            ALLOWED_ATTR: ['href', 'src', 'alt', 'title'],
+        });
+
+        const updatedEvent = await UpcomingEvent.findByIdAndUpdate(
+            eventId,
+            {
+                eventTitle,
+                participation,
+                registrationDeadline,
+                coverDescription,
+                teamSize,
+                eventDescription: sanitizedEventDescription,
+                registrationFees,
+            },
+            { new: true }
+        ).populate('rounds prizes');
+
+        if (!updatedEvent) {
+            return res.status(404).json({ error: 'Event not found' });
+        }
+
+        if (rounds && rounds.length > 0) {
+            updatedEvent.rounds = [];
+            await Promise.all(rounds.map(async (round) => {
+                const newRound = await createRound({ ...round, event: eventId });
+                updatedEvent.rounds.push(newRound._id);
+            }));
+        }
+
+        if (prizes && prizes.length > 0) {
+            updatedEvent.prizes = [];
+            await Promise.all(prizes.map(async (prize) => {
+                const newPrize = await createEventPrize({ ...prize, event: eventId });
+                updatedEvent.prizes.push(newPrize._id);
+            }));
+        }
+
+        await updatedEvent.save();
+
+        res.status(200).json({
+            message: 'Event updated successfully',
+            event: updatedEvent,
+        });
+    } catch (error) {
+        console.error('Error updating upcoming event:', error);
+        res.status(500).json({ error: 'Error updating upcoming event' });
+    }
 };
