@@ -57,7 +57,7 @@ const upcomingEventSchema = new mongoose.Schema({
         default: 'Free',
     },
     rounds: [{
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,   
         ref: 'EventRound'
     }],
     prizes: [{

@@ -1,5 +1,5 @@
 import express from "express";
-import { createUpcomingEvent, getEventManagementDetails, getUpcomingEventDetails, toggleRegistrationStatus, updateUpcomingEvent } from "../controller/upcomingEventController.js";
+import { createUpcomingEvent, deleteUpcomingEvent, getEventManagementDetails, getUpcomingEventDetails, toggleRegistrationStatus, transferEvent, updateUpcomingEvent } from "../controller/upcomingEventController.js";
 import { verifyClub, verifyUser } from "../middlewares/auth.middleware.js";
 import { createEventPrize } from "../controller/eventPrizeController.js";
 import { createRound } from "../controller/eventRoundController.js";
@@ -18,5 +18,8 @@ upcomingEventRoute.post('/change-reg/:eventId', verifyClub, toggleRegistrationSt
 upcomingEventRoute.post('/create-form/:eventId', verifyClub, createRegistrationForm);
 upcomingEventRoute.get('/getform/:eventId', getForm);
 upcomingEventRoute.put('/update-form/:eventId', verifyClub, updateForm);
+
+upcomingEventRoute.post('/transfer-event/:eventId', verifyClub, transferEvent)
+upcomingEventRoute.delete('/delete-event/:eventId', verifyClub, deleteUpcomingEvent)
 
 export default upcomingEventRoute;

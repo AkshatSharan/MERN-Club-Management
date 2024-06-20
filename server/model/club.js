@@ -32,6 +32,10 @@ const clubSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'UpcomingEvent'
     }],
+    pastEvents: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'PastEvent'
+    }],
     clubSecret: {
         type: String,
         unique: true,

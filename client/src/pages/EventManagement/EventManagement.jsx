@@ -6,6 +6,7 @@ import { Switch } from '@mui/material';
 import * as XLSX from 'xlsx';
 import SortUpDown from '../../assets/SortUpDown.svg';
 import './eventmanagement.css';
+import CompleteConfirmation from "../../components/Modal/CompleteConfirmation";
 
 function EventManagement() {
     const { eventId } = useParams();
@@ -17,6 +18,8 @@ function EventManagement() {
     const [sortConfig, setSortConfig] = useState({ key: '', direction: '' });
     const [searchQuery, setSearchQuery] = useState('');
     const navigate = useNavigate();
+    const [completeEventClick, setCompleteEventClick] = useState(false)
+    const [deleteEventClick, setDeleteEventClick] = useState(false)
 
     useEffect(() => {
         const fetchEvent = async () => {
@@ -122,16 +125,56 @@ function EventManagement() {
         navigate(`/event/${eventId}`)
     }
 
+    const completeEvent = async () => {
+        try {
+            await axiosInstance.post(`/upcomingevent/transfer-event/${eventId}`)
+            navigate('/')
+        } catch (error) {
+            console.error('Error transferring event:', error);
+        }
+    }
+
+    const deleteEvent = async () => {
+        try {
+            await axiosInstance.delete(`/upcomingevent/delete-event/${eventId}`)
+            navigate('/')
+        } catch (error) {
+            console.error('Error transferring event:', error);
+        }
+    }
+
     if (isLoading) {
         return <Loader message='Fetching event' />;
     }
 
+    const handleOpenComplete = () => {
+        setCompleteEventClick(true)
+    }
+    const handleCloseComplete = () => {
+        setCompleteEventClick(false)
+    }
+
+    const handleOpenDelete = () => {
+        setDeleteEventClick(true)
+    }
+    const handleCloseDelete = () => {
+        setDeleteEventClick(false)
+    }
+
     return (
         <div>
-            <h1><u>{event.eventTitle}</u></h1>
+            {completeEventClick && <CompleteConfirmation message="Are you sure the event is complete?" handleClose={handleCloseComplete} action={completeEvent} />}
+            {deleteEventClick && <CompleteConfirmation message="Are you sure you want to delete this event?" handleClose={handleCloseDelete} action={deleteEvent} />}
+            <div className="event-management-header">
+                <h1><u>{event.eventTitle}</u></h1>
+                <div className="event-info-management">
+                    <button className="edit-details" style={{ backgroundColor: 'var(--siteGreen)' }} onClick={handleOpenComplete}>Complete event</button>
+                    <button className="edit-details" style={{ backgroundColor: 'orangered' }} onClick={handleOpenDelete}>Delete/Cancel</button>
+                </div>
+            </div>
             <div className="event-info-management">
-                <button className="edit-details " style={{ backgroundColor: 'var(--siteLightGreen)' }} onClick={viewEventPage}>View event page</button>
-                <button className="edit-details " style={{ backgroundColor: 'var(--siteGreen)' }} onClick={() => navigate(`/update-event/${eventId}`)}>Edit event page</button>
+                <button className="edit-details " style={{ backgroundColor: 'var(--siteBlue)' }} onClick={viewEventPage}>View event page</button>
+                <button className="edit-details " style={{ backgroundColor: 'var(--siteLightBlue)' }} onClick={() => navigate(`/update-event/${eventId}`)}>Edit event page</button>
             </div>
             <section className="event-registration-form">
                 <h2 className="management-section-header">Registration form</h2>

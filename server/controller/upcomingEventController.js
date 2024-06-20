@@ -9,6 +9,7 @@ import DOMPurify from 'dompurify';
 import { stripHtml } from 'string-strip-html';
 import Registration from '../model/registration.js';
 import User from '../model/user.js';
+import PastEvent from '../model/pastevent.js'
 
 export const createUpcomingEvent = async (req, res) => {
     try {
@@ -211,5 +212,79 @@ export const updateUpcomingEvent = async (req, res) => {
     } catch (error) {
         console.error('Error updating upcoming event:', error);
         res.status(500).json({ error: 'Error updating upcoming event' });
+    }
+};
+
+export const transferEvent = async (req, res) => {
+    const { eventId } = req.params
+    const clubId = req.club._id
+
+    try {
+        const event = await UpcomingEvent.findById(eventId);
+        const club = await Club.findById(clubId);
+
+        if (!event || !club) {
+            return res.status(404).json({ message: 'Event or Club not found' });
+        }
+
+        const pastEvent = new PastEvent({
+            club: event.club,
+            eventTitle: event.eventTitle,
+            coverDescription: event.coverDescription,
+            eventDescription: event.eventDescription,
+            registrationsOpen: event.registrationsOpen,
+            registrationDeadline: event.registrationDeadline,
+            eventStartDate: event.eventStartDate,
+            participation: event.participation,
+            eventLocation: event.eventLocation,
+            registrationFees: event.registrationFees,
+            rounds: event.rounds,
+            prizes: event.prizes,
+            organizers: event.organizers,
+            registrations: event.registrations,
+        });
+
+        await pastEvent.save();
+
+        club.upcomingEvents = club.upcomingEvents.filter(id => id.toString() !== eventId);
+        club.pastEvents.push(pastEvent._id);
+
+        await club.save();
+
+        await UpcomingEvent.findByIdAndDelete(eventId);
+
+        res.status(200).json({ message: 'Event transferred successfully' });
+    } catch (error) {
+        console.error('Error transferring event:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
+export const deleteUpcomingEvent = async (req, res) => {
+    const { eventId } = req.params;
+    const clubId = req.club._id;
+
+    try {
+        const event = await UpcomingEvent.findById(eventId);
+        const club = await Club.findById(clubId);
+
+        if (!event || !club) {
+            return res.status(404).json({ message: 'Event or Club not found' });
+        }
+
+        await EventRound.deleteMany({ event: eventId });
+
+        await EventPrize.deleteMany({ event: eventId });
+
+        club.upcomingEvents = club.upcomingEvents.filter(id => id.toString() !== eventId);
+
+        await club.save();
+
+        await UpcomingEvent.findByIdAndDelete(eventId);
+
+        res.status(200).json({ message: 'Event deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting event:', error);
+        res.status(500).json({ message: 'Server error' });
     }
 };

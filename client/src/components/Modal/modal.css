@@ -74,6 +74,11 @@
     cursor: pointer;
 }
 
+.confirmation-buttons {
+    display: flex;
+    gap: 20px;
+}
+
 @media (max-width: 675px) {
     .modal {
         width: 400px;
