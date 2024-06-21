@@ -29,6 +29,11 @@ export const getSpecificUser = async (req, res) => {
                         select: 'clubLogo'
                     }
                 }
+            }).populate({
+                path: 'applications',
+                populate: {
+                    path: 'club',
+                }
             });
 
         if (!user) {

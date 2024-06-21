@@ -2,6 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import axiosInstance from '../../axiosinstance';
 import { useNavigate, useParams } from 'react-router-dom';
 import Trashcan from '../../assets/Trashcan.svg';
+import { DatePicker, TimePicker, DateTimePicker } from '@mui/x-date-pickers';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 import StarterKit from '@tiptap/starter-kit';
 import Text from '@tiptap/extension-text';
@@ -37,6 +40,7 @@ function ApplicationFormAdmin() {
     const [formId, setFormId] = useState(null)
     const [formDescription, setFormDescription] = useState('');
     const [questions, setQuestions] = useState([]);
+    const [applicationDeadline, setApplicationDeadline] = useState(null);
     const [newQuestion, setNewQuestion] = useState({
         type: 'text',
         question: '',
@@ -127,7 +131,16 @@ function ApplicationFormAdmin() {
                 alert('Please enter a form title');
                 return;
             }
-            const formData = { formTitle, questions, formDescription };
+
+            const formatISODate = (date) => {
+                const isoString = date.toISOString();
+                const formattedString = isoString.replace('Z', '+00:00');
+                return formattedString;
+            };
+
+            const formattedDeadline = applicationDeadline ? formatISODate(applicationDeadline) : null;
+
+            const formData = { formTitle, questions, formDescription, applicationDeadline: formattedDeadline };
 
             let response;
             if (!formId) {
@@ -219,8 +232,18 @@ function ApplicationFormAdmin() {
         }
     };
 
+    console.log(applicationDeadline)
+
     return (
         <div>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DateTimePicker
+                    label="Application Deadline"
+                    value={applicationDeadline}
+                    onChange={(newValue) => setApplicationDeadline(newValue)}
+                    renderInput={(params) => <TextField {...params} fullWidth />}
+                />
+            </LocalizationProvider>
             <form onSubmit={handleSubmitForm} className='create-event-form'>
                 <input
                     type="text"

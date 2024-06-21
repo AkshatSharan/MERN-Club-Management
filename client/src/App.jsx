@@ -61,8 +61,8 @@ function AppContent() {
             <Route path="/upcomingevents" element={<UpcomingEvents />} />
             <Route path='/profile' element={<Profile />} />
             <Route path='/register/:eventId' element={<RegistrationPage />} />
-          </Route>
             <Route path='/apply/:clubId' element={<ApplicationFormUser />} />
+          </Route>
 
           <Route path="/event/:eventId" element={<EventDetails />} />
 

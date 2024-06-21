@@ -13,7 +13,7 @@ const applicationSchema = new mongoose.Schema({
     },
     applicationStatus: {
         type: String,
-        default: 'pending'
+        default: 'Pending'
     },
     responses: [{
         question: {

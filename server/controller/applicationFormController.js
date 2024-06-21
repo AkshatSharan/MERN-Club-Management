@@ -8,7 +8,7 @@ export const createApplicationForm = async (req, res) => {
     try {
         console.log('It runs')
         const { clubId } = req.params;
-        const { formTitle, formDescription, questions } = req.body;
+        const { formTitle, formDescription, questions, applicationDeadline } = req.body;
 
         if (req.club._id.toString() !== clubId) {
             return res.status(403).json({ message: 'Forbidden' });
@@ -18,7 +18,7 @@ export const createApplicationForm = async (req, res) => {
             club: clubId,
             formTitle,
             formDescription,
-            questions
+            questions, applicationDeadline
         });
 
         await newForm.save();
@@ -37,7 +37,7 @@ export const updateApplicationForm = async (req, res) => {
     console.log('It also runs')
     try {
         const { formId } = req.params;
-        const { formTitle, formDescription, questions } = req.body
+        const { formTitle, formDescription, questions, applicationDeadline } = req.body
 
         const form = await ApplicationForm.findById(formId)
 
@@ -47,7 +47,7 @@ export const updateApplicationForm = async (req, res) => {
 
         const updatedForm = await ApplicationForm.findByIdAndUpdate(
             formId,
-            { formTitle, formDescription, questions },
+            { formTitle, formDescription, questions, applicationDeadline },
             { new: true }
         )
 

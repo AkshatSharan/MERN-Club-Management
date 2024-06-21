@@ -8,6 +8,7 @@ import SearchIcon from '../../assets/SearchIcon.svg';
 import Loader from '../../components/Loader/Loader';
 import { Avatar } from '@mui/material';
 import { useSelector } from 'react-redux';
+import axiosInstance from '../../axiosinstance';
 
 function Home({ scrollToSection }) {
   const [allClubs, setAllClubs] = useState([])
@@ -22,7 +23,7 @@ function Home({ scrollToSection }) {
   const { currentUser } = useSelector((state) => state.user)
 
   useEffect(() => {
-    const fetchClubs = async () => {
+    const fetchData = async () => {
       try {
         const response = await axios.get('http://localhost:3000/api/club/getallclubs');
         setAllClubs(response.data);
@@ -35,19 +36,19 @@ function Home({ scrollToSection }) {
       }
     }
 
-    fetchClubs()
+    fetchData()
   }, [])
 
   useEffect(() => {
     const fetchRecruitingClubs = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/recruitment/getcurrentlyrecruiting');
-        const recruitingClubsData = response.data;
-        setRecruiting(recruitingClubsData);
+        const response = await axiosInstance.get('/club/get-recruitments');
+        setRecruiting(response.data);
       } catch (error) {
         console.error('Error fetching recruiting clubs:', error);
       }
     };
+    
     fetchRecruitingClubs()
   }, [])
 
@@ -170,19 +171,19 @@ function Home({ scrollToSection }) {
             recruiting.map((recruitment, index) => (
               <div className='club-card' key={index}>
                 <div className='followed-club-logo'>
-                  <img src={recruitment.club.clubLogo} alt={`${recruitment.club.clubName} logo`} />
+                  <img src={recruitment.clubLogo} alt={`${recruitment.clubName} logo`} />
                 </div>
-                <h2 className='followed-club-name'>{recruitment.club.clubName}</h2>
+                <h2 className='followed-club-name'>{recruitment.clubName}</h2>
                 <hr className='card-divider' />
                 <h3 style={{ margin: 0, fontWeight: 400 }}>DEADLINE</h3>
                 <p className='application-deadline-display'>
-                  {new Date(recruitment.applicationDeadline).toLocaleDateString('en-US', {
+                  {new Date(recruitment.applicationForm[index]?.applicationDeadline).toLocaleDateString('en-US', {
                     day: 'numeric',
                     month: 'short',
                     year: 'numeric'
                   }).toUpperCase()}
                 </p>
-                <button className='more-information-button'>Know more</button>
+                <button className='more-information-button' onClick={() => navigate(`/apply/${recruiting[index]._id}`)}>Know more</button>
               </div>
             ))
           ) : (

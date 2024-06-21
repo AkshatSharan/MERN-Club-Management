@@ -15,7 +15,7 @@ const ApplicationFormUser = () => {
             try {
                 const alreadyApplied = await axiosInstance.get(`/club/application/already-applied/${clubId}`)
                 if (alreadyApplied.data.alreadyApplied) {
-                    navigate('/')
+                    navigate('/profile')
                     alert("Already applied")
                 }
                 const response = await axiosInstance.get(`/club/application/get-application/${clubId}`);
@@ -59,6 +59,7 @@ const ApplicationFormUser = () => {
                 responses: formattedResponses, // Send formatted responses to backend
             });
             alert('Application submitted successfully!');
+            navigate('/profile')
         } catch (error) {
             console.error('Error submitting application:', error);
         }

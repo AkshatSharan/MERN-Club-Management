@@ -39,6 +39,7 @@ function Profile() {
             try {
                 const info = await axiosInstance.get('/user/getspecificuser')
                 setMyRegistrations(info.data.user.registrations)
+                setMyApplications(info.data.user.applications)
             } catch (error) {
                 console.error('Error during logout: ', error);
             } finally {
@@ -61,7 +62,7 @@ function Profile() {
         return date.toLocaleDateString('en-GB', options);
     }
 
-    const { fname = '', lname = '', phone = '', email = '', collegeRegistration = '', applications = [] } = currentUser.user || {};
+    const { fname = '', lname = '', phone = '', email = '', collegeRegistration = '' } = currentUser.user || {};
 
     // console.log(myRegistations)
 
@@ -82,15 +83,25 @@ function Profile() {
 
             <section className='detail-section'>
                 <h2>Club applications</h2>
-                {applications.length > 0 ?
+                {myApplications.length > 0 ?
                     (
                         <div>
-                            {applications.map((app, index) => (
-                                <div key={index}>
-                                    {/* Render individual application details */}
-                                    <p>{/* Application detail rendering logic */}</p>
-                                </div>
-                            ))}
+                            {myApplications.map((application, index) => {
+                                const status = application.applicationStatus
+                                let color
+                                if(status === 'Pending') color ='lightgray'
+                                if(status === 'Accepted') color ='var(--siteGreen)'
+                                if(status === 'Rejected') color ='orangered'
+                                return (
+                                    <div key={index} className='club-application-card'>
+                                        <div className='club-applied-to'>
+                                            <div className='club-logo'><img src={application.club.clubLogo} /></div>
+                                            <h3>{application.club.clubName}</h3>
+                                        </div>
+                                        <h3 className='my-application-status' style={{backgroundColor: color}}>{application.applicationStatus}</h3>
+                                    </div>
+                                )
+                            })}
                         </div>
                     ) :
                     (

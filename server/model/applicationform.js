@@ -26,7 +26,8 @@ const applicationFormSchema = new mongoose.Schema({
             },
             options: [String]
         }
-    ]
+    ],
+    applicationDeadline: Date,
 });
 
 export default mongoose.model('ApplicationForm', applicationFormSchema);

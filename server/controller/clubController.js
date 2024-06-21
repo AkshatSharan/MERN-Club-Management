@@ -79,7 +79,7 @@ export const getClubDetails = async (req, res) => {
             return res.status(401).json({ error: "Club not authenticated" });
         }
 
-        const club = await Club.findById(clubId).select('-password -refreshToken -clubSecret');
+        const club = await Club.findById(clubId).select('-password -refreshToken -clubSecret').populate('applications');
 
         if (!club) {
             return res.status(404).json({ error: "Club not found" });
@@ -88,6 +88,15 @@ export const getClubDetails = async (req, res) => {
         res.status(200).json(club);
     } catch (error) {
         console.error('Error retrieving club details:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+export const getClubsRecruiting = async (req, res) => {
+    try {
+        const clubs = await Club.find({ recruiting: true }).populate('applicationForm')
+        res.status(200).json(clubs);
+    } catch (error) {
         res.status(500).json({ error: 'Internal server error' });
     }
 }

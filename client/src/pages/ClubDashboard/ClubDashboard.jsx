@@ -42,7 +42,7 @@ function ClubDashboard() {
     const fetchEvents = async () => {
       try {
         const response = await axiosInstance.get('/club/getupcomingevents')
-        const clubDetails = await axiosInstance.get('/club//get-club')
+        const clubDetails = await axiosInstance.get('/club/get-club')
         setClubDetails(clubDetails.data)
         console.log(clubDetails.data)
         setUpcomingEvents(response.data.upcomingEvents)
