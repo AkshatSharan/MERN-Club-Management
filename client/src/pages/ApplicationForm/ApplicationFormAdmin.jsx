@@ -3,6 +3,31 @@ import axiosInstance from '../../axiosinstance';
 import { useNavigate, useParams } from 'react-router-dom';
 import Trashcan from '../../assets/Trashcan.svg';
 
+import StarterKit from '@tiptap/starter-kit';
+import Text from '@tiptap/extension-text';
+import TextStyle from '@tiptap/extension-text-style';
+import { Underline } from '@tiptap/extension-underline';
+import { useEditor, EditorContent } from '@tiptap/react';
+import { Color } from '@tiptap/extension-color';
+import UnderlineIcon from '../../assets/Underline.svg';
+import BoldIcon from '../../assets/Bold.svg';
+import Italics from '../../assets/Italics.svg';
+import OL from '../../assets/OL.svg';
+import UL from '../../assets/UL.svg';
+import Quote from '../../assets/Quote.svg';
+import HorizontalRule from '../../assets/HorizontalRule.svg';
+import LineBreak from '../../assets/LineBreak.svg';
+import Undo from '../../assets/Undo.svg';
+import Redo from '../../assets/Redo.svg';
+
+const extensions = [
+    StarterKit,
+    Underline,
+    Text,
+    TextStyle,
+    Color
+];
+
 function ApplicationFormAdmin() {
     const { clubId } = useParams();
     const navigate = useNavigate();
@@ -131,6 +156,14 @@ function ApplicationFormAdmin() {
         setEditIndex(-1);
     };
 
+    const editor = useEditor({
+        extensions,
+        content: formDescription || '',
+        onUpdate: ({ editor }) => {
+            setFormDescription(editor.getHTML());
+        }
+    }, [formExists]);
+
     const resetNewQuestion = () => {
         setNewQuestion({
             type: 'text',
@@ -140,7 +173,7 @@ function ApplicationFormAdmin() {
     };
 
     const handleAddOption = () => {
-        if (newQuestion.options.length < 4) { // Limiting to 4 options for simplicity
+        if (newQuestion.options.length < 4) {
             if (newOption.trim() !== '') {
                 setNewQuestion(prev => ({
                     ...prev,
@@ -172,20 +205,6 @@ function ApplicationFormAdmin() {
     };
 
     useEffect(() => {
-        const handleKeyDown = (event) => {
-            if (event.key === 'Enter' && event.target.tagName !== 'TEXTAREA') {
-                event.preventDefault();
-            }
-        };
-
-        document.addEventListener('keydown', handleKeyDown);
-
-        return () => {
-            document.removeEventListener('keydown', handleKeyDown);
-        };
-    }, []);
-
-    useEffect(() => {
         adjustTextareaHeight();
     }, []);
 
@@ -193,9 +212,15 @@ function ApplicationFormAdmin() {
         adjustTextareaHeight();
     }, [formDescription]);
 
+    const handleInputKeyDown = (e) => {
+        if (e.key === 'Enter' && e.target.tagName === 'INPUT' && e.target.type === 'text') {
+            e.preventDefault();
+        }
+    };
+
     return (
         <div>
-            <form onSubmit={handleSubmitForm} className='application-form'>
+            <form onSubmit={handleSubmitForm} className='create-event-form'>
                 <input
                     type="text"
                     id="formTitle"
@@ -203,19 +228,104 @@ function ApplicationFormAdmin() {
                     placeholder='Form title'
                     onChange={(e) => setFormTitle(e.target.value)}
                     className='form-title'
+                    onKeyDown={handleInputKeyDown}
                     required
                 />
 
-                <label>
-                    <h2 className='form-description-header'>Form description</h2>
-                    <textarea
-                        value={formDescription}
-                        onChange={(e) => setFormDescription(e.target.value)}
-                        placeholder='Enter description'
-                        className='form-description'
-                        required
-                        ref={textareaRef}
-                    />
+                <label className='form-section-label'>Form description
+                    <div className='controls-container'>
+                        {editor && (
+                            <>
+                                <button type='button'
+                                    onClick={() => editor.chain().focus().toggleBold().run()}
+                                    disabled={
+                                        !editor.can()
+                                            .chain()
+                                            .focus()
+                                            .toggleBold()
+                                            .run()
+                                    }
+                                    className={editor.isActive('bold') ? 'is-active' : ''}
+                                >
+                                    <img src={BoldIcon} className='text-editor-icon' alt="Bold" />
+                                </button>
+                                <button type='button'
+                                    onClick={() => editor.chain().focus().toggleItalic().run()}
+                                    disabled={
+                                        !editor.can()
+                                            .chain()
+                                            .focus()
+                                            .toggleItalic()
+                                            .run()
+                                    }
+                                    className={editor.isActive('italic') ? 'is-active' : ''}
+                                >
+                                    <img src={Italics} className='text-editor-icon' alt="Italic" />
+                                </button>
+                                <button type='button'
+                                    onClick={() => editor.chain().focus().toggleUnderline().run()}
+                                    disabled={
+                                        !editor.can()
+                                            .chain()
+                                            .focus()
+                                            .toggleUnderline()
+                                            .run()
+                                    }
+                                    className={editor.isActive('underline') ? 'is-active' : ''}
+                                >
+                                    <img src={UnderlineIcon} className='text-editor-icon' alt="Underline" />
+                                </button>
+                                <button type='button'
+                                    onClick={() => editor.chain().focus().toggleBulletList().run()}
+                                    className={editor.isActive('bulletList') ? 'is-active' : ''}
+                                >
+                                    <img src={UL} className='text-editor-icon' alt="Bullet List" />
+                                </button>
+                                <button type='button'
+                                    onClick={() => editor.chain().focus().toggleOrderedList().run()}
+                                    className={editor.isActive('orderedList') ? 'is-active' : ''}
+                                >
+                                    <img src={OL} className='text-editor-icon' alt="Ordered List" />
+                                </button>
+                                <button type='button'
+                                    onClick={() => editor.chain().focus().toggleBlockquote().run()}
+                                    className={editor.isActive('blockquote') ? 'is-active' : ''}
+                                >
+                                    <img src={Quote} className='text-editor-icon' alt="Blockquote" />
+                                </button>
+                                <button type='button' onClick={() => editor.chain().focus().setHorizontalRule().run()}>
+                                    <img src={HorizontalRule} className='text-editor-icon' alt="Horizontal Rule" />
+                                </button>
+                                <button type='button'
+                                    onClick={() => editor.chain().focus().undo().run()}
+                                    disabled={
+                                        !editor.can()
+                                            .chain()
+                                            .focus()
+                                            .undo()
+                                            .run()
+                                    }
+                                >
+                                    <img src={Undo} className='text-editor-icon' alt="Undo" />
+                                </button>
+                                <button type='button'
+                                    onClick={() => editor.chain().focus().redo().run()}
+                                    disabled={
+                                        !editor.can()
+                                            .chain()
+                                            .focus()
+                                            .redo()
+                                            .run()
+                                    }
+                                >
+                                    <img src={Redo} className='text-editor-icon' alt="Redo" />
+                                </button>
+                            </>
+                        )}
+                    </div>
+                    <div className='event-description'>
+                        {editor && <EditorContent editor={editor} />}
+                    </div>
                 </label>
 
                 {questions.map((question, index) => {
@@ -253,6 +363,7 @@ function ApplicationFormAdmin() {
                                             type="text"
                                             value={option}
                                             onChange={(e) => handleOptionInputChange(e, optionIndex)}
+                                            onKeyDown={handleInputKeyDown}
                                             className='option-input'
                                         />
                                     ))}
@@ -282,6 +393,7 @@ function ApplicationFormAdmin() {
                         type="text"
                         value={newQuestion.question}
                         placeholder="Enter Question"
+                        onKeyDown={handleInputKeyDown}
                         onChange={(e) => setNewQuestion({ ...newQuestion, question: e.target.value })}
                         className='question-input'
                     />
@@ -294,6 +406,7 @@ function ApplicationFormAdmin() {
                                         type="text"
                                         value={option}
                                         onChange={(e) => handleOptionInputChange(e, idx)}
+                                        onKeyDown={handleInputKeyDown}
                                         className='option-input'
                                     />
                                 ))}
@@ -303,6 +416,7 @@ function ApplicationFormAdmin() {
                                     type="text"
                                     value={newOption}
                                     placeholder="Enter Option"
+                                    onKeyDown={handleInputKeyDown}
                                     onChange={(e) => setNewOption(e.target.value)}
 
                                     className='options-input'
@@ -318,7 +432,7 @@ function ApplicationFormAdmin() {
                     )}
                 </div>
 
-                <button type="submit" className='submit-application-form'>Save form</button>
+                <button type="submit" className='edit-details' style={{ width: 'fit-content', backgroundColor: 'var(--siteGreen)' }}>Save form</button>
             </form>
         </div>
     );
