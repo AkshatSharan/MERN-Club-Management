@@ -24,17 +24,21 @@ const clubSchema = new mongoose.Schema({
     },
     displayDescription: String,
     clubDescription: String,
-    recruitment: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Recruitment',
-    }],
     upcomingEvents: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'UpcomingEvent'
     }],
+    recruiting: {
+        type: Boolean,
+        default: false
+    },
     pastEvents: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'PastEvent'
+    }],
+    applicationForm: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ApplicationForm'
     }],
     clubSecret: {
         type: String,
@@ -42,7 +46,7 @@ const clubSchema = new mongoose.Schema({
     },
     refreshToken: {
         type: String
-    }
+    },
 });
 
 clubSchema.pre('save', function (next) {

@@ -248,8 +248,19 @@ export const transferEvent = async (req, res) => {
 
         club.upcomingEvents = club.upcomingEvents.filter(id => id.toString() !== eventId);
         club.pastEvents.push(pastEvent._id);
-
         await club.save();
+
+        const registrations = await Registration.find({ event: eventId });
+
+        const userUpdatePromises = registrations.map(async (registration) => {
+            await User.findByIdAndUpdate(registration.student, {
+                $pull: { registrations: registration._id }
+            });
+        });
+
+        await Promise.all(userUpdatePromises);
+
+        await Registration.deleteMany({ event: eventId });
 
         await UpcomingEvent.findByIdAndDelete(eventId);
 
@@ -273,11 +284,21 @@ export const deleteUpcomingEvent = async (req, res) => {
         }
 
         await EventRound.deleteMany({ event: eventId });
-
         await EventPrize.deleteMany({ event: eventId });
 
-        club.upcomingEvents = club.upcomingEvents.filter(id => id.toString() !== eventId);
+        const registrations = await Registration.find({ event: eventId });
 
+        const userUpdatePromises = registrations.map(async (registration) => {
+            await User.findByIdAndUpdate(registration.student, {
+                $pull: { registrations: registration._id }
+            });
+        });
+
+        await Promise.all(userUpdatePromises);
+
+        await Registration.deleteMany({ event: eventId });
+
+        club.upcomingEvents = club.upcomingEvents.filter(id => id.toString() !== eventId);
         await club.save();
 
         await UpcomingEvent.findByIdAndDelete(eventId);

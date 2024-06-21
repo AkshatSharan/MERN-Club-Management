@@ -595,7 +595,7 @@ const UpdateEvent = () => {
                     </button>
                 </div>
                 <input type="hidden" id="notifyInput" name="notify" value="false" />
-                <div className='save-button'>
+                <div className='save-button-container'>
                     <button type="submit" className="edit-details" onClick={() => handleNotify(true)}>{eventId ? 'Save and Notify' : 'Create Event'}</button>
                     <button type="submit" className="edit-details" onClick={() => handleNotify(false)}>{eventId ? 'Save' : 'Create Event'}</button>
                 </div>

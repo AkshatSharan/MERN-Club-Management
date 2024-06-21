@@ -8,15 +8,13 @@
     gap: 20px;
 }
 
-.save-button {
+.save-button-container {
     position: absolute;
     right: 0;
     top: 0;
 
     display: flex;
     gap: 20px;
-
-    background: none;
 }
 
 .event-title-input {

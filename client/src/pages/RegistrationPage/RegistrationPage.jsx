@@ -11,6 +11,7 @@ function RegistrationPage() {
     const [responses, setResponses] = useState([]);
     const { currentUser } = useSelector((state) => state.user);
     const [isLoading, setIsLoading] = useState(true);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const textareaRef = useRef(null)
 
@@ -86,6 +87,8 @@ function RegistrationPage() {
 
     const handleSubmitForm = async (e) => {
         e.preventDefault();
+        if (isSubmitting) return; 
+        setIsSubmitting(true);
         try {
             const response = await axiosInstance.post(`/upcomingevent/register/${eventId}/${form._id}`, { responses });
             console.log('Registration submitted successfully:', response.data);
@@ -188,7 +191,7 @@ function RegistrationPage() {
                         )}
                     </div>
                 ))}
-                <button type="submit" className='edit-details'>Submit</button>
+                <button type="submit" className='edit-details' disabled={isSubmitting}>Submit</button>
             </form>
         </div>
     );

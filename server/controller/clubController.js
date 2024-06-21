@@ -70,3 +70,24 @@ export const getUpcomingEvents = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' })
     }
 }
+
+export const getClubDetails = async (req, res) => {
+    try {
+        const clubId = req.club?._id;
+
+        if (!clubId) {
+            return res.status(401).json({ error: "Club not authenticated" });
+        }
+
+        const club = await Club.findById(clubId).select('-password -refreshToken -clubSecret');
+
+        if (!club) {
+            return res.status(404).json({ error: "Club not found" });
+        }
+
+        res.status(200).json(club);
+    } catch (error) {
+        console.error('Error retrieving club details:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}

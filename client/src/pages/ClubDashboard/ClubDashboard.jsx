@@ -13,6 +13,7 @@ function ClubDashboard() {
   const dispatch = useDispatch()
   const [upcomingEvents, setUpcomingEvents] = useState([])
   const navigate = useNavigate()
+  const [clubDetails, setClubDetails] = useState(null)
 
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
@@ -41,6 +42,9 @@ function ClubDashboard() {
     const fetchEvents = async () => {
       try {
         const response = await axiosInstance.get('/club/getupcomingevents')
+        const clubDetails = await axiosInstance.get('/club//get-club')
+        setClubDetails(clubDetails.data)
+        console.log(clubDetails.data)
         setUpcomingEvents(response.data.upcomingEvents)
       } catch (error) {
         console.error('Error fetching events:', error)
@@ -50,6 +54,8 @@ function ClubDashboard() {
 
     fetchEvents()
   }, [])
+
+  // console.log(club._id)
 
   const handleDivClick = (eventId) => {
     navigate(`/event-management/${eventId}`)
@@ -80,7 +86,7 @@ function ClubDashboard() {
             upcomingEvents.map((event, index) => {
               const { dayOfWeek, dayOfMonth } = extractDayInfo(event.eventStartDate)
               return (
-                <div key={index} className='event-card' onClick={()=> handleDivClick(event._id)}>
+                <div key={index} className='event-card' onClick={() => handleDivClick(event._id)}>
                   <div className='event-date'>
                     <h2>{dayOfMonth}</h2>
                     <h2>{dayOfWeek.toUpperCase()}</h2>
@@ -91,6 +97,13 @@ function ClubDashboard() {
             })}
         </div>
         <button className='edit-details' style={{ backgroundColor: 'var(--siteGreen)' }} onClick={() => navigate('/create-event')}>Create event</button>
+      </section>
+
+      <section className='dashboard-management'>
+        <h2 className='dashboard-section-header'>Recruitments</h2>
+        <div className='applications-management-buttons'>
+          <button className='edit-details' onClick={() => navigate(`/club/application-form/${club._id}`)}>Edit recruitment form</button>
+        </div>
       </section>
     </div>
   )
