@@ -35,7 +35,7 @@ const upcomingEventSchema = new mongoose.Schema({
     },
     registrationsOpen: {
         type: Boolean,
-        default: true
+        default: false
     },
     registrationDeadline: {
         type: Date,

@@ -445,159 +445,162 @@ const UpdateEvent = () => {
                     </div>
                 </label>
 
-                <div className="createeventinput">
-                    <label className="form-field-label">Registration Fees</label>
-                    <input
-                        type="text"
-                        name="registrationFees"
-                        value={eventDetails.registrationFees}
-                        onChange={handleInputChange}
-                        className="registration-fees-input"
-                    />
-                </div>
-
-                <h3 className="form-section-label">Rounds</h3>
-                {eventDetails.rounds.map((round, index) => (
-                    <div key={index} className="event-round-box">
-                        <span className="new-round-name">Round {index + 1}</span>
-                        <input
-                            type="text"
-                            value={round.roundName}
-                            onChange={(e) => handleRoundChange(index, 'roundName', e.target.value)}
-                            required
-                            className="new-round-location"
-                        />
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DatePicker
-                                value={dayjs(round.roundDate)}
-                                onChange={(date) => handleRoundChange(index, 'roundDate', date)}
-                                className="custom-date-time-picker"
-                            />
-                            <TimePicker
-                                value={dayjs(round.startTime)}
-                                onChange={(time) => handleRoundChange(index, 'startTime', time)}
-                                className="custom-date-time-picker"
-                            />
-                            <TimePicker
-                                value={dayjs(round.endTime)}
-                                onChange={(time) => handleRoundChange(index, 'endTime', time)}
-                                className="custom-date-time-picker"
-                            />
-                        </LocalizationProvider>
-                        <input
-                            type="text"
-                            value={round.roundLocation}
-                            onChange={(e) => handleRoundChange(index, 'roundLocation', e.target.value)}
-                            required
-                            className="new-round-location"
-                        />
-                        <button type="button" onClick={() => removeRound(index)} className="controls-container">
-                            Remove Round
-                        </button>
+                <label className="form-section-label">Rounds
+                    <div className='new-rounds-container'>
+                        {eventDetails.rounds.map((round, index) => (
+                            <div key={index} className="event-round-box">
+                                <input
+                                    type="text"
+                                    value={round.roundName}
+                                    onChange={(e) => handleRoundChange(index, 'roundName', e.target.value)}
+                                    required
+                                    className='new-round-name'
+                                />
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <DatePicker
+                                        value={dayjs(round.roundDate)}
+                                        onChange={(date) => handleRoundChange(index, 'roundDate', date)}
+                                        className="custom-date-time-picker"
+                                    />
+                                    <TimePicker
+                                        value={dayjs(round.startTime)}
+                                        onChange={(time) => handleRoundChange(index, 'startTime', time)}
+                                        className="custom-date-time-picker"
+                                    />
+                                    <TimePicker
+                                        value={dayjs(round.endTime)}
+                                        onChange={(time) => handleRoundChange(index, 'endTime', time)}
+                                        className="custom-date-time-picker"
+                                    />
+                                </LocalizationProvider>
+                                <input
+                                    type="text"
+                                    value={round.roundLocation}
+                                    onChange={(e) => handleRoundChange(index, 'roundLocation', e.target.value)}
+                                    required
+                                    className="new-round-location"
+                                />
+                                <button type="button" onClick={() => removeRound(index)} style={{ backgroundColor: 'orangered' }} className='edit-details'>
+                                    Delete Round
+                                </button>
+                            </div>
+                        ))}
                     </div>
-                ))}
-                <button type="button" onClick={addRound} className="controls-container">
-                    Add Round
-                </button>
+                </label>
+                <div><button type="button" onClick={addRound} className="edit-details">Add Round +</button></div>
 
-                <h3 className="form-section-label">Prizes</h3>
-                {eventDetails.prizes.map((prize, index) => (
-                    <div key={index} className="event-prize-box">
-                        <span className="new-round-name">Prize {index + 1}</span>
-                        <input
-                            type="text"
-                            value={prize.positionName}
-                            onChange={(e) => handlePrizeChange(index, 'positionName', e.target.value)}
-                            required
-                            className="new-round-location"
-                        />
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={prize.trophy}
-                                onChange={(e) => handlePrizeChange(index, 'trophy', e.target.checked)}
-                            />
-                            Trophy
-                        </label>
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={prize.certificate}
-                                onChange={(e) => handlePrizeChange(index, 'certificate', e.target.checked)}
-                            />
-                            Certificate
-                        </label>
-                        <label>
-                            <input
-                                type="checkbox"
-                                checked={prize.cashPrize}
-                                onChange={(e) => handlePrizeChange(index, 'cashPrize', e.target.checked)}
-                            />
-                            Cash Prize
-                        </label>
-                        {prize.cashPrize && (
+                <label className="form-section-label">Event prizes
+                    <div className='new-rounds-container'>
+                        {eventDetails.prizes.map((prize, index) => (
+                            <div key={index} className="event-round-box">
+                                <input
+                                    type="text"
+                                    value={prize.positionName}
+                                    onChange={(e) => handlePrizeChange(index, 'positionName', e.target.value)}
+                                    required
+                                    className="new-round-location"
+                                />
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        checked={prize.trophy}
+                                        onChange={(e) => handlePrizeChange(index, 'trophy', e.target.checked)}
+                                    />
+                                    Trophy
+                                </label>
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        checked={prize.certificate}
+                                        onChange={(e) => handlePrizeChange(index, 'certificate', e.target.checked)}
+                                    />
+                                    Certificate
+                                </label>
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        checked={prize.cashPrize}
+                                        onChange={(e) => handlePrizeChange(index, 'cashPrize', e.target.checked)}
+                                    />
+                                    Cash Prize
+                                </label>
+                                {prize.cashPrize && (
+                                    <input
+                                        type="text"
+                                        value={prize.cashPrizeAmt}
+                                        onChange={(e) => handlePrizeChange(index, 'cashPrizeAmt', e.target.value)}
+                                        required
+                                        className="cash-prize-amt-input"
+                                    />
+                                )}
+                                <button type="button" onClick={() => removePrize(index)} style={{ backgroundColor: 'orangered' }} className="edit-details">
+                                    Remove Prize
+                                </button>
+                            </div>
+                        ))}
+                        <div className="event-round-box">
                             <input
                                 type="text"
-                                value={prize.cashPrizeAmt}
-                                onChange={(e) => handlePrizeChange(index, 'cashPrizeAmt', e.target.value)}
-                                required
-                                className="cash-prize-amt-input"
+                                value={newPrize.positionName}
+                                placeholder='Position name'
+                                onChange={(e) => setNewPrize({ ...newPrize, positionName: e.target.value })}
+                                className="new-round-location"
                             />
-                        )}
-                        <button type="button" onClick={() => removePrize(index)} className="controls-container">
-                            Remove Prize
-                        </button>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    checked={newPrize.trophy}
+                                    onChange={(e) => setNewPrize({ ...newPrize, trophy: e.target.checked })}
+                                />
+                                Trophy
+                            </label>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    checked={newPrize.certificate}
+                                    onChange={(e) => setNewPrize({ ...newPrize, certificate: e.target.checked })}
+                                />
+                                Certificate
+                            </label>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    checked={newPrize.cashPrize}
+                                    onChange={handleCashPrizeChange}
+                                />
+                                Cash Prize
+                            </label>
+                            {newPrize.cashPrize && (
+                                <input
+                                    type="text"
+                                    value={newPrize.cashPrizeAmt}
+                                    placeholder='Enter amt'
+                                    onChange={(e) => setNewPrize({ ...newPrize, cashPrizeAmt: e.target.value })}
+                                    required
+                                    className="cash-prize-amt-input"
+                                />
+                            )}
+                            <button type="button" onClick={addPrize} className="edit-details">
+                                Add Prize
+                            </button>
+                        </div>
                     </div>
-                ))}
-                <div className="createeventinput">
-                    <span className="form-field-label">Position Name</span>
-                    <input
-                        type="text"
-                        value={newPrize.positionName}
-                        onChange={(e) => setNewPrize({ ...newPrize, positionName: e.target.value })}
-                        className="new-round-location"
-                    />
-                    <label>
-                        <input
-                            type="checkbox"
-                            checked={newPrize.trophy}
-                            onChange={(e) => setNewPrize({ ...newPrize, trophy: e.target.checked })}
-                        />
-                        Trophy
-                    </label>
-                    <label>
-                        <input
-                            type="checkbox"
-                            checked={newPrize.certificate}
-                            onChange={(e) => setNewPrize({ ...newPrize, certificate: e.target.checked })}
-                        />
-                        Certificate
-                    </label>
-                    <label>
-                        <input
-                            type="checkbox"
-                            checked={newPrize.cashPrize}
-                            onChange={handleCashPrizeChange}
-                        />
-                        Cash Prize
-                    </label>
-                    {newPrize.cashPrize && (
-                        <input
-                            type="text"
-                            value={newPrize.cashPrizeAmt}
-                            onChange={(e) => setNewPrize({ ...newPrize, cashPrizeAmt: e.target.value })}
-                            required
-                            className="cash-prize-amt-input"
-                        />
-                    )}
-                    <button type="button" onClick={addPrize} className="controls-container">
-                        Add Prize
-                    </button>
-                </div>
+                </label>
                 <input type="hidden" id="notifyInput" name="notify" value="false" />
                 <div className='save-button-container'>
                     <button type="submit" className="edit-details" onClick={() => handleNotify(true)}>{eventId ? 'Save and Notify' : 'Create Event'}</button>
                     <button type="submit" className="edit-details" onClick={() => handleNotify(false)}>{eventId ? 'Save' : 'Create Event'}</button>
+                </div>
+                <div className="participation-type">
+                    <label className="form-section-label">Registration Fees
+                        <input
+                            type="text"
+                            name="registrationFees"
+                            value={eventDetails.registrationFees}
+                            onChange={handleInputChange}
+                            className="cash-prize-amt-input"
+                        />
+                    </label>
                 </div>
             </form>
         </div >
