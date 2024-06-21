@@ -1,0 +1,22 @@
+.application-form-title {
+    margin-top: 15px;
+    margin-bottom: 0;
+}
+
+.application-detail {
+    margin-top: 0;
+    margin-bottom: 40px;
+    position: relative;
+}
+
+.application-detail::after {
+    content: '';
+    height: 1px;
+    width: 100%;
+
+    position: absolute;
+    left: 0;
+    bottom: -20px;
+
+    background-color: lightgray;
+}

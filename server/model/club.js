@@ -40,6 +40,10 @@ const clubSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'ApplicationForm'
     }],
+    applications: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Application'
+    }],
     clubSecret: {
         type: String,
         unique: true,

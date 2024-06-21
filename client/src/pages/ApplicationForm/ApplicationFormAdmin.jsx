@@ -31,6 +31,7 @@ const extensions = [
 function ApplicationFormAdmin() {
     const { clubId } = useParams();
     const navigate = useNavigate();
+    const [newOption, setNewOption] = useState('');
 
     const [formTitle, setFormTitle] = useState('');
     const [formId, setFormId] = useState(null)
@@ -49,7 +50,7 @@ function ApplicationFormAdmin() {
     useEffect(() => {
         const fetchFormData = async () => {
             try {
-                const response = await axiosInstance.get(`/club/application/get-application/${clubId}`);
+                const response = await axiosInstance.get(`/club/application/get-application-admin/${clubId}`);
                 if (response.data.length > 0) {
                     const { formTitle, formDescription, questions, _id } = response.data[0];
                     setFormTitle(formTitle);
