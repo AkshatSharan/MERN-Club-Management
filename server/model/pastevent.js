@@ -53,6 +53,10 @@ const pastEventSchema = new mongoose.Schema({
         type: String,
         default: 'Free',
     },
+    registrationForm: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'RegistrationForm'
+    }],
     rounds: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'EventRound'

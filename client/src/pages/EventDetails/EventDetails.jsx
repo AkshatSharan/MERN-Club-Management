@@ -18,7 +18,7 @@ import axiosInstance from '../../axiosinstance';
 
 function EventDetails() {
     const [isLoading, setIsLoading] = useState(true)
-    const { eventId } = useParams()
+    const { eventType, eventId } = useParams()
     const [eventDetails, setEventDetails] = useState(null)
     const [eventRounds, setEventRounds] = useState([])
     const [eventPrizes, setEventPrizes] = useState([])
@@ -54,25 +54,36 @@ function EventDetails() {
         const fetchEvent = async () => {
             try {
                 const eventResponse = await axiosInstance.get(`/upcomingevent/event/${eventId}`);
-
-                const sortedRounds = eventResponse.data.rounds.sort((a, b) => {
-                    const dateA = new Date(a.roundDate).setHours(0, 0, 0, 0)
-                    const dateB = new Date(b.roundDate).setHours(0, 0, 0, 0)
-                    if (dateA < dateB) return -1
-                    if (dateA > dateB) return 1
-                    const startTimeA = new Date(a.roundDate).setHours(new Date(a.startTime).getHours(), new Date(a.startTime).getMinutes())
-                    const startTimeB = new Date(b.roundDate).setHours(new Date(b.startTime).getHours(), new Date(b.startTime).getMinutes())
-                    return startTimeA - startTimeB;
-                });
-
-                setEventDetails(eventResponse.data)
-                setEventRounds(sortedRounds)
-                setEventPrizes(eventResponse.data.prizes)
+                handleEventResponse(eventResponse);
             } catch (error) {
-                console.error('Error fetching event:', error)
-            } finally {
-                setIsLoading(false)
+                console.error('Error fetching upcoming event:', error);
+                try {
+                    const pastEventResponse = await axiosInstance.get(`/upcomingevent/past-event/${eventId}`);
+                    handleEventResponse(pastEventResponse);
+                } catch (pastError) {
+                    console.error('Error fetching past event:', pastError);
+                    setIsLoading(false);
+                }
             }
+        }
+
+        const handleEventResponse = (response) => {
+            const { rounds = [], prizes = [] } = response.data;
+
+            const sortedRounds = rounds.sort((a, b) => {
+                const dateA = new Date(a.roundDate).setHours(0, 0, 0, 0)
+                const dateB = new Date(b.roundDate).setHours(0, 0, 0, 0)
+                if (dateA < dateB) return -1
+                if (dateA > dateB) return 1
+                const startTimeA = new Date(a.roundDate).setHours(new Date(a.startTime).getHours(), new Date(a.startTime).getMinutes())
+                const startTimeB = new Date(b.roundDate).setHours(new Date(b.startTime).getHours(), new Date(b.startTime).getMinutes())
+                return startTimeA - startTimeB;
+            });
+
+            setEventDetails(response.data)
+            setEventRounds(sortedRounds)
+            setEventPrizes(prizes)
+            setIsLoading(false)
         }
 
         fetchEvent()

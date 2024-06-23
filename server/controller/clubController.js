@@ -79,7 +79,7 @@ export const getClubDetails = async (req, res) => {
             return res.status(401).json({ error: "Club not authenticated" });
         }
 
-        const club = await Club.findById(clubId).select('-password -refreshToken -clubSecret').populate('applications');
+        const club = await Club.findById(clubId).select('-password -refreshToken -clubSecret').populate('applications pastEvents upcomingEvents');
 
         if (!club) {
             return res.status(404).json({ error: "Club not found" });

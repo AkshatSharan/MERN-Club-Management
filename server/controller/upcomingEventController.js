@@ -8,8 +8,10 @@ import { JSDOM } from 'jsdom';
 import DOMPurify from 'dompurify';
 import { stripHtml } from 'string-strip-html';
 import Registration from '../model/registration.js';
+import RegistrationForm from '../model/registrationform.js'
 import User from '../model/user.js';
 import PastEvent from '../model/pastevent.js'
+import mongoose from 'mongoose';
 
 export const createUpcomingEvent = async (req, res) => {
     try {
@@ -216,8 +218,8 @@ export const updateUpcomingEvent = async (req, res) => {
 };
 
 export const transferEvent = async (req, res) => {
-    const { eventId } = req.params
-    const clubId = req.club._id
+    const { eventId } = req.params;
+    const clubId = req.club._id;
 
     try {
         const event = await UpcomingEvent.findById(eventId);
@@ -232,7 +234,8 @@ export const transferEvent = async (req, res) => {
             eventTitle: event.eventTitle,
             coverDescription: event.coverDescription,
             eventDescription: event.eventDescription,
-            registrationsOpen: event.registrationsOpen,
+            registrationsOpen: false,
+            registrationForm: event.registrationForm,
             registrationDeadline: event.registrationDeadline,
             eventStartDate: event.eventStartDate,
             participation: event.participation,
@@ -246,21 +249,34 @@ export const transferEvent = async (req, res) => {
 
         await pastEvent.save();
 
+        // Transfer registration forms
+        const registrationForms = await RegistrationForm.find({ event: eventId });
+
+        const newRegistrationForms = registrationForms.map(form => ({
+            ...form.toObject(), // Convert to plain JS object
+            _id: new mongoose.Types.ObjectId(), // Generate new ObjectId correctly
+            event: pastEvent._id // Update event reference to pastEvent
+        }));
+
+        await RegistrationForm.insertMany(newRegistrationForms);
+
+        // Update club's events
         club.upcomingEvents = club.upcomingEvents.filter(id => id.toString() !== eventId);
         club.pastEvents.push(pastEvent._id);
         await club.save();
 
+        // Update registrations with new event reference
         const registrations = await Registration.find({ event: eventId });
 
         const userUpdatePromises = registrations.map(async (registration) => {
             await User.findByIdAndUpdate(registration.student, {
                 $pull: { registrations: registration._id }
             });
+            registration.event = pastEvent._id;
+            await registration.save();
         });
 
         await Promise.all(userUpdatePromises);
-
-        await Registration.deleteMany({ event: eventId });
 
         await UpcomingEvent.findByIdAndDelete(eventId);
 
@@ -308,4 +324,92 @@ export const deleteUpcomingEvent = async (req, res) => {
         console.error('Error deleting event:', error);
         res.status(500).json({ message: 'Server error' });
     }
+}
+
+export const getPastEvent = async (req, res) => {
+    try {
+        const eventId = req.params.eventId;
+        const event = await PastEvent.findById(eventId)
+            .populate('club')
+            .populate('rounds')
+            .populate('prizes')
+            .populate('registrationForm')
+            .populate({
+                path: 'registrations',
+                populate: {
+                    path: 'student',
+                    select: '-_id -password -refreshToken',
+                },
+            });
+
+        if (!event) {
+            return res.status(404).json({ error: 'Event not found' });
+        }
+
+        res.status(200).json(event);
+    } catch (error) {
+        console.error('Error fetching event:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+export const updateAttendance = async (req, res) => {
+    const { registrationId } = req.params;
+    const { attended } = req.body;
+
+    try {
+        const registration = await Registration.findByIdAndUpdate(
+            registrationId,
+            { attended },
+            { new: true }
+        );
+
+        if (!registration) {
+            return res.status(404).json({ message: 'Registration not found' });
+        }
+
+        res.status(200).json(registration);
+    } catch (error) {
+        console.error('Error updating attendance:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
 };
+
+export const deletePastEvent = async (req, res) => {
+    const { eventId } = req.params;
+    const clubId = req.club._id;
+
+    try {
+        const event = await PastEvent.findById(eventId);
+        const club = await Club.findById(clubId);
+
+        if (!event || !club) {
+            return res.status(404).json({ message: 'Event or Club not found' });
+        }
+
+        await EventRound.deleteMany({ event: eventId });
+        await EventPrize.deleteMany({ event: eventId });
+
+        const registrations = await Registration.find({ event: eventId });
+
+        const userUpdatePromises = registrations.map(async (registration) => {
+            await User.findByIdAndUpdate(registration.student, {
+                $pull: { registrations: registration._id }
+            });
+        });
+
+        await Promise.all(userUpdatePromises);
+
+        await Registration.deleteMany({ event: eventId });
+
+        club.pastEvents = club.pastEvents.filter(id => id.toString() !== eventId);
+        await club.save();
+
+        await UpcomingEvent.findByIdAndDelete(eventId);
+
+        res.status(200).json({ message: 'Event deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting event:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+}

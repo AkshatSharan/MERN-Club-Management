@@ -16,6 +16,9 @@ const registrationSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
     },
+    attended: {
+        type: String,
+    },
     responses: [{
         question: {
             type: mongoose.Schema.Types.ObjectId,

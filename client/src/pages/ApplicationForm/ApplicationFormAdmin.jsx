@@ -22,6 +22,7 @@ import HorizontalRule from '../../assets/HorizontalRule.svg';
 import LineBreak from '../../assets/LineBreak.svg';
 import Undo from '../../assets/Undo.svg';
 import Redo from '../../assets/Redo.svg';
+import dayjs from 'dayjs';
 
 const extensions = [
     StarterKit,
@@ -56,12 +57,13 @@ function ApplicationFormAdmin() {
             try {
                 const response = await axiosInstance.get(`/club/application/get-application-admin/${clubId}`);
                 if (response.data.length > 0) {
-                    const { formTitle, formDescription, questions, _id } = response.data[0];
+                    const { formTitle, formDescription, questions, _id, applicationDeadline } = response.data[0];
                     setFormTitle(formTitle);
                     setFormDescription(formDescription);
                     setQuestions(questions);
                     setFormId(_id)
                     setFormExists(true);
+                    setApplicationDeadline(dayjs(applicationDeadline))
                 } else {
                     setFormTitle('');
                     setFormDescription('');
@@ -231,8 +233,6 @@ function ApplicationFormAdmin() {
             e.preventDefault();
         }
     };
-
-    console.log(applicationDeadline)
 
     return (
         <div>

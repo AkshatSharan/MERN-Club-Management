@@ -5,15 +5,21 @@ import { useEffect, useState } from 'react';
 import axiosInstance from '../../axiosinstance';
 import { signOut } from '../../redux/userSlice';
 import { useNavigate } from 'react-router-dom';
+import { Switch } from '@mui/material';
+import Loader from '../../components/Loader/Loader';
 
 function ClubDashboard() {
   const [open, setOpen] = useState(false);
   const { currentUser } = useSelector((state) => state.user)
   const club = currentUser.user
-  const dispatch = useDispatch()
   const [upcomingEvents, setUpcomingEvents] = useState([])
-  const navigate = useNavigate()
+  const [pastEvents, setPastEvents] = useState([])
   const [clubDetails, setClubDetails] = useState(null)
+  const [applicationCount, setApplicationCount] = useState(0)
+  const [isLoading, setIsLoading] = useState(true)
+
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
@@ -41,24 +47,33 @@ function ClubDashboard() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axiosInstance.get('/club/getupcomingevents')
         const clubDetails = await axiosInstance.get('/club/get-club')
         setClubDetails(clubDetails.data)
-        console.log(clubDetails.data)
-        setUpcomingEvents(response.data.upcomingEvents)
+
+        const pendingCount = clubDetails.data.applications.reduce((count, applicationForm) => {
+          return applicationForm.applicationStatus === 'Pending' ? count + 1 : count
+        }, 0)
+
+        setApplicationCount(pendingCount)
+
+        setPastEvents(clubDetails.data.pastEvents)
+        setUpcomingEvents(clubDetails.data.upcomingEvents)
       } catch (error) {
         console.error('Error fetching events:', error)
       } finally {
+        setIsLoading(false)
       }
     };
 
     fetchEvents()
   }, [])
 
-  // console.log(club._id)
-
   const handleDivClick = (eventId) => {
     navigate(`/event-management/${eventId}`)
+  }
+
+  if (isLoading) {
+    return <Loader message="Fetching dashboard" />
   }
 
   return (
@@ -102,7 +117,39 @@ function ClubDashboard() {
       <section className='dashboard-management'>
         <h2 className='dashboard-section-header'>Recruitments</h2>
         <div className='applications-management-buttons'>
-          <button className='edit-details' onClick={() => navigate(`/club/application-form/${club._id}`)}>Edit recruitment form</button>
+          <button className='edit-details big-container'>
+            <h3>{applicationCount}</h3>
+            <h3>Pending applications</h3>
+            <p style={{ marginBottom: 0 }}>Click to manage</p>
+          </button>
+          <div className='application-changes'>
+            <div className='application-status'>
+              <b>Form status: </b>
+              Close
+              <Switch checked={clubDetails.recruiting} />
+              Open
+            </div>
+            <button className='edit-details' style={{ width: '100%' }} onClick={() => navigate(`/club/application-form/${club._id}`)}>Edit recruitment form</button>
+          </div>
+        </div>
+      </section>
+
+      <section className='dashboard-management'>
+        <h2 className='dashboard-section-header'>Past events</h2>
+        <div className='events-container'>
+          {pastEvents.length > 0 &&
+            pastEvents.map((event, index) => {
+              const { dayOfWeek, dayOfMonth } = extractDayInfo(event.eventStartDate)
+              return (
+                <div key={index} className='event-card' onClick={() => navigate(`/past/${event._id}`)}>
+                  <div className='event-date'>
+                    <h2>{dayOfMonth}</h2>
+                    <h2>{dayOfWeek.toUpperCase()}</h2>
+                  </div>
+                  <h3>{event.eventTitle}</h3>
+                </div>
+              )
+            })}
         </div>
       </section>
     </div>

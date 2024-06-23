@@ -5,10 +5,9 @@ import Loader from "../../components/Loader/Loader";
 import { Switch } from '@mui/material';
 import * as XLSX from 'xlsx';
 import SortUpDown from '../../assets/SortUpDown.svg';
-import './eventmanagement.css';
 import CompleteConfirmation from "../../components/Modal/CompleteConfirmation";
 
-function EventManagement() {
+function PastEvent() {
     const { eventId } = useParams();
     const [event, setEvent] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -18,17 +17,17 @@ function EventManagement() {
     const [sortConfig, setSortConfig] = useState({ key: '', direction: '' });
     const [searchQuery, setSearchQuery] = useState('');
     const navigate = useNavigate();
-    const [completeEventClick, setCompleteEventClick] = useState(false)
-    const [deleteEventClick, setDeleteEventClick] = useState(false)
+    const [completeEventClick, setCompleteEventClick] = useState(false);
+    const [deleteEventClick, setDeleteEventClick] = useState(false);
 
     useEffect(() => {
         const fetchEvent = async () => {
             try {
-                const eventResponse = await axiosInstance.get(`/upcomingevent/event-management/${eventId}`);
+                const eventResponse = await axiosInstance.get(`/upcomingevent/past-event/${eventId}`);
                 setEvent(eventResponse.data);
                 setRegistrationsOpen(eventResponse.data.registrationsOpen);
                 setRegistrationsData(eventResponse.data.registrations);
-                setSortedData(eventResponse.data.registrations); // Initialize sorted data
+                setSortedData(eventResponse.data.registrations);
             } catch (error) {
                 console.error('Error fetching event:', error);
             } finally {
@@ -56,6 +55,7 @@ function EventManagement() {
                 Phone: registration.student.phone
             };
 
+            // Map each question to its corresponding answer
             event.registrationForm[0].questions.forEach(question => {
                 const answer = registration.responses.find(response => response.question === question._id)?.answer || '-'
                 registrationData[question.question] = Array.isArray(answer) ? answer.join(', ') : answer
@@ -69,7 +69,7 @@ function EventManagement() {
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Registrations")
 
-        XLSX.writeFile(workbook, `${event.eventTitle}_registrations.xlsx`)
+        XLSX.writeFile(workbook, `${event?.eventTitle || 'Event'}_registrations.xlsx`)
     }
 
     const handelEditFormClick = () => {
@@ -141,7 +141,7 @@ function EventManagement() {
 
     const deleteEvent = async () => {
         try {
-            await axiosInstance.delete(`/upcomingevent/delete-event/${eventId}`)
+            await axiosInstance.delete(`/upcomingevent/delete-past-event/${eventId}`)
             navigate('/')
         } catch (error) {
             console.error('Error transferring event:', error);
@@ -150,6 +150,10 @@ function EventManagement() {
 
     if (isLoading) {
         return <Loader message='Fetching event' />;
+    }
+
+    if (!event) {
+        return <div>Error fetching event. Please try again later.</div>;
     }
 
     const handleOpenComplete = () => {
@@ -173,23 +177,12 @@ function EventManagement() {
             <div className="event-management-header">
                 <h1><u>{event.eventTitle}</u></h1>
                 <div className="event-info-management">
-                    <button className="edit-details" style={{ backgroundColor: 'var(--siteGreen)' }} onClick={handleOpenComplete}>Complete event</button>
-                    <button className="edit-details" style={{ backgroundColor: 'orangered' }} onClick={handleOpenDelete}>Delete/Cancel</button>
+                    <button className="edit-details" style={{ backgroundColor: 'orangered' }} onClick={handleOpenDelete}>Delete</button>
                 </div>
             </div>
             <div className="event-info-management">
                 <button className="edit-details " style={{ backgroundColor: 'var(--siteBlue)' }} onClick={viewEventPage}>View event page</button>
-                <button className="edit-details " style={{ backgroundColor: 'var(--siteLightBlue)' }} onClick={() => navigate(`/update-event/${eventId}`)}>Edit event page</button>
             </div>
-            <section className="event-registration-form">
-                <h2 className="management-section-header">Registration form</h2>
-                <div className="toggle-form-state">
-                    <h3>Close</h3>
-                    <Switch checked={registrationsOpen} onClick={handleFormStatusToggle} />
-                    <h3>Open</h3>
-                </div>
-                <button className="edit-details" onClick={handelEditFormClick}>Edit form</button>
-            </section>
 
             <section className="event-registration-form">
                 <h2 className="management-section-header">Registrations</h2>
@@ -240,31 +233,31 @@ function EventManagement() {
                             </thead>
                             <tbody>
                                 {sortedData.length > 0 ?
-                                    sortedData.map((registration) => (
-                                        <tr key={registration._id}>
-                                            <td>{registration.student.collegeRegistration}</td>
-                                            <td>{registration.student.fname} {registration.student.lname}</td>
-                                            <td>{registration.student.phone}</td>
-                                            {form.questions.map((question, qIndex) => (
-                                                <td key={qIndex} className="wrapped-cell">
-                                                    {formatAnswers(registration.responses.find(response => response.question === question._id)?.answer || '-')}
+                                    sortedData.map((registration) => {
+                                        return (
+                                            <tr key={registration._id}>
+                                                <td>{registration.student.collegeRegistration}</td>
+                                                <td>{registration.student.fname} {registration.student.lname}</td>
+                                                <td>{registration.student.phone}</td>
+                                                {form.questions.map((question, qIndex) => (
+                                                    <td key={qIndex}>
+                                                        {formatAnswers(registration.responses.find(response => response.question === question._id)?.answer)}
+                                                    </td>
+                                                ))}
+                                                <td>
+                                                    <Switch
+                                                        checked={registration.attended === 'yes'}
+                                                        onChange={(e) => handleAttendanceChange(registration._id, e.target.checked)}
+                                                        inputProps={{ 'aria-label': 'controlled' }}
+                                                    />
                                                 </td>
-                                            ))}
-                                            <td>
-                                                <select
-                                                    defaultValue={registration.attended || ''}
-                                                    className="question-type-select"
-                                                    onChange={(e) => handleAttendanceChange(registration._id, e.target.value)}
-                                                >
-                                                    <option value="" disabled>Select</option>
-                                                    <option value="yes">Yes</option>
-                                                    <option value="no">No</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                    ))
+                                            </tr>
+                                        )
+                                    })
                                     :
-                                    (<tr><td colSpan={form.questions.length + 4}>No registrations found.</td></tr>)
+                                    <tr>
+                                        <td colSpan={form.questions.length + 4} className="no-results">No registrations found.</td>
+                                    </tr>
                                 }
                             </tbody>
                         </table>
@@ -275,4 +268,4 @@ function EventManagement() {
     );
 }
 
-export default EventManagement;
+export default PastEvent;
