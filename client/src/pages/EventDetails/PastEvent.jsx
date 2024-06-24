@@ -155,10 +155,6 @@ function PastEvent() {
     if (!event) {
         return <div>Error fetching event. Please try again later.</div>;
     }
-
-    const handleOpenComplete = () => {
-        setCompleteEventClick(true)
-    }
     const handleCloseComplete = () => {
         setCompleteEventClick(false)
     }
@@ -245,11 +241,15 @@ function PastEvent() {
                                                     </td>
                                                 ))}
                                                 <td>
-                                                    <Switch
-                                                        checked={registration.attended === 'yes'}
-                                                        onChange={(e) => handleAttendanceChange(registration._id, e.target.checked)}
-                                                        inputProps={{ 'aria-label': 'controlled' }}
-                                                    />
+                                                    <select
+                                                        defaultValue={registration.attended || ''}
+                                                        className="question-type-select"
+                                                        onChange={(e) => handleAttendanceChange(registration._id, e.target.value)}
+                                                    >
+                                                        <option value="" disabled>Select</option>
+                                                        <option value="yes">Yes</option>
+                                                        <option value="no">No</option>
+                                                    </select>
                                                 </td>
                                             </tr>
                                         )

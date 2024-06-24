@@ -100,3 +100,22 @@ export const getClubsRecruiting = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 }
+
+export const toggleRecruiting = async (req, res) => {
+    try {
+        const clubId = req.club?._id
+
+        if (!clubId) {
+            return res.status(401).json({ error: "Club not authenticated" })
+        }
+        
+        const club = await Club.findById(clubId)
+
+        club.recruiting = !club.recruiting
+        await club.save()
+
+        res.status(200).json({ recruiting: club.recruiting })
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error' })
+    }
+}

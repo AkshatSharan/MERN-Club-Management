@@ -43,6 +43,7 @@ const UpdateEvent = () => {
         rounds: [],
         prizes: [],
         registrationFees: '',
+        organizers: [{ name: '', phoneNumber: '' }]
     });
 
     const [newPrize, setNewPrize] = useState({
@@ -59,6 +60,7 @@ const UpdateEvent = () => {
     const [isDataLoaded, setDataLoaded] = useState(false);
     const [deletedRoundIds, setDeletedRoundIds] = useState([]);
     const [deletedPrizeIds, setDeletedPrizeIds] = useState([]);
+    const [organizers, setOrganizers] = useState([])
 
     const editor = useEditor({
         extensions,
@@ -93,9 +95,11 @@ const UpdateEvent = () => {
                         rounds: eventData.rounds,
                         prizes: eventData.prizes,
                         registrationFees: eventData.registrationFees,
+                        organizers: eventData.organizers
                     });
                     setRegistrationDate(dayjs(eventData.registrationDeadline));
                     setRegistrationTime(dayjs(eventData.registrationDeadline));
+                    setOrganizers(eventData.organizers)
                     setDataLoaded(true)
                 }
             } catch (error) {
@@ -206,7 +210,7 @@ const UpdateEvent = () => {
                 deletePrizes()
             ]);
 
-            navigate('/');
+            navigate(`/event-management/${eventId}`);
         } catch (error) {
             console.error('Error submitting event:', error);
         }
@@ -239,6 +243,31 @@ const UpdateEvent = () => {
     const handleNotify = (shouldNotify) => {
         document.getElementById('notifyInput').value = shouldNotify ? "true" : "false";
     }
+
+    const handleOrganizerInputChange = (index, field, value) => {
+        const updatedOrganizers = [...eventDetails.organizers];
+        updatedOrganizers[index][field] = value;
+        setEventDetails(prevDetails => ({
+            ...prevDetails,
+            organizers: updatedOrganizers,
+        }));
+    };
+
+    const addOrganizer = () => {
+        setEventDetails(prevDetails => ({
+            ...prevDetails,
+            organizers: [...prevDetails.organizers, { name: '', phoneNumber: '' }],
+        }))
+    }
+
+    const deleteOrganizer = (index) => {
+        const updatedOrganizers = [...eventDetails.organizers];
+        updatedOrganizers.splice(index, 1);
+        setEventDetails(prevDetails => ({
+            ...prevDetails,
+            organizers: updatedOrganizers,
+        }));
+    };
 
     if (loading) {
         return <div>Loading...</div>;
@@ -586,11 +615,45 @@ const UpdateEvent = () => {
                         </div>
                     </div>
                 </label>
+
                 <input type="hidden" id="notifyInput" name="notify" value="false" />
                 <div className='save-button-container'>
                     <button type="submit" className="edit-details" onClick={() => handleNotify(true)}>{eventId ? 'Save and Notify' : 'Create Event'}</button>
                     <button type="submit" className="edit-details" onClick={() => handleNotify(false)}>{eventId ? 'Save' : 'Create Event'}</button>
                 </div>
+
+                <label className='form-section-label'>Organizer contact information
+                    <div className='new-rounds-container'>
+                        {eventDetails.organizers.map((organizer, index) => (
+                            <div key={index} className='event-round-box'>
+                                <input
+                                    type='text'
+                                    placeholder='Organizer name'
+                                    id={`name`}
+                                    name={`name`}
+                                    value={organizer.name}
+                                    onChange={(e) => handleOrganizerInputChange(index, 'name', e.target.value)}
+                                    className='new-round-name'
+                                />
+                                <input
+                                    type='text'
+                                    id={`phoneNumber`}
+                                    placeholder='Organizer contact'
+                                    name={`phoneNumber`}
+                                    value={organizer.phoneNumber}
+                                    onChange={(e) => handleOrganizerInputChange(index, 'phoneNumber', e.target.value)}
+                                    className='cash-prize-amt-input'
+                                    style={{ margin: 0 }}
+                                />
+                                <button type='button' onClick={() => deleteOrganizer(index)} className='edit-details' style={{ backgroundColor: 'orangered' }}>
+                                    Delete
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                </label>
+                <div><button type='button' onClick={addOrganizer} className='edit-details'> Add Organizer</button></div>
+
                 <div className="participation-type">
                     <label className="form-section-label">Registration Fees
                         <input

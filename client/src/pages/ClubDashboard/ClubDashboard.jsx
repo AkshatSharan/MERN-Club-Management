@@ -76,6 +76,18 @@ function ClubDashboard() {
     return <Loader message="Fetching dashboard" />
   }
 
+  const handleApplicationStatusToggle = async () => {
+    try {
+      const response = await axiosInstance.put('/club/toggle-recruiting')
+      const newRecruitingStatus = response.data.recruiting
+      setClubDetails({
+        ...clubDetails, recruiting: newRecruitingStatus
+      })
+    } catch (error) {
+      console.error('Error updating event:', error);
+    }
+  }
+
   return (
     <div>
       {open && <UpdateClubPrimary handleClose={handleClose} />}
@@ -126,7 +138,7 @@ function ClubDashboard() {
             <div className='application-status'>
               <b>Form status: </b>
               Close
-              <Switch checked={clubDetails.recruiting} />
+              <Switch checked={clubDetails.recruiting} onClick={handleApplicationStatusToggle} />
               Open
             </div>
             <button className='edit-details' style={{ width: '100%' }} onClick={() => navigate(`/club/application-form/${club._id}`)}>Edit recruitment form</button>

@@ -22,6 +22,7 @@ function EventDetails() {
     const [eventDetails, setEventDetails] = useState(null)
     const [eventRounds, setEventRounds] = useState([])
     const [eventPrizes, setEventPrizes] = useState([])
+    const [organizers, setOrganizers] = useState([])
 
     const { userType } = useSelector((state) => state.user)
 
@@ -84,6 +85,7 @@ function EventDetails() {
             setEventRounds(sortedRounds)
             setEventPrizes(prizes)
             setIsLoading(false)
+            setOrganizers(response.data.organizers)
         }
 
         fetchEvent()
@@ -103,6 +105,7 @@ function EventDetails() {
                 <img src={BackArrow} className='back-arrow' onClick={() => navigate(-1)} alt="Back" />
                 <h1 className='event-title'>{eventDetails.eventTitle}</h1>
             </div>
+
             <div className='header-information'>
                 <img src={ParticipationIcon} className='primary-detail-icon' alt="Participation" />
                 <p><b>Team size:</b> {eventDetails.participation}</p>
@@ -111,12 +114,14 @@ function EventDetails() {
                 <img src={DeadlineIcon} className='primary-detail-icon' alt="Deadline" />
                 <p><b>Registration Deadline:</b> {formatDate(eventDetails.registrationDeadline)} • {formatTime(eventDetails.registrationDeadline)}</p>
             </div>
+
             <h1 className='section-header'>Event description</h1>
             <div className='event-detail'>
                 {parser(eventDetails.eventDescription)}
             </div>
+
             <h1 className='section-header'>Event details</h1>
-            <h1 className='section-subheader'>Date and time</h1>
+            <h1 className='section-subheader'>Rounds</h1>
             <div className='event-cards-container'>
                 {eventRounds.map((round, index) => (
                     <div className='round-card' key={index}>
@@ -137,6 +142,7 @@ function EventDetails() {
                     </div>
                 ))}
             </div>
+
             {eventPrizes.length > 0 && <h1 className='section-subheader'>Rewards and prizes</h1>}
             <div className='event-cards-container'>
                 {eventPrizes.map((prize, index) => (
@@ -168,6 +174,17 @@ function EventDetails() {
                     </div>
                 ))}
             </div>
+
+            {organizers.length > 0 && <h1 className='section-subheader'>Contact organizers</h1>}
+            <div className='event-cards-container'>
+                {organizers.map((organizer, index) => (
+                    <div className='round-card' key={index}>
+                        <h3 className='round-name'>{organizer.name}</h3>
+                        <h3 className='round-name' style={{fontWeight: 400}}>{organizer.phoneNumber}</h3>
+                    </div>
+                ))}
+            </div>
+
             {eventDetails.registrationsOpen && (
                 <>
                     <div className='registration'>

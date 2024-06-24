@@ -15,7 +15,7 @@ import mongoose from 'mongoose';
 
 export const createUpcomingEvent = async (req, res) => {
     try {
-        const { eventTitle, participation, registrationDeadline, coverDescription, teamSize, eventDescription, rounds, prizes, registrationFees } = req.body;
+        const { eventTitle, participation, organizers, registrationDeadline, coverDescription, teamSize, eventDescription, rounds, prizes, registrationFees } = req.body;
 
         const window = new JSDOM('').window;
         const DOMPurifyInstance = DOMPurify(window);
@@ -39,6 +39,7 @@ export const createUpcomingEvent = async (req, res) => {
             eventDescription: sanitizedEventDescription,
             registrationFees,
             club: club._id,
+            organizers
         });
 
         await newEvent.save();
@@ -145,7 +146,7 @@ export const updateUpcomingEvent = async (req, res) => {
         const { eventId } = req.params;
         const {
             eventTitle, participation, registrationDeadline, coverDescription,
-            teamSize, eventDescription, rounds, prizes, registrationFees, notify
+            teamSize, eventDescription, rounds, prizes, registrationFees, notify, organizers
         } = req.body;
 
         const window = new JSDOM('').window;
@@ -166,6 +167,7 @@ export const updateUpcomingEvent = async (req, res) => {
                 teamSize,
                 eventDescription: sanitizedEventDescription,
                 registrationFees,
+                organizers
             },
             { new: true }
         ).populate('rounds prizes');
@@ -249,23 +251,20 @@ export const transferEvent = async (req, res) => {
 
         await pastEvent.save();
 
-        // Transfer registration forms
         const registrationForms = await RegistrationForm.find({ event: eventId });
 
         const newRegistrationForms = registrationForms.map(form => ({
-            ...form.toObject(), // Convert to plain JS object
-            _id: new mongoose.Types.ObjectId(), // Generate new ObjectId correctly
-            event: pastEvent._id // Update event reference to pastEvent
+            ...form.toObject(), 
+            _id: new mongoose.Types.ObjectId(), 
+            event: pastEvent._id 
         }));
 
         await RegistrationForm.insertMany(newRegistrationForms);
 
-        // Update club's events
         club.upcomingEvents = club.upcomingEvents.filter(id => id.toString() !== eventId);
         club.pastEvents.push(pastEvent._id);
         await club.save();
 
-        // Update registrations with new event reference
         const registrations = await Registration.find({ event: eventId });
 
         const userUpdatePromises = registrations.map(async (registration) => {
@@ -373,7 +372,7 @@ export const updateAttendance = async (req, res) => {
         console.error('Error updating attendance:', error);
         res.status(500).json({ message: 'Server error' });
     }
-};
+}
 
 export const deletePastEvent = async (req, res) => {
     const { eventId } = req.params;

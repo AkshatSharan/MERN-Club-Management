@@ -42,7 +42,8 @@ function CreateEvent() {
         eventDescription: '',
         rounds: [],
         prizes: [],
-        registrationFees: 'Free'
+        registrationFees: 'Free',
+        organizers: [{ name: '', phoneNumber: '' }]
     });
 
     const navigate = useNavigate()
@@ -141,10 +142,9 @@ function CreateEvent() {
 
         if (field === 'startTime' || field === 'endTime') {
             if (value) {
-                // Ensure value is formatted as ISO string
                 updatedRounds[index][field] = value.toISOString();
             } else {
-                updatedRounds[index][field] = ''; // Handle empty value if necessary
+                updatedRounds[index][field] = '';
             }
         } else {
             updatedRounds[index][field] = value;
@@ -228,11 +228,36 @@ function CreateEvent() {
     };
 
     const deletePrize = (index) => {
-        const updatedPrizes = [...eventDetails.prizes];
-        updatedPrizes.splice(index, 1);
+        const updatedPrizes = [...eventDetails.prizes]
+        updatedPrizes.splice(index, 1)
         setEventDetails(prevDetails => ({
             ...prevDetails,
             prizes: updatedPrizes,
+        }))
+    }
+
+    const handleOrganizerInputChange = (index, field, value) => {
+        const updatedOrganizers = [...eventDetails.organizers];
+        updatedOrganizers[index][field] = value;
+        setEventDetails(prevDetails => ({
+            ...prevDetails,
+            organizers: updatedOrganizers,
+        }));
+    };
+
+    const addOrganizer = () => {
+        setEventDetails(prevDetails => ({
+            ...prevDetails,
+            organizers: [...prevDetails.organizers, { name: '', phoneNumber: '' }],
+        }))
+    }
+
+    const deleteOrganizer = (index) => {
+        const updatedOrganizers = [...eventDetails.organizers];
+        updatedOrganizers.splice(index, 1);
+        setEventDetails(prevDetails => ({
+            ...prevDetails,
+            organizers: updatedOrganizers,
         }));
     };
 
@@ -282,8 +307,6 @@ function CreateEvent() {
     }, [eventDetails.coverDescription]);
 
     if (!editor) return null;
-
-    // console.log(eventDetails.registrationFees)
 
     return (
         <form className='create-event-form' onSubmit={handleSubmit}>
@@ -492,7 +515,6 @@ function CreateEvent() {
                 <div className='new-rounds-container'>
                     {eventDetails.rounds.map((round, index) => (
                         <div key={index} className='event-round-box'>
-
                             <input
                                 type="text"
                                 name="roundName"
@@ -622,6 +644,40 @@ function CreateEvent() {
                     ))}
                 </div>
                 <div style={{ marginTop: 20 }}><button type='button' onClick={addPrize} className='edit-details '>Add Prize +</button></div>
+            </label>
+
+            <label className='form-section-label'>Organizer contact information
+                <div className='new-rounds-container'>
+                    {eventDetails.organizers.map((organizer, index) => (
+                        <div key={index} className='event-round-box'>
+                            <input
+                                type='text'
+                                placeholder='Organizer name'
+                                id={`name`}
+                                name={`name`}
+                                value={organizer.name}
+                                onChange={(e) => handleOrganizerInputChange(index, 'name', e.target.value)}
+                                className='new-round-name'
+                            />
+                            <input
+                                type='text'
+                                id={`phoneNumber`}
+                                placeholder='Organizer contact'
+                                name={`phoneNumber`}
+                                value={organizer.phoneNumber}
+                                onChange={(e) => handleOrganizerInputChange(index, 'phoneNumber', e.target.value)}
+                                className='cash-prize-amt-input'
+                                style={{margin: 0}}
+                            />
+                            <button type='button' onClick={() => deleteOrganizer(index)} className='edit-details' style={{ backgroundColor: 'orangered' }}>
+                                Delete
+                            </button>
+                        </div>
+                    ))}
+                </div>
+                <button type='button' onClick={addOrganizer} className='edit-details'>
+                    Add Organizer
+                </button>
             </label>
 
             <div className='participation-type'>
