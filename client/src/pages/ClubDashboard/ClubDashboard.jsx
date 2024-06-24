@@ -102,7 +102,7 @@ function ClubDashboard() {
         <h2 className='dashboard-section-header'>Club page management</h2>
         <div className='club-page-management-actions-container'>
           <button className='club-page-management-action'>View club page</button>
-          <button className='club-page-management-action'>Edit club page</button>
+          <button className='club-page-management-action' onClick={() => navigate('/page-management')}>Edit club page</button>
         </div>
       </section>
 
@@ -129,7 +129,7 @@ function ClubDashboard() {
       <section className='dashboard-management'>
         <h2 className='dashboard-section-header'>Recruitments</h2>
         <div className='applications-management-buttons'>
-          <button className='edit-details big-container' onClick={()=> navigate('/application-management')}>
+          <button className='edit-details big-container' onClick={() => navigate('/application-management')}>
             <h3>{applicationCount}</h3>
             <h3>Pending applications</h3>
             <p style={{ marginBottom: 0 }}>Click to manage</p>

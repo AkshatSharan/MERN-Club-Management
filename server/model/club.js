@@ -44,6 +44,16 @@ const clubSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Application'
     }],
+    socials: [
+        {
+            name: {
+                type: String,
+                enum: ['X', 'instagram', 'facebook', 'linkedin'],
+                required: true,
+            },
+            url: String,
+        }
+    ],
     clubSecret: {
         type: String,
         unique: true,

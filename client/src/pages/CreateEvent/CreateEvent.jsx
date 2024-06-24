@@ -70,14 +70,14 @@ function CreateEvent() {
             setEventDetails(prevDetails => ({
                 ...prevDetails,
                 eventDescription: editor.getHTML(),
-            }));
+            }))
         },
         editorProps: {
             onFocus: (event) => {
-                event.preventDefault();
+                event.preventDefault()
             },
         },
-    });
+    })
 
     const textareaRef = useRef(null);
 
