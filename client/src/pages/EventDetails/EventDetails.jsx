@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
 import Loader from '../../components/Loader/Loader';
 import BackArrow from '../../assets/BackArrow.svg';
 import ParticipationIcon from '../../assets/ParticipationIcon.svg';
@@ -15,6 +14,8 @@ import './eventdetails.css';
 import parser from 'html-react-parser';
 import { useSelector } from 'react-redux';
 import axiosInstance from '../../axiosinstance';
+import ShareModal from '../../components/Modal/ShareModal';
+import ShareIcon from '../../assets/ShareIcon.svg'
 
 function EventDetails() {
     const [isLoading, setIsLoading] = useState(true)
@@ -23,6 +24,7 @@ function EventDetails() {
     const [eventRounds, setEventRounds] = useState([])
     const [eventPrizes, setEventPrizes] = useState([])
     const [organizers, setOrganizers] = useState([])
+    const [modalOpen, setModalOpen] = useState(false)
 
     const { userType } = useSelector((state) => state.user)
 
@@ -99,11 +101,22 @@ function EventDetails() {
         return <Loader message={'Fetching details'} />
     }
 
+    const handleOpen = () => {
+        setModalOpen(true)
+    }
+
+    const handleClose = () => {
+        setModalOpen(false)
+    }
+
     return (
         <div className={userType == null ? 'main-content' : ''}>
+            {modalOpen && <ShareModal message="Share event" handleClose={handleClose} name={eventDetails.eventTitle} />}
+
             <div className='event-title-container'>
                 <img src={BackArrow} className='back-arrow' onClick={() => navigate(-1)} alt="Back" />
                 <h1 className='event-title'>{eventDetails.eventTitle}</h1>
+                <img src={ShareIcon} className='back-arrow' onClick={handleOpen} alt="Back" />
             </div>
 
             <div className='header-information'>
@@ -180,7 +193,7 @@ function EventDetails() {
                 {organizers.map((organizer, index) => (
                     <div className='round-card' key={index}>
                         <h3 className='round-name'>{organizer.name}</h3>
-                        <h3 className='round-name' style={{fontWeight: 400}}>{organizer.phoneNumber}</h3>
+                        <h3 className='round-name' style={{ fontWeight: 400 }}>{organizer.phoneNumber}</h3>
                     </div>
                 ))}
             </div>

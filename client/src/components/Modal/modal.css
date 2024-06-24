@@ -36,6 +36,8 @@
     transform: translate(-50%, -50%);
     z-index: 7;
 
+    border-radius: 5px;
+
     background-color: white;
 }
 
@@ -77,6 +79,20 @@
 .confirmation-buttons {
     display: flex;
     gap: 20px;
+}
+
+.share-social-icons {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.share-icon {
+    margin: 10px 0px;
+
+    border-radius: 50%;
+
+    cursor: pointer;
 }
 
 @media (max-width: 675px) {
