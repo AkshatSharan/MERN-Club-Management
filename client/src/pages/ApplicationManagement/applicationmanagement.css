@@ -1,0 +1,15 @@
+.application-table-actions {
+    display: flex;
+}
+
+.application-management-changes {
+    margin-left: auto;
+
+    padding: 10px;
+
+    color: white;
+
+    border-radius: 5px;
+
+    background-color: var(--siteGreen);
+}

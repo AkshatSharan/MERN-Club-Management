@@ -131,3 +131,70 @@ export const alreadyApplied = async (req, res) => {
         res.status(500).send('Server Error');
     }
 }
+
+
+export const getApplications = async (req, res) => {
+    try {
+        const clubId = req.club._id;
+
+        const club = await Club.findOne({ _id: clubId })
+            .populate({
+                path: 'applications',
+                populate: {
+                    path: 'student',
+                    select: '-_id -password -refreshToken'
+                }
+            })
+            .populate('applicationForm');
+
+        if (!club) {
+            return res.status(404).json({ message: 'Club not found' });
+        }
+
+        const { clubName, applicationForm, applications } = club;
+
+        res.status(200).json({ clubName, applicationForm, applications });
+    } catch (error) {
+        console.error('Error fetching form data:', error);
+        res.status(500).json({ message: 'Error fetching form data', error });
+    }
+}
+
+export const updateApplicationStatus = async (req, res) => {
+    try {
+        const changes = req.body;
+
+        const updatePromises = Object.entries(changes).map(async ([applicationId, newStatus]) => {
+            const application = await Application.findById(applicationId).populate('student').populate('club');
+            if (!application) {
+                throw new Error(`Application with ID ${applicationId} not found`);
+            }
+
+            const user = await User.findById(application.student._id);
+            if (!user) {
+                throw new Error(`User with ID ${application.student._id} not found`);
+            }
+
+            const club = await Club.findById(application.club._id);
+            if (!club) {
+                throw new Error(`Club with ID ${application.club._id} not found`);
+            }
+
+            // Update application status
+            application.applicationStatus = newStatus;
+            await application.save();
+
+            // Add notification to user
+            const notificationMessage = `Your application for ${club.clubName} has been ${newStatus}`;
+            user.notifications.push(notificationMessage);
+            await user.save();
+        });
+
+        await Promise.all(updatePromises);
+
+        res.status(200).json({ message: 'Application statuses updated successfully' });
+    } catch (error) {
+        console.error('Error updating application statuses:', error);
+        res.status(500).json({ message: 'Error updating application statuses', error });
+    }
+};

@@ -20,6 +20,7 @@ import UpdateEvent from './pages/UpdateEvent/UpdateEvent';
 import ApplicationFormAdmin from './pages/ApplicationForm/ApplicationFormAdmin';
 import ApplicationFormUser from './pages/ApplicationForm/ApplicationFormUser';
 import PastEvent from './pages/EventDetails/PastEvent';
+import ApplicationManagement from './pages/ApplicationManagement/ApplicationManagement';
 
 function AppContent() {
   const location = useLocation();
@@ -56,6 +57,7 @@ function AppContent() {
             <Route path='update-event/:eventId' element={<UpdateEvent />} />
             <Route path="/club/application-form/:clubId" element={<ApplicationFormAdmin />} />
             <Route path='/past/:eventId' element={<PastEvent />} />
+            <Route path='application-management' element={<ApplicationManagement />} />
           </Route>
 
           <Route element={<StudentPrivateRoute />}>

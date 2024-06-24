@@ -28,7 +28,7 @@ function EventManagement() {
                 setEvent(eventResponse.data);
                 setRegistrationsOpen(eventResponse.data.registrationsOpen);
                 setRegistrationsData(eventResponse.data.registrations);
-                setSortedData(eventResponse.data.registrations); // Initialize sorted data
+                setSortedData(eventResponse.data.registrations);
             } catch (error) {
                 console.error('Error fetching event:', error);
             } finally {
@@ -225,9 +225,6 @@ function EventManagement() {
                                     <th>
                                         <div className="header-items">
                                             Phone
-                                            <button onClick={() => handleSort('student.phone')}>
-                                                <img className="sorting-icon" src={SortUpDown} alt="Sort" />
-                                            </button>
                                         </div>
                                     </th>
                                     {form.questions.map((question, qIndex) => (
