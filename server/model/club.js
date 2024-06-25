@@ -54,6 +54,7 @@ const clubSchema = new mongoose.Schema({
             url: String,
         }
     ],
+    gallery: [String],
     clubSecret: {
         type: String,
         unique: true,

@@ -21,6 +21,14 @@ import Undo from '../../assets/Undo.svg'
 import Redo from '../../assets/Redo.svg'
 import { useNavigate } from 'react-router-dom';
 
+import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage'
+import { app } from '../../firebase';
+
+import { IconButton, ImageList, ImageListItem, ImageListItemBar } from '@mui/material';
+import Box from '@mui/material/Box'
+import LinearProgress from '@mui/material/LinearProgress';
+import Typography from '@mui/material/Typography';
+
 const extensions = [
     StarterKit,
     Underline,
@@ -30,12 +38,15 @@ const extensions = [
 ];
 
 function ClubPageManagement() {
-    const [displayDescription, setDisplayDescription] = useState('');
-    const [clubDescription, setClubDescription] = useState('');
+    const [displayDescription, setDisplayDescription] = useState('')
+    const [clubDescription, setClubDescription] = useState('')
     const [clubId, setClubId] = useState(null);
     const [socials, setSocials] = useState([]);
     const [isDataLoaded, setIsDataLoaded] = useState(false)
-    const textareaRef = useRef(null);
+    const [galleryImages, setGalleryImages] = useState([])
+    const textareaRef = useRef(null)
+    const fileInputRef = useRef(null)
+    const [uploadProgess, setUploadProgress] = useState(0)
 
     const navigate = useNavigate()
 
@@ -43,11 +54,12 @@ function ClubPageManagement() {
         const fetchClubDetails = async () => {
             try {
                 const response = await axiosInstance.get('/club/get-club');
-                const { displayDescription, clubDescription, socials, _id } = response.data;
+                const { displayDescription, clubDescription, socials, _id, gallery } = response.data;
                 setDisplayDescription(displayDescription || '');
                 setClubDescription(clubDescription || '');
                 setSocials(socials || []);
                 setClubId(_id);
+                setGalleryImages(gallery || []);
             } catch (error) {
                 console.error('Error fetching club details:', error);
             } finally {
@@ -63,7 +75,8 @@ function ClubPageManagement() {
             await axiosInstance.put(`/club/update-page`, {
                 displayDescription,
                 clubDescription,
-                socials
+                socials,
+                gallery: galleryImages
             });
             alert('Club details saved successfully');
             navigate('/')
@@ -102,8 +115,31 @@ function ClubPageManagement() {
         },
     }, [isDataLoaded]);
 
-    const canPerformAction = (action) => {
-        return editor?.isActive(action) ?? false;
+    const uploadFile = async (file) => {
+        const storageRef = ref(getStorage(app), 'gallery/' + file.name);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on(
+            'state_changed',
+            (snapshot) => {
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+                setUploadProgress(progress)
+            },
+            (error) => {
+                console.error('Error uploading file:', error)
+            },
+            () => {
+                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                        setGalleryImages(prevImages => [...prevImages, downloadURL])
+                    setUploadProgress(0)
+                })
+            }
+        )
+    }
+
+    const removeImage = (imageUrl) => {
+        const updatedGallery = galleryImages.filter(url => url !== imageUrl);
+        setGalleryImages(updatedGallery);
     };
 
     useEffect(() => {
@@ -222,6 +258,62 @@ function ClubPageManagement() {
                     <EditorContent editor={editor} />
                 </div>
             </label>
+
+            <div className='gallery-section'>
+                <h3>Gallery</h3>
+                <input
+                    type='file'
+                    ref={fileInputRef}
+                    style={{ display: 'none' }}
+                    onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                            uploadFile(file);
+                        }
+                    }}
+                />
+
+                {uploadProgess == 0 && <button onClick={() => fileInputRef.current.click()} className='add-image-button'>+</button>}
+                {uploadProgess > 0 &&
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Box sx={{ width: '100%', mr: 1 }}>
+                            <LinearProgress variant="determinate" value={uploadProgess} />
+                        </Box>
+                        <Box sx={{ minWidth: 35 }}>
+                            <Typography variant="body2" color="text.secondary">{`${Math.round(
+                                uploadProgess,
+                            )}%`}</Typography>
+                        </Box>
+                    </Box>
+                }
+
+                <ImageList variant="masonry" cols={3} gap={8}>
+                    {galleryImages.map((image, index) => (
+                        <ImageListItem key={index}>
+                            <img src={image} alt={`Gallery ${index + 1}`} />
+                            <ImageListItemBar
+                                actionIcon={
+                                    <IconButton
+                                        onClick={() => removeImage(image)}
+                                        aria-label={`delete image ${index + 1}`}
+                                    >
+                                        <p className='delete-image-button'>Delete</p>
+                                    </IconButton>
+                                }
+                                sx={{
+                                    background: 'rgba(255, 68, 0, 0.6)',
+                                    textAlign: 'center',
+                                    width: 'fit-content',
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    padding: 0
+                                }}
+                            />
+                        </ImageListItem>
+                    ))}
+                </ImageList>
+            </div>
+
 
             <button onClick={handleSave} className='edit-details'>Save</button>
         </div>

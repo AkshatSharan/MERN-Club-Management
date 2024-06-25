@@ -60,5 +60,6 @@
     height: 20px;
 }
 
-.club-description {
+.club-description-container {
+    margin-bottom: 40px;
 }

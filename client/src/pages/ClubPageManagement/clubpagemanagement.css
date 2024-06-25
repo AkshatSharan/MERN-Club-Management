@@ -24,3 +24,40 @@
 .page-title {
     font-size: 28px;
 }
+
+.gallery-image {
+    height: 150px;
+}
+
+.gallery-image img {
+    height: 100%;
+}
+
+.delete-image-button {
+    margin: 0;
+
+    font-size: 14px;
+    color: white;
+}
+
+.add-image-button {
+    height: 80px;
+    aspect-ratio: 1/1;
+
+    /* padding: 30px; */
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    color: var(--siteGreen);
+    font-size: 40px;
+
+    border: 2px dashed var(--siteGreen);
+    border-radius: 5px;
+}
+
+.css-14q7c0c-MuiImageListItemBar-titleWrap {
+    display:none;
+}

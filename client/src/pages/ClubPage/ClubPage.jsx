@@ -9,6 +9,8 @@ import X from '../../assets/X.svg'
 import InstagramLogo from '../../assets/InstagramLogo.svg'
 import LinkedInLogo from '../../assets/LinkedInLogo.svg'
 import { useSelector } from 'react-redux';
+import { IconButton, ImageList, ImageListItem, ImageListItemBar } from '@mui/material';
+import ViewImage from '../../components/Modal/ViewImage';
 
 const ClubPage = () => {
     const { clubId } = useParams();
@@ -17,6 +19,9 @@ const ClubPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [followed, setFollowed] = useState()
+    const [galleryImages, setGalleryImages] = useState(null)
+    const [isImageOpen, setIsImageOpen] = useState(false)
+    const [viewImage, setViewImage] = useState(null)
 
     useEffect(() => {
         const fetchClubDetails = async () => {
@@ -31,6 +36,7 @@ const ClubPage = () => {
                 }
 
                 setClub(response.data);
+                setGalleryImages(response.data.gallery)
             } catch (error) {
                 setError('Error fetching club details');
                 console.error('Error fetching club details:', error);
@@ -68,11 +74,21 @@ const ClubPage = () => {
         }
     };
 
+    const handleOpen = (img) => {
+        setViewImage(img)
+        setIsImageOpen (true)
+    }
+
+    const handleClose = () => {
+        setIsImageOpen (false)
+    }
+
     if (loading) return <Loader message="Fetching club details" />;
     if (error) return <div>{error}</div>;
 
     return (
         <div className="club-page">
+            {isImageOpen && <ViewImage img={viewImage} handleClose={handleClose} />}
             <div className='club-branding'>
                 <div className='club-name-logo'>
                     <div className='club-page-logo'>{club.clubLogo && <img src={club.clubLogo} alt={`${club.clubName} logo`} />}</div>
@@ -100,12 +116,27 @@ const ClubPage = () => {
                             </button>
                         )
                     })}
-                </div>  
+                </div>
             </div>
-            <div className='club-description-container'>
-                <h2 className='club-page-section-title'>About the club</h2>
-                <div className='club-description'>{parser(club.clubDescription)}</div>
-            </div>
+            {club.clubDescription &&
+                <div className='club-description-container'>
+                    <h2 className='club-page-section-title'>About the club</h2>
+                    <div className='club-description'>{parser(club.clubDescription)}</div>
+                </div>
+            }
+
+            {galleryImages.length> 0 &&
+                <div className='club-gallery'>
+                    <h2 className='club-page-section-title'>Our gallery</h2>
+                    <ImageList variant="masonry" cols={3} gap={8}>
+                        {galleryImages.map((image, index) => (
+                            <ImageListItem key={index} style={{cursor: 'pointer'}}>
+                                <img src={image} alt={`Gallery ${index + 1}`} onClick={()=> handleOpen(image)} />
+                            </ImageListItem>
+                        ))}
+                    </ImageList>
+                </div>
+            }
         </div>
     );
 };

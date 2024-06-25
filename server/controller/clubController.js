@@ -139,12 +139,12 @@ export const getClubForDisplay = async (req, res) => {
 
 export const updateClubDisplay = async (req, res) => {
     const clubId = req.club?._id;
-    const { displayDescription, clubDescription, socials } = req.body;
+    const { displayDescription, clubDescription, socials, gallery } = req.body;
 
     try {
         const updatedClub = await Club.findByIdAndUpdate(
             clubId,
-            { displayDescription, clubDescription, socials },
+            { displayDescription, clubDescription, socials, gallery },
             { new: true }
         );
 
