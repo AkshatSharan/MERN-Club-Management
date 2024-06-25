@@ -19,7 +19,6 @@ export const refreshTokenForClub = async (req, res) => {
         if (!club) {
             return res.status(404).json({ message: "Club not found" });
         }
-        // Assuming refreshTokens is a function that handles token refreshing
         await refreshTokens(Club, refreshToken, res); // Ensure this function is correctly implemented
     } catch (error) {
         console.error('Token refresh error:', error);

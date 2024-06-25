@@ -48,16 +48,16 @@ function Signin() {
             let response;
             if (signinType === 'student') {
                 response = await axiosInstance.post('/auth/user/signin', studentSigninData);
+                console.log('Received response:', response);
             } else if (signinType === 'club') {
                 response = await axiosInstance.post('/auth/club/signin', clubSigninData);
+                console.log('Received response:', response);
             }
             dispatch(signinSuccess({ user: response.data, userType: signinType }));
             navigate('/');
         } catch (error) {
-            const errorMessage = error.response && error.response.data && error.response.data.error
-                ? error.response.data.error
-                : 'An error occurred during sign in';
-            dispatch(signinFailure(errorMessage));
+            console.error("Error during sign-in: ", error);
+            dispatch(signinFailure(error.response?.data?.error || 'An error occurred during sign-in'));
         }
     };
 

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { store } from './redux/store';
+import { signinFailure } from './redux/userSlice'; // Ensure correct import path
 
 const axiosInstance = axios.create({
     baseURL: 'http://localhost:3000/api', // Adjust according to your backend API base URL
@@ -40,6 +41,13 @@ axiosInstance.interceptors.response.use(
         const originalRequest = config;
 
         if (status === 401 && !originalRequest._retry) {
+            // If the error is during sign-in, dispatch signinFailure directly
+            if (originalRequest.url.includes('/signin')) {
+                store.dispatch(signinFailure(error.response?.data?.error || 'Incorrect credentials'));
+                return Promise.reject(error);
+            }
+
+            // If the error is not during sign-in, handle token refresh
             if (isRefreshing) {
                 return new Promise((resolve, reject) => {
                     addRefreshSubscriber((accessToken) => {
@@ -65,18 +73,18 @@ axiosInstance.interceptors.response.use(
                 axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
                 originalRequest.headers.Authorization = `Bearer ${accessToken}`;
 
-                onRefreshed(accessToken);
-                return axiosInstance(originalRequest);
+                onRefreshed(accessToken)
+                return axiosInstance(originalRequest)
             } catch (refreshError) {
-                console.error('Token refresh error:', refreshError);
-                return Promise.reject(refreshError);
+                console.error('Token refresh error:', refreshError)
+                return Promise.reject(refreshError)
             } finally {
-                isRefreshing = false;
+                isRefreshing = false
             }
         }
 
-        return Promise.reject(error);
+        return Promise.reject(error)
     }
-);
+)
 
 export default axiosInstance;

@@ -101,7 +101,7 @@ function ClubDashboard() {
       <section className='dashboard-management'>
         <h2 className='dashboard-section-header'>Club page management</h2>
         <div className='club-page-management-actions-container'>
-          <button className='club-page-management-action'>View club page</button>
+          <button className='club-page-management-action' onClick={() => navigate(`/club/${club._id}`)} >View club page</button>
           <button className='club-page-management-action' onClick={() => navigate('/page-management')}>Edit club page</button>
         </div>
       </section>

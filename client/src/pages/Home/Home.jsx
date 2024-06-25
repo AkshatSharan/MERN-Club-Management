@@ -25,8 +25,11 @@ function Home({ scrollToSection }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/club/getallclubs');
+        const response = await axiosInstance.get('/club/getallclubs');
+        const userInfo = await axiosInstance.get('/user/getspecificuser')
+
         setAllClubs(response.data);
+        
         const initialSortedData = [...response.data].sort((a, b) => a.clubName.localeCompare(b.clubName));
         setSortedData(initialSortedData);
       } catch (error) {
@@ -208,6 +211,7 @@ function Home({ scrollToSection }) {
                   alt='Sort Arrow'
                 />
               </button>
+
               {sortingExpanded && (
                 <div className='sorting-options'>
                   <button
@@ -226,6 +230,7 @@ function Home({ scrollToSection }) {
               )}
             </div>
           </div>
+
           <div className='search-component'>
             <input
               type='text'
@@ -237,6 +242,7 @@ function Home({ scrollToSection }) {
             <img src={SearchIcon} className='search-icon' alt='Search Icon' />
           </div>
         </div>
+
         <div className='clubs-list'>
           {searchedClubs.length > 0 ? (
             searchedClubs.map((club, index) => {
@@ -258,7 +264,7 @@ function Home({ scrollToSection }) {
                       )}
                     </p>
                   )}
-                  <button className='more-information-button'>View club page</button>
+                  <button className='more-information-button' onClick={()=> navigate(`/club/${searchedClubs[index]._id}`)}>View club page</button>
                 </div>
               );
             })

@@ -22,6 +22,7 @@ import ApplicationFormUser from './pages/ApplicationForm/ApplicationFormUser';
 import PastEvent from './pages/EventDetails/PastEvent';
 import ApplicationManagement from './pages/ApplicationManagement/ApplicationManagement';
 import ClubPageManagement from './pages/ClubPageManagement/ClubPageManagement';
+import ClubPage from './pages/ClubPage/ClubPage';
 
 function AppContent() {
   const location = useLocation();
@@ -71,6 +72,7 @@ function AppContent() {
           </Route>
 
           <Route path="/event/:eventId" element={<EventDetails />} />
+          <Route path="/club/:clubId" element={<ClubPage />} />
 
         </Routes>
       </main>

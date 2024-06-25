@@ -34,17 +34,14 @@ export const getSpecificUser = async (req, res) => {
                 populate: {
                     path: 'club',
                 }
-            });
+            }).select('-password -refreshToken');
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
 
         res.status(200).json({
-            user: {
-                applications: user.applications,
-                registrations: user.registrations,
-            },
+            user,
             accessToken: req.accessToken,
             refreshToken: req.refreshToken
         });
@@ -118,4 +115,34 @@ export const deleteNotification = async (req, res) => {
         console.error('Error deleting notification:', error);
         res.status(500).json({ error: 'Error deleting notification' });
     }
-};
+}
+
+export const followClub = async (req, res) => {
+    const { clubId } = req.params;
+    const userId = req.user._id;
+
+    try {
+        const user = await User.findById(userId);
+        if (!user.followedClubs.includes(clubId)) {
+            user.followedClubs.push(clubId);
+            await user.save();
+        }
+        res.status(200).send({ message: 'Club followed' });
+    } catch (error) {
+        res.status(500).send({ error: 'Error following club' });
+    }
+}
+
+export const unfollowClub = async (req, res) => {
+    const { clubId } = req.params;
+    const userId = req.user._id;
+
+    try {
+        const user = await User.findById(userId);
+        user.followedClubs = user.followedClubs.filter(id => id.toString() !== clubId);
+        await user.save();
+        res.status(200).send({ message: 'Club unfollowed' });
+    } catch (error) {
+        res.status(500).send({ error: 'Error unfollowing club' });
+    }
+}

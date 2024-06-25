@@ -75,7 +75,7 @@ export const signin = async (req, res) => {
             return res.status(404).json({ error: "No registration found" });
         }
 
-        const isPasswordValid = await user.isPasswordCorrect(password);
+        const isPasswordValid = await bcrypt.compare(password, user.password) 
         if (!isPasswordValid) {
             return res.status(401).json({ error: "Incorrect password" });
         }

@@ -38,6 +38,7 @@ function Profile() {
         const fetchInfo = async () => {
             try {
                 const info = await axiosInstance.get('/user/getspecificuser')
+                
                 setMyRegistrations(info.data.user.registrations)
                 setMyApplications(info.data.user.applications)
             } catch (error) {
