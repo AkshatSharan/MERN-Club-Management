@@ -88,6 +88,18 @@ function ClubDashboard() {
     }
   }
 
+  const handleStatusChange = async () => {
+    try {
+      const response = await axiosInstance.put('/club/toggleposted')
+      const newIsPosted = response.data.isPosted
+      setClubDetails({
+        ...clubDetails, isPosted: newIsPosted
+      })
+    } catch (error) {
+      console.error('Error updating event:', error);
+    }
+  }
+
   return (
     <div>
       {open && <UpdateClubPrimary handleClose={handleClose} />}
@@ -100,6 +112,11 @@ function ClubDashboard() {
 
       <section className='dashboard-management'>
         <h2 className='dashboard-section-header'>Club page management</h2>
+        <div className='page-status'>
+          Close
+          <Switch checked={clubDetails.isPosted} onChange={handleStatusChange} />
+          Open
+        </div>
         <div className='club-page-management-actions-container'>
           <button className='club-page-management-action' onClick={() => navigate(`/club/${club._id}`)} >View club page</button>
           <button className='club-page-management-action' onClick={() => navigate('/page-management')}>Edit club page</button>

@@ -29,7 +29,7 @@ function Home({ scrollToSection }) {
         const response = await axiosInstance.get('/club/getallclubs');
         const userInfo = await axiosInstance.get('/user/getspecificuser');
 
-        console.log(userInfo.data.user.followedClubs);
+        // console.log(userInfo.data.user.followedClubs);
 
         setAllClubs(response.data);
         setFollowedClubs(userInfo.data.user.followedClubs || []);
@@ -251,29 +251,31 @@ function Home({ scrollToSection }) {
 
         <div className='clubs-list'>
           {searchedClubs.length > 0 ? (
-            searchedClubs.map((club, index) => {
-              const isExpanded = expandedClubs[index];
-              return (
-                <div className='club-card' key={index}>
-                  <div className='followed-club-logo'>
-                    <img src={club.clubLogo} alt={`${club.clubName} logo`} />
+            searchedClubs
+              .filter(club => club.isPosted) // Filter clubs based on the isPosted value
+              .map((club, index) => {
+                const isExpanded = expandedClubs[index];
+                return (
+                  <div className='club-card' key={index}>
+                    <div className='followed-club-logo'>
+                      <img src={club.clubLogo} alt={`${club.clubName} logo`} />
+                    </div>
+                    <h2 className='followed-club-name'>{club.clubName}</h2>
+                    <hr className='card-divider' />
+                    {club.displayDescription && (
+                      <p className='card-display-text'>
+                        {isExpanded ? club.displayDescription : club.displayDescription.substring(0, 150)}
+                        {window.innerWidth <= 600 && club.displayDescription && club.displayDescription.length > 150 && (
+                          <button className='read-more' onClick={() => handleReadMore(index)}>
+                            {expandedClubs[index] ? 'Read less' : 'Read more'}
+                          </button>
+                        )}
+                      </p>
+                    )}
+                    <button className='more-information-button' onClick={() => navigate(`/club/${club._id}`)}>View club page</button>
                   </div>
-                  <h2 className='followed-club-name'>{club.clubName}</h2>
-                  <hr className='card-divider' />
-                  {club.displayDescription && (
-                    <p className='card-display-text'>
-                      {isExpanded ? club.displayDescription : club.displayDescription.substring(0, 150)}
-                      {window.innerWidth <= 600 && club.displayDescription && club.displayDescription.length > 150 && (
-                        <button className='read-more' onClick={() => handleReadMore(index)}>
-                          {expandedClubs[index] ? 'Read less' : 'Read more'}
-                        </button>
-                      )}
-                    </p>
-                  )}
-                  <button className='more-information-button' onClick={() => navigate(`/club/${searchedClubs[index]._id}`)}>View club page</button>
-                </div>
-              );
-            })
+                );
+              })
           ) : (
             <div className='empty-detail'>
               <p>No matching results found.</p>

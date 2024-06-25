@@ -55,6 +55,10 @@ const clubSchema = new mongoose.Schema({
             url: String,
         }
     ],
+    isPosted: {
+        type: Boolean,
+        default: false
+    },
     gallery: [String],
     clubSecret: {
         type: String,
