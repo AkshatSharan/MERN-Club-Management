@@ -32,7 +32,7 @@ const ClubPage = () => {
                 if (userType === 'student') {
                     userInfo = await axiosInstance.get('/user/getspecificuser')
                     const followedClubs = userInfo.data.user.followedClubs
-                    setFollowed(followedClubs.some(club => club === clubId))
+                    setFollowed(followedClubs.some(club => club._id === clubId))
                 }
 
                 setClub(response.data);

@@ -34,7 +34,12 @@ export const getSpecificUser = async (req, res) => {
                 populate: {
                     path: 'club',
                 }
-            }).select('-password -refreshToken');
+            }).populate({
+                path: 'followedClubs',
+                select: '-password -refreshToken',
+                select: 'clubLogo clubName recruiting upcomingEvents'
+            })
+            .select('-password -refreshToken');
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });

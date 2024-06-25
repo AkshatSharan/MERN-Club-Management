@@ -37,30 +37,32 @@ function ApplicationManagement() {
             console.error('No data to export');
             return;
         }
-
+    
         const worksheetData = applications.map(application => {
-            const rowData = {
-                'College Registration': application.student.collegeRegistration,
-                'Full Name': `${application.student.fname} ${application.student.lname}`,
-                'Phone': application.student.phone,
-                'Email': application.student.email,
-                'Status': application.applicationStatus
-            };
-
+            // Collect question responses first
+            const rowData = {};
+    
             application.responses.forEach(response => {
                 const question = applicationForm.questions.find(q => q._id === response.question);
                 if (question) {
                     rowData[question.question] = Array.isArray(response.answer) ? response.answer.join(', ') : response.answer;
                 }
             });
-
-            return rowData;
+    
+            return {
+                'College Registration': application.student.collegeRegistration,
+                'Full Name': `${application.student.fname} ${application.student.lname}`,
+                'Phone': application.student.phone,
+                'Email': application.student.email,
+                ...rowData,
+                'Status': application.applicationStatus
+            };
         });
-
+    
         const worksheet = XLSX.utils.json_to_sheet(worksheetData);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Applications');
-
+    
         const fileName = 'applications.xlsx';
         XLSX.writeFile(workbook, fileName);
     };
@@ -130,6 +132,18 @@ function ApplicationManagement() {
         }
     };
 
+    const handleDeleteApplication = async (id) => {
+        try {
+            const response = await axiosInstance.delete(`/club/application/${id}`);
+            if (response.status === 200) {
+                setApplications(prevApplications => prevApplications.filter(application => application._id !== id));
+                setSortedApplications(prevSortedApplications => prevSortedApplications.filter(application => application._id !== id));
+            }
+        } catch (error) {
+            console.error('Error deleting application:', error);
+        }
+    };
+
     if (isLoading) {
         return <Loader message="Fetching applications" />;
     }
@@ -184,6 +198,7 @@ function ApplicationManagement() {
                                     <th>No Questions</th>
                                 )}
                                 <th onClick={() => handleSort('applicationStatus')}>Status</th>
+                                <th >Delete</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -208,6 +223,9 @@ function ApplicationManagement() {
                                             <option value="Accepted">Accepted</option>
                                             <option value="Rejected">Rejected</option>
                                         </select>
+                                    </td>
+                                    <td>
+                                        <button onClick={() => handleDeleteApplication(application._id)}>Delete</button>
                                     </td>
                                 </tr>
                             ))}

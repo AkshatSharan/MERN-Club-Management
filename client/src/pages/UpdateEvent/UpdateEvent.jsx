@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import { DatePicker, TimePicker, LocalizationProvider } from '@mui/x-date-pickers';
@@ -34,6 +34,7 @@ const extensions = [
 const UpdateEvent = () => {
     const { eventId } = useParams();
     const navigate = useNavigate();
+    const textareaRef = useRef(null);
 
     const [eventDetails, setEventDetails] = useState({
         eventTitle: '',
@@ -61,6 +62,8 @@ const UpdateEvent = () => {
     const [deletedRoundIds, setDeletedRoundIds] = useState([]);
     const [deletedPrizeIds, setDeletedPrizeIds] = useState([]);
     const [organizers, setOrganizers] = useState([])
+    const [coverWordCount, setCoverWordCount] = useState(0)
+    const maxWords = 130
 
     const editor = useEditor({
         extensions,
@@ -112,12 +115,35 @@ const UpdateEvent = () => {
         fetchEventDetails();
     }, [eventId]);
 
+    const adjustTextareaHeight = () => {
+        if (textareaRef.current) {
+            textareaRef.current.style.height = 'auto';
+            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+        }
+    };
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setEventDetails(prevState => ({
-            ...prevState,
-            [name]: name === 'participation' ? value : value.trim(),
-        }));
+        if (name === 'coverDescription') {
+            const words = countWords(value);
+            if (words <= maxWords) {
+                setEventDetails(prevDetails => ({
+                    ...prevDetails,
+                    [name]: value,
+                }));
+                setCoverWordCount(words);
+                adjustTextareaHeight();
+            } else {
+                setEventDetails(prevState => ({
+                    ...prevState,
+                    [name]: value,
+                }));
+            }
+        };
+    }
+
+    const countWords = (str) => {
+        return str.trim().split(/\s+/).filter(word => word.length > 0).length;
     };
 
     const handleParticipationChange = (e) => {
@@ -670,4 +696,5 @@ const UpdateEvent = () => {
     );
 };
 
-export default UpdateEvent;
+
+export default UpdateEvent

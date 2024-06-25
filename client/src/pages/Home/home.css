@@ -1,12 +1,11 @@
 .hero {
-
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 40px;
 
-    position: relative;
+    height: 50vh;
 }
 
 .hero-text {
@@ -88,8 +87,8 @@
     gap: 10px;
 
     border-radius: 5px;
-    border: 1px solid lightgray;
-    /* box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.1); */
+    /* border: 1px solid lightgray; */
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.05);
 
     background-color: white;
 
@@ -108,9 +107,12 @@
 
     color: white;
 
+    box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.05);
     border-bottom-right-radius: 5px;
 
     background-color: var(--siteBlue);
+
+    cursor: pointer;
 }
 
 .followed-club-logo {
@@ -140,8 +142,11 @@
     color: white;
 
     border-radius: 5px;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.05);
 
     background-color: var(--siteGreen);
+
+    cursor: pointer;
 }
 
 #currently-recruiting,
@@ -238,9 +243,8 @@
     align-items: center;
     gap: 10px;
 
-    border-radius: 5px;
-
-    background-color: var(--siteLightBlue);
+    /* border-radius: 5px; */
+    border-bottom: 1px solid black;
 }
 
 .dropdown-arrow {

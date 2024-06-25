@@ -263,7 +263,7 @@ function CreateEvent() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
         const earliestRoundDate = eventDetails.rounds.reduce((earliestDate, round) => {
             const roundDate = dayjs(round.roundDate);
             if (!earliestDate || roundDate.isBefore(dayjs(earliestDate))) {
@@ -271,9 +271,9 @@ function CreateEvent() {
             }
             return earliestDate;
         }, null);
-
-        const eventStartDate = earliestRoundDate;
-
+    
+        const eventStartDate = earliestRoundDate ? earliestRoundDate.toISOString() : null;
+    
         const submissionData = {
             ...eventDetails,
             participation: eventDetails.participation === 'team' && eventDetails.teamSize
@@ -281,11 +281,11 @@ function CreateEvent() {
                 : 'Individual',
             eventStartDate: eventStartDate,
         };
-
+    
         try {
             const response = await axiosInstance.post('/upcomingevent/createupcomingevent', submissionData);
             console.log('Form Submitted:', response);
-            navigate('/')
+            navigate('/');
         } catch (error) {
             console.error('Error submitting form:', error);
         }

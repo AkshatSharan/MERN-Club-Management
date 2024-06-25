@@ -1,5 +1,5 @@
 import express from "express";
-import { getAllClubs, getClubDetails, getClubForDisplay, getClubsRecruiting, getClubsWithUpcomingEvents, getUpcomingEvents, toggleRecruiting, updateClub, updateClubDisplay } from "../controller/clubController.js";
+import { getAllClubs, getClubDetails, getClubForDisplay, getClubsRecruiting, getClubsWithUpcomingEvents, getUpcomingEvents, toggleRecruiting, updateClub, updateClubDisplay, deleteApplication } from "../controller/clubController.js";
 import { verifyClub } from "../middlewares/auth.middleware.js";
 
 const clubRoute = express.Router()
@@ -14,5 +14,6 @@ clubRoute.put("/toggle-recruiting", verifyClub, toggleRecruiting);
 
 clubRoute.get("/get-club-display/:clubId", getClubForDisplay);
 clubRoute.put("/update-page", verifyClub, updateClubDisplay);
+clubRoute.delete('/application/:id', deleteApplication)
 
 export default clubRoute

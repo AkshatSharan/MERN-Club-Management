@@ -158,3 +158,21 @@ export const updateClubDisplay = async (req, res) => {
         res.status(500).json({ message: 'Error updating club details', error });
     }
 }
+
+export const deleteApplication = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const club = await Club.findOne({ applications: id });
+        if (!club) {
+            return res.status(404).json({ message: 'Club not found' });
+        }
+
+        club.applications.pull(id);
+        await club.save();
+
+        res.status(200).json({ message: 'Application removed from club successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error });
+    }
+};

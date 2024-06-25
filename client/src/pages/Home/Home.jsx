@@ -11,25 +11,29 @@ import { useSelector } from 'react-redux';
 import axiosInstance from '../../axiosinstance';
 
 function Home({ scrollToSection }) {
-  const [allClubs, setAllClubs] = useState([])
-  const [recruiting, setRecruiting] = useState([])
-  const [sortedData, setSortedData] = useState([])
-  const [sortingExpanded, setSortingExpanded] = useState(false)
-  const [selectedOption, setSelectedOption] = useState(1)
+  const [allClubs, setAllClubs] = useState([]);
+  const [recruiting, setRecruiting] = useState([]);
+  const [sortedData, setSortedData] = useState([]);
+  const [sortingExpanded, setSortingExpanded] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
-  const [expandedClubs, setExpandedClubs] = useState({})
-  const [isLoading, setIsLoading] = useState(true)
+  const [expandedClubs, setExpandedClubs] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [followedClubs, setFollowedClubs] = useState([]);
 
-  const { currentUser } = useSelector((state) => state.user)
+  const { currentUser } = useSelector((state) => state.user);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axiosInstance.get('/club/getallclubs');
-        const userInfo = await axiosInstance.get('/user/getspecificuser')
+        const userInfo = await axiosInstance.get('/user/getspecificuser');
+
+        console.log(userInfo.data.user.followedClubs);
 
         setAllClubs(response.data);
-        
+        setFollowedClubs(userInfo.data.user.followedClubs || []);
+
         const initialSortedData = [...response.data].sort((a, b) => a.clubName.localeCompare(b.clubName));
         setSortedData(initialSortedData);
       } catch (error) {
@@ -37,10 +41,10 @@ function Home({ scrollToSection }) {
       } finally {
         setIsLoading(false);
       }
-    }
+    };
 
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const fetchRecruitingClubs = async () => {
@@ -51,32 +55,32 @@ function Home({ scrollToSection }) {
         console.error('Error fetching recruiting clubs:', error);
       }
     };
-    
-    fetchRecruitingClubs()
-  }, [])
 
-  const location = useLocation()
-  const navigate = useNavigate()
+    fetchRecruitingClubs();
+  }, []);
+
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const toggleArrow = () => {
-    setSortingExpanded(!sortingExpanded)
-  }
+    setSortingExpanded(!sortingExpanded);
+  };
 
   const handleSorting = (option) => {
-    let sortedClubs = [...allClubs]
+    let sortedClubs = [...allClubs];
     if (option === 1) {
-      sortedClubs.sort((a, b) => a.clubName.localeCompare(b.clubName))
+      sortedClubs.sort((a, b) => a.clubName.localeCompare(b.clubName));
     } else if (option === 2) {
-      sortedClubs.sort((a, b) => b.clubName.localeCompare(a.clubName))
+      sortedClubs.sort((a, b) => b.clubName.localeCompare(a.clubName));
     }
-    setSortedData(sortedClubs)
-    setSelectedOption(option)
-    setSortingExpanded(false)
+    setSortedData(sortedClubs);
+    setSelectedOption(option);
+    setSortingExpanded(false);
   };
 
   const handleSearch = (e) => {
-    setSearchQuery(e.target.value)
-  }
+    setSearchQuery(e.target.value);
+  };
 
   useEffect(() => {
     if ((!isLoading && location.state)?.scrollTo) {
@@ -86,12 +90,12 @@ function Home({ scrollToSection }) {
           window.scrollTo({
             top: section.offsetTop - 30,
             behavior: 'smooth',
-          })
-        }, 300)
-        navigate(location.pathname, { replace: true, state: {} })
+          });
+        }, 300);
+        navigate(location.pathname, { replace: true, state: {} });
       }
     }
-  }, [isLoading, location.state, navigate])
+  }, [isLoading, location.state, navigate]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -100,35 +104,33 @@ function Home({ scrollToSection }) {
       sampleData.forEach((_, index) => {
         allExpanded[index] = screenWidth > 600 ? true : false;
       });
-      setExpandedClubs(allExpanded)
+      setExpandedClubs(allExpanded);
     };
 
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [])
+  }, []);
 
   const handleReadMore = (index) => {
     setExpandedClubs((prevExpandedClubs) => {
-      const updatedExpandedClubs = { ...prevExpandedClubs }
-      updatedExpandedClubs[index] = !prevExpandedClubs[index]
-      return updatedExpandedClubs
-    })
-  }
+      const updatedExpandedClubs = { ...prevExpandedClubs };
+      updatedExpandedClubs[index] = !prevExpandedClubs[index];
+      return updatedExpandedClubs;
+    });
+  };
 
   useEffect(() => {
-    const initialSortedData = [...allClubs].sort((a, b) => a.clubName.localeCompare(b.clubName))
-    setSortedData(initialSortedData)
-  }, [allClubs])
+    const initialSortedData = [...allClubs].sort((a, b) => a.clubName.localeCompare(b.clubName));
+    setSortedData(initialSortedData);
+  }, [allClubs]);
 
   const searchedClubs = sortedData.filter((club) =>
     club.clubName.toLowerCase().includes(searchQuery.toLowerCase())
-  )
-
-  const followedClubs = sampleData.filter((club) => club.followed)
+  );
 
   if (isLoading) {
-    return <Loader message={'Loading home'} />
+    return <Loader message={'Loading home'} />;
   }
 
   return (
@@ -147,15 +149,19 @@ function Home({ scrollToSection }) {
       <section id='followed-clubs'>
         <h1 className='section-title'>Clubs you follow</h1>
         <div className='clubs-list'>
-          {currentUser && currentUser.followedClubs && currentUser.followedClubs.length > 0 ? (
+          {followedClubs.length > 0 ? (
             followedClubs.map((club, index) => (
               <div className='club-card' key={index}>
-                {club.recruiting && <div className='recruitment-tag'>Recruiting now</div>}
+                {club.recruiting &&
+                  <div className='recruitment-tag' onClick={() => navigate(`/apply/${club._id}`)}>
+                    Recruiting now
+                  </div>
+                }
                 <div className='followed-club-logo'>
-                  <img src={club.clubLogo} alt={`${club.clubName} logo`} />
+                  <img src={club.clubLogo} alt={`${club.clubName} logo`} onClick={() => navigate(`/club/${club._id}`)} />
                 </div>
-                <h2 className='followed-club-name'>{club.clubName}</h2>
-                {club.upcomingEvent && <div className='event-tag'>Upcoming Event</div>}
+                <h2 className='followed-club-name' onClick={() => navigate(`/club/${club._id}`)} >{club.clubName}</h2>
+                {club.upcomingEvents.length > 0 && <div className='event-tag' onClick={() => navigate('/upcomingevents')}>Upcoming Event</div>}
               </div>
             ))
           ) : (
@@ -264,7 +270,7 @@ function Home({ scrollToSection }) {
                       )}
                     </p>
                   )}
-                  <button className='more-information-button' onClick={()=> navigate(`/club/${searchedClubs[index]._id}`)}>View club page</button>
+                  <button className='more-information-button' onClick={() => navigate(`/club/${searchedClubs[index]._id}`)}>View club page</button>
                 </div>
               );
             })
@@ -276,7 +282,7 @@ function Home({ scrollToSection }) {
         </div>
       </section>
     </>
-  )
+  );
 }
 
-export default Home
+export default Home;
