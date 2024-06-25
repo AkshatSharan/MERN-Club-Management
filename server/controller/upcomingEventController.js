@@ -15,7 +15,7 @@ import mongoose from 'mongoose';
 
 export const createUpcomingEvent = async (req, res) => {
     try {
-        const { eventTitle, participation, organizers, registrationDeadline, coverDescription, teamSize, eventDescription, rounds, prizes, registrationFees } = req.body;
+        const { eventTitle, participation, organizers, registrationDeadline, coverDescription, teamSize, eventDescription, rounds, prizes, registrationFees, eventStartDate } = req.body;
 
         const window = new JSDOM('').window;
         const DOMPurifyInstance = DOMPurify(window);
@@ -39,7 +39,8 @@ export const createUpcomingEvent = async (req, res) => {
             eventDescription: sanitizedEventDescription,
             registrationFees,
             club: club._id,
-            organizers
+            organizers,
+            eventStartDate
         });
 
         await newEvent.save();
@@ -146,7 +147,7 @@ export const updateUpcomingEvent = async (req, res) => {
         const { eventId } = req.params;
         const {
             eventTitle, participation, registrationDeadline, coverDescription,
-            teamSize, eventDescription, rounds, prizes, registrationFees, notify, organizers
+            teamSize, eventDescription, rounds, prizes, registrationFees, notify, organizers, eventStartDate
         } = req.body;
 
         const window = new JSDOM('').window;
@@ -167,7 +168,8 @@ export const updateUpcomingEvent = async (req, res) => {
                 teamSize,
                 eventDescription: sanitizedEventDescription,
                 registrationFees,
-                organizers
+                organizers,
+                eventStartDate
             },
             { new: true }
         ).populate('rounds prizes');

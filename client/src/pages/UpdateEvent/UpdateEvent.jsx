@@ -63,6 +63,7 @@ const UpdateEvent = () => {
     const [deletedPrizeIds, setDeletedPrizeIds] = useState([]);
     const [organizers, setOrganizers] = useState([])
     const [coverWordCount, setCoverWordCount] = useState(0)
+    const [eventStartDate, setEventStartDate] = useState(null);
     const maxWords = 130
 
     const editor = useEditor({
@@ -157,17 +158,57 @@ const UpdateEvent = () => {
 
     const handleDateChange = (date) => {
         setRegistrationDate(date);
+        const updatedDateTime = date.hour(registrationTime.hour()).minute(registrationTime.minute());
+        setEventDetails((prevDetails) => ({
+            ...prevDetails,
+            registrationDeadline: updatedDateTime.toISOString(),
+        }));
     };
 
     const handleTimeChange = (time) => {
         setRegistrationTime(time);
+        const updatedDateTime = registrationDate.hour(time.hour()).minute(time.minute());
+        setEventDetails((prevDetails) => ({
+            ...prevDetails,
+            registrationDeadline: updatedDateTime.toISOString(),
+        }));
     };
 
-    const handleRoundChange = (index, key, value) => {
-        const updatedRounds = [...eventDetails.rounds];
-        updatedRounds[index][key] = value;
-        setEventDetails({ ...eventDetails, rounds: updatedRounds });
+    const calculateEarliestRoundDate = (rounds) => {
+        const earliestRoundDate = rounds.reduce((earliestDate, round) => {
+            const roundDate = dayjs(round.roundDate);
+            if (!earliestDate || roundDate.isBefore(dayjs(earliestDate))) {
+                return roundDate.toDate();
+            }
+            return earliestDate;
+        }, null);
+
+        return earliestRoundDate ? earliestRoundDate.toISOString() : null;
     };
+
+    const handleRoundChange = (index, field, value) => {
+        const updatedRounds = [...eventDetails.rounds];
+
+        if (field === 'startTime' || field === 'endTime') {
+            if (value) {
+                updatedRounds[index][field] = value.toISOString();
+            } else {
+                updatedRounds[index][field] = '';
+            }
+        } else {
+            updatedRounds[index][field] = value;
+        }
+
+        const newEventStartDate = calculateEarliestRoundDate(updatedRounds);
+
+        setEventDetails((prevState) => ({
+            ...prevState,
+            rounds: updatedRounds,
+        }));
+
+        setEventStartDate(newEventStartDate);
+    };
+
 
     const handlePrizeChange = (index, key, value) => {
         const updatedPrizes = [...eventDetails.prizes];
@@ -181,8 +222,27 @@ const UpdateEvent = () => {
     };
 
     const addRound = () => {
-        setEventDetails({ ...eventDetails, rounds: [...eventDetails.rounds, { roundName: '', roundDate: '', startTime: '', endTime: '', roundLocation: '' }] });
+        const isAnyRoundIncomplete = eventDetails.rounds.some((round) => (
+            !round.roundName || !round.roundDate || !round.startTime || !round.endTime || !round.roundLocation
+        ));
+
+        if (isAnyRoundIncomplete) {
+            alert('Please fill out all round details before adding a new round.');
+            return;
+        }
+
+        setEventDetails((prevState) => ({
+            ...prevState,
+            rounds: [...prevState.rounds, {
+                roundName: '',
+                roundDate: '',
+                startTime: '',
+                endTime: '',
+                roundLocation: '',
+            }],
+        }));
     };
+
 
     const removeRound = (index) => {
         const roundId = eventDetails.rounds[index]._id;
@@ -221,6 +281,7 @@ const UpdateEvent = () => {
                 : 'Individual',
             registrationDeadline,
             notify: document.getElementById('notifyInput').value === "true",
+            eventStartDate: eventStartDate
         };
 
         try {
@@ -242,16 +303,16 @@ const UpdateEvent = () => {
         }
     };
 
-    const deleteRounds = async () => {
-        try {
-            await Promise.all(deletedRoundIds.map(async (roundId) => {
-                const response = await axiosInstance.delete(`/upcomingevent/round/delete/${roundId}`);
-                console.log(response.data.message);
-            }));
-            setDeletedRoundIds([]);
-        } catch (error) {
-            console.error('Error deleting rounds:', error);
-        }
+    const deleteRounds = (index) => {
+        const updatedRounds = [...eventDetails.rounds];
+        updatedRounds.splice(index, 1);
+        setEventDetails((prevState) => ({
+            ...prevState,
+            rounds: updatedRounds,
+        }));
+
+        const newEventStartDate = calculateEarliestRoundDate(updatedRounds);
+        setEventStartDate(newEventStartDate);
     };
 
     const deletePrizes = async () => {
@@ -397,7 +458,7 @@ const UpdateEvent = () => {
                             required
                             className="cover-description-textarea"
                         />
-                        <div className="word-count">Word count: {eventDetails.coverDescription.trim().split(/\s+/).length}</div>
+                        <div className="word-count">Words: {eventDetails.coverDescription.trim().split(/\s+/).length}/{maxWords}</div>
                     </div>
                 </label>
 
