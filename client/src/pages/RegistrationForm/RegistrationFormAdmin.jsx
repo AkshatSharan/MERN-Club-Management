@@ -108,7 +108,7 @@ function RegistrationFormAdmin() {
       }
 
       resetForm();
-      navigate('/');
+      navigate(`/event-management/${eventId}`);
     } catch (error) {
       console.error('Error submitting form:', error);
     }

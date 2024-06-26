@@ -130,7 +130,7 @@ function ClubPageManagement() {
             },
             () => {
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                        setGalleryImages(prevImages => [...prevImages, downloadURL])
+                    setGalleryImages(prevImages => [...prevImages, downloadURL])
                     setUploadProgress(0)
                 })
             }
@@ -156,13 +156,15 @@ function ClubPageManagement() {
                 {socialOptions.map((socialOption, index) => (
                     <div key={index}>
                         <label className='socials-checkbox'>
-                            <input
-                                type="checkbox"
-                                id={socialOption.value}
-                                checked={socials.some(social => social.name === socialOption.value)}
-                                onChange={() => toggleSocial(socialOption.value)}
-                            />
-                            {socialOption.label}
+                            <div className='check-social'>
+                                <input
+                                    type="checkbox"
+                                    id={socialOption.value}
+                                    checked={socials.some(social => social.name === socialOption.value)}
+                                    onChange={() => toggleSocial(socialOption.value)}
+                                />
+                                {socialOption.label}
+                            </div>
                             {socials.some(social => social.name === socialOption.value) && (
                                 <input
                                     type="text"
@@ -321,7 +323,7 @@ function ClubPageManagement() {
 }
 
 const socialOptions = [
-    { value: 'X', label: 'X (formerly Twitter)' },
+    { value: 'X', label: 'X' },
     { value: 'instagram', label: 'Instagram' },
     { value: 'facebook', label: 'Facebook' },
     { value: 'linkedin', label: 'LinkedIn' },

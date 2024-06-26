@@ -38,7 +38,7 @@ function Profile() {
         const fetchInfo = async () => {
             try {
                 const info = await axiosInstance.get('/user/getspecificuser')
-                
+
                 setMyRegistrations(info.data.user.registrations)
                 setMyApplications(info.data.user.applications)
             } catch (error) {
@@ -83,42 +83,6 @@ function Profile() {
             </section>
 
             <section className='detail-section'>
-                <h2>Club applications</h2>
-                {myApplications.length > 0 ?
-                    (
-                        <div>
-                            {myApplications.map((application, index) => {
-                                const status = application.applicationStatus
-                                let color
-                                if(status === 'Pending') color ='lightgray'
-                                if(status === 'Accepted') color ='var(--siteGreen)'
-                                if(status === 'Rejected') color ='orangered'
-                                return (
-                                    <div key={index} className='club-application-card'>
-                                        <div className='club-applied-to'>
-                                            <div className='club-logo'><img src={application.club.clubLogo} /></div>
-                                            <h3>{application.club.clubName}</h3>
-                                        </div>
-                                        <h3 className='my-application-status' style={{backgroundColor: color}}>{application.applicationStatus}</h3>
-                                    </div>
-                                )
-                            })}
-                        </div>
-                    ) :
-                    (
-                        <div className='empty-detail'>
-                            <p>You haven't applied for any clubs</p>
-                            <button className='find-detail'>
-                                <NavLink to='/' className='NavLink' state={{ scrollTo: 'explore-clubs' }}>
-                                    Find clubs you're interested in
-                                </NavLink>
-                            </button>
-                        </div>
-                    )
-                }
-            </section>
-
-            <section className='detail-section'>
                 <h2>Event registrations</h2>
                 {myRegistations.length > 0 ?
                     (
@@ -146,6 +110,42 @@ function Profile() {
                             <button className='find-detail'>
                                 <NavLink to='/upcomingevents' className='NavLink'>
                                     Find events you're interested in
+                                </NavLink>
+                            </button>
+                        </div>
+                    )
+                }
+            </section>
+
+            <section className='detail-section'>
+                <h2>Club applications</h2>
+                {myApplications.length > 0 ?
+                    (
+                        <div className='my-applications-container'>
+                            {myApplications.map((application, index) => {
+                                const status = application.applicationStatus
+                                let color
+                                if (status === 'Pending') color = 'lightgray'
+                                if (status === 'Accepted') color = 'var(--siteGreen)'
+                                if (status === 'Rejected') color = 'orangered'
+                                return (
+                                    <div key={index} className='club-application-card'>
+                                        <div className='club-applied-to'>
+                                            <div className='club-logo'><img src={application.club.clubLogo} /></div>
+                                            <h3>{application.club.clubName}</h3>
+                                        </div>
+                                        <h3 className='my-application-status' style={{ backgroundColor: color }}>{application.applicationStatus}</h3>
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    ) :
+                    (
+                        <div className='empty-detail'>
+                            <p>You haven't applied for any clubs</p>
+                            <button className='find-detail'>
+                                <NavLink to='/' className='NavLink' state={{ scrollTo: 'explore-clubs' }}>
+                                    Find clubs you're interested in
                                 </NavLink>
                             </button>
                         </div>

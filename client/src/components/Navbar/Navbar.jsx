@@ -62,8 +62,8 @@ function Navbar() {
                 <NavLink to='/' className='NavLink'><h1 id='site-title'>ClubConnect</h1></NavLink>
                 <div className='nav-items-container'>
                     <ul className='nav-items-list-desktop desktop-item'>
-                        <li className='nav-item-desktop desktop-item'><NavLink to={`/club/${currentUser.user._id}`} className='NavLink'>Club page</NavLink></li>
-                        {userType === 'club' && <li className='nav-item-desktop desktop-item'><NavLink to='/' className='NavLink'>{userType === 'student' ? 'Home' : 'Dashboard'}</NavLink></li>}
+                        {userType === 'club' && <li className='nav-item-desktop desktop-item'><NavLink to={`/club/${currentUser.user._id}`} className='NavLink'>Club page</NavLink></li>}
+                        <li className='nav-item-desktop desktop-item'><NavLink to='/' className='NavLink'>{userType === 'student' ? 'Home' : 'Dashboard'}</NavLink></li>
                         {userType === 'student' &&
                             <>
                                 <li className='nav-item-desktop desktop-item'><NavLink to='/upcomingevents' className='NavLink'>Events</NavLink></li>

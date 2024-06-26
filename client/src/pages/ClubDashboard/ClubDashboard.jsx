@@ -113,9 +113,9 @@ function ClubDashboard() {
       <section className='dashboard-management'>
         <h2 className='dashboard-section-header'>Club page management</h2>
         <div className='page-status'>
-          Close
+          <b>Club page visibility: </b>Hide
           <Switch checked={clubDetails.isPosted} onChange={handleStatusChange} />
-          Open
+          Show
         </div>
         <div className='club-page-management-actions-container'>
           <button className='club-page-management-action' onClick={() => navigate(`/club/${club._id}`)} >View club page</button>
@@ -164,7 +164,7 @@ function ClubDashboard() {
       </section>
 
       <section className='dashboard-management'>
-        <h2 className='dashboard-section-header'>Past events</h2>
+        {pastEvents.length > 0 && <h2 className='dashboard-section-header'>Past events</h2>}
         <div className='events-container'>
           {pastEvents.length > 0 &&
             pastEvents.map((event, index) => {

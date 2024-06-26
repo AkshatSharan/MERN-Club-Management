@@ -133,6 +133,8 @@ function Home({ scrollToSection }) {
     return <Loader message={'Loading home'} />;
   }
 
+  // console.log(recruiting)
+
   return (
     <>
       <section className='hero'>
@@ -186,7 +188,7 @@ function Home({ scrollToSection }) {
                 <hr className='card-divider' />
                 <h3 style={{ margin: 0, fontWeight: 400 }}>DEADLINE</h3>
                 <p className='application-deadline-display'>
-                  {new Date(recruitment.applicationForm[index]?.applicationDeadline).toLocaleDateString('en-US', {
+                  {new Date(recruitment.applicationForm[0]?.applicationDeadline).toLocaleDateString('en-US', {
                     day: 'numeric',
                     month: 'short',
                     year: 'numeric'
