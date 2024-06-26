@@ -171,15 +171,16 @@ function EventManagement() {
             {completeEventClick && <CompleteConfirmation message="Are you sure the event is complete?" handleClose={handleCloseComplete} action={completeEvent} />}
             {deleteEventClick && <CompleteConfirmation message="Are you sure you want to delete this event?" handleClose={handleCloseDelete} action={deleteEvent} />}
             <div className="event-management-header">
-                <h1><u>{event.eventTitle}</u></h1>
+                <h1 className="event-management-title"><u>{event.eventTitle}</u></h1>
                 <div className="event-info-management">
-                    <button className="edit-details" style={{ backgroundColor: 'var(--siteGreen)' }} onClick={handleOpenComplete}>Complete event</button>
-                    <button className="edit-details" style={{ backgroundColor: 'orangered' }} onClick={handleOpenDelete}>Delete/Cancel</button>
+                    <button className="edit-details event-management-button" style={{ backgroundColor: 'var(--siteGreen)' }} onClick={handleOpenComplete}>Complete event</button>
+                    <button className="edit-details event-management-button" style={{ backgroundColor: 'orangered' }} onClick={handleOpenDelete}>Delete/Cancel</button>
                 </div>
             </div>
+            <h2 className="management-section-header">Event page</h2>
             <div className="event-info-management">
-                <button className="edit-details " style={{ backgroundColor: 'var(--siteBlue)' }} onClick={viewEventPage}>View event page</button>
-                <button className="edit-details " style={{ backgroundColor: 'var(--siteLightBlue)' }} onClick={() => navigate(`/update-event/${eventId}`)}>Edit event page</button>
+                <button className="edit-details event-management-button" style={{ backgroundColor: 'var(--siteBlue)' }} onClick={viewEventPage}>View event page</button>
+                <button className="edit-details event-management-button" style={{ backgroundColor: 'var(--siteLightBlue)' }} onClick={() => navigate(`/update-event/${eventId}`)}>Edit event page</button>
             </div>
             <section className="event-registration-form">
                 <h2 className="management-section-header">Registration form</h2>
@@ -188,19 +189,21 @@ function EventManagement() {
                     <Switch checked={registrationsOpen} onClick={handleFormStatusToggle} />
                     <h3>Open</h3>
                 </div>
-                <button className="edit-details" onClick={handelEditFormClick}>Edit form</button>
+                <button className="edit-details event-management-button" onClick={handelEditFormClick}>Edit form</button>
             </section>
 
             <section className="event-registration-form">
                 <h2 className="management-section-header">Registrations</h2>
-                <input
-                    type="text"
-                    placeholder="Search by registration number"
-                    value={searchQuery}
-                    onChange={handleSearch}
-                    className="search-input"
-                />
-                <button onClick={handleExportToExcel} className="export-button">Export to Excel</button>
+                <div className="table-actions">
+                    <input
+                        type="text"
+                        placeholder="Search by registration number"
+                        value={searchQuery}
+                        onChange={handleSearch}
+                        className="search-input"
+                    />
+                    <button onClick={handleExportToExcel} className="export-button event-management-button">Export to Excel</button>
+                </div>
                 {event.registrationForm.map((form, index) => (
                     <div key={index} className="table-container">
                         <table className="registration-table">

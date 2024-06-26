@@ -140,7 +140,7 @@ const UpdateEvent = () => {
                     [name]: value,
                 }));
             }
-        };
+        }
     }
 
     const countWords = (str) => {

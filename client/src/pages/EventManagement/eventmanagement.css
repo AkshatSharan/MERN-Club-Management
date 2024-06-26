@@ -1,7 +1,11 @@
-.event-management-header{
+.event-management-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.event-management-title {
+    margin-bottom: 0;
 }
 
 .management-section-header {
@@ -83,8 +87,6 @@
 }
 
 .registration-table td {
-    max-width: 200px;
-
     padding: 10px 15px;
 }
 
@@ -106,4 +108,77 @@
     border: 2px solid gray;
 
     background-color: lightgrey;
+}
+
+@media (max-width: 950px) {
+    .event-management-button {
+        padding: 8px 10px;
+
+        font-size: 12px;
+    }
+
+    .event-management-title {
+        font-size: 45px;
+    }
+
+    .registration-table {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 710px) {
+    .event-management-header {
+        margin-bottom: 40px;
+
+        flex-direction: column;
+        align-items: flex-start;
+
+        position: relative;
+    }
+
+    .event-management-title {
+        margin-bottom: 20px;
+    }
+
+    .registration-table {
+        font-size: 12px;
+    }
+
+    .registration-table th {
+        padding: 15px;
+    }
+
+    .sorting-icon {
+        height: 13px;
+    }
+}
+
+@media (max-width: 550px) {
+    .registration-table td, .registration-table.td {
+        max-width: 150px;
+    }
+}
+
+@media (max-width: 425px) {
+    .event-management-title {
+        font-size: 40px;
+    }
+
+    .table-actions {
+        display: flex;
+        flex-direction: column-reverse;
+        gap: 10px;
+    }
+
+    .export-button {
+        width: fit-content;
+
+        margin: 0;
+    }
+
+    .search-input {
+        padding: 7px;
+
+        font-size: 10px;
+    }
 }

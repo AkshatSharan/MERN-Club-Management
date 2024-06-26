@@ -38,9 +38,12 @@ function RegistrationPage() {
                             if (response.data) {
                                 setForm(response.data);
                                 initializeResponses(response.data.questions);
+                            } else {
+                                navigate('/')
                             }
                         } catch (error) {
                             console.error('Error fetching form data:', error);
+                            navigate('/upcomingevents')
                         } finally {
                             setIsLoading(false);
                         }
@@ -87,7 +90,7 @@ function RegistrationPage() {
 
     const handleSubmitForm = async (e) => {
         e.preventDefault();
-        if (isSubmitting) return; 
+        if (isSubmitting) return;
         setIsSubmitting(true);
         try {
             const response = await axiosInstance.post(`/upcomingevent/register/${eventId}/${form._id}`, { responses });
@@ -109,7 +112,7 @@ function RegistrationPage() {
             <form onSubmit={handleSubmitForm} className='registration-form'>
                 {form.questions.map((question, index) => (
                     <div key={question._id} className='reg-question-container'>
-                        <h3 className='reg-question'>Q{index+1}{`)`} {question.question}</h3>
+                        <h3 className='reg-question'>Q{index + 1}{`)`} {question.question}</h3>
                         {question.type === 'text' && (
                             <input
                                 type="text"

@@ -1,6 +1,7 @@
 import React from 'react'
 import './modal.css'
 import CloseIcon from '../../assets/CloseIcon.svg'
+import CopyIcon from '../../assets/CopyIcon.svg'
 
 import {
     EmailShareButton,
@@ -21,6 +22,10 @@ function ShareModal({ handleClose, message, name }) {
     const pageUrl = window.location.href;
     const pageTitle = name + ' page'
 
+    const copyToClipboard = () => {
+        navigator.clipboard.writeText(pageUrl)
+    }
+
     return (
         <div className='modal-container'>
             <div className='modal'>
@@ -29,6 +34,9 @@ function ShareModal({ handleClose, message, name }) {
                     <img src={CloseIcon} className='close-modal' onClick={handleClose} />
                 </div>
                 <div className='share-social-icons'>
+                    <div className='copy-to-clipboard' onClick={() => copyToClipboard()}>
+                        <img src={CopyIcon} />
+                    </div>
                     <WhatsappShareButton url={pageUrl} title={pageTitle}>
                         <WhatsappIcon className='share-icon' />
                     </WhatsappShareButton>

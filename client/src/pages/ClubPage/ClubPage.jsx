@@ -76,18 +76,18 @@ const ClubPage = () => {
 
     const handleOpen = (img) => {
         setViewImage(img)
-        setIsImageOpen (true)
+        setIsImageOpen(true)
     }
 
     const handleClose = () => {
-        setIsImageOpen (false)
+        setIsImageOpen(false)
     }
 
     if (loading) return <Loader message="Fetching club details" />;
     if (error) return <div>{error}</div>;
 
     return (
-        <div className="club-page">
+        <div className={`club-page ${!userType && 'main-content'}`}>
             {isImageOpen && <ViewImage img={viewImage} handleClose={handleClose} />}
             <div className='club-branding'>
                 <div className='club-name-logo'>
@@ -118,6 +118,7 @@ const ClubPage = () => {
                     })}
                 </div>
             </div>
+
             {club.clubDescription &&
                 <div className='club-description-container'>
                     <h2 className='club-page-section-title'>About the club</h2>
@@ -125,13 +126,13 @@ const ClubPage = () => {
                 </div>
             }
 
-            {galleryImages.length> 0 &&
+            {galleryImages.length > 0 &&
                 <div className='club-gallery'>
                     <h2 className='club-page-section-title'>Our gallery</h2>
                     <ImageList variant="masonry" cols={3} gap={8}>
                         {galleryImages.map((image, index) => (
-                            <ImageListItem key={index} style={{cursor: 'pointer'}}>
-                                <img src={image} alt={`Gallery ${index + 1}`} onClick={()=> handleOpen(image)} />
+                            <ImageListItem key={index} style={{ cursor: 'pointer' }}>
+                                <img src={image} alt={`Gallery ${index + 1}`} onClick={() => handleOpen(image)} />
                             </ImageListItem>
                         ))}
                     </ImageList>

@@ -95,6 +95,20 @@
     cursor: pointer;
 }
 
+.copy-to-clipboard {
+    padding: 20px;
+
+    display: flex;
+    align-items: center;
+
+    /* border: 2px solid black; */
+    border-radius: 50%;
+
+    background-color: darkgray;
+
+    cursor: pointer;
+}
+
 @media (max-width: 675px) {
     .modal {
         width: 400px;
