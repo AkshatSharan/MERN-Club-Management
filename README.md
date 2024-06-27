@@ -48,8 +48,6 @@ Before you begin, ensure you have the following installed on your machine:
    ```sh
    npm run dev
 
-   Running the Project
-
 ## Running the Project
 With both the backend and frontend servers running, you should be able to access the application through your web browser.
 
