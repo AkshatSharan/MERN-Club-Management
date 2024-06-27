@@ -22,9 +22,14 @@ Before you begin, ensure you have the following installed on your machine:
    npm install
 
 3. **Configure the environment variables:**
-   Create a .env file in the server directory and add your MongoDB connection string. Replace the placeholder with your MongoDB credentials.`
+   Create a .env file in the server directory and add the following environment variables. Replace the placeholders (YOUR_PORT, YOUR_MONGO_URL, YOUR_ACCESS_TOKEN_SECRET, YOUR_REFRESH_TOKEN_SECRET) with your own values:
 
-   ``MONGOURL="your_mongodb_connection_string"``
+   ``PORT=YOUR_PORT``
+   ``MONGOURL="YOUR_MONGO_URL"``
+   ``ACCESS_TOKEN_SECRET="YOUR_ACCESS_TOKEN_SECRET"``
+   ``ACCESS_TOKEN_EXPIRY=1d``
+   ``REFRESH_TOKEN_SECRET="YOUR_REFRESH_TOKEN_SECRET"``
+   ``REFRESH_TOKEN_EXPIRY=10d``
 
 4. **Start the backend server:**
 
@@ -42,8 +47,13 @@ Before you begin, ensure you have the following installed on your machine:
 
    ```sh
    npm install
+   
+3. **Configure the environment variables:**
+   Create a .env file in the client directory and add your Firebase storage connection string. Replace the placeholder with your Firebase API key.`
 
-3. **Start the Frontend server:**
+   ``VITE_FIREBASE_API_KEY="your_firebase_api_key"``
+
+4. **Start the Frontend server:**
 
    ```sh
    npm run dev
